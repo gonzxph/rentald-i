@@ -1,0 +1,128 @@
+.outer-box {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 15px; /* Reduced padding */
+    margin: 10px auto;
+    width: 990px; /* Adjusted width to match */
+    height: 370px; /* Adjusted height to match */
+    max-width: 100%;
+    overflow: hidden; /* Prevents overflow */
+}
+
+.outer-box h1 {
+    font-size: 20px; /* Reduced font size */
+    text-align: left;
+    color: #000000;
+    opacity: 50%;
+    margin: 0 0 20px 0; /* Adjusted to align with the table */
+}
+
+.containert {
+    padding: 0; /* Removed extra padding */
+    overflow-x: auto; /* Allows horizontal scrolling if necessary */
+}
+
+/* Table styling */
+.table {
+    margin-top: 8px; 
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    font-size: 12px; /* Smaller font size for table text */
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table td {
+    background-color: #fff;
+}
+
+.btn-primary, .btn-success, .btn-danger {
+    font-size: 12px; /* Smaller font size for buttons */
+    padding: 4px 8px; /* Reduced padding for buttons */
+}
+
+/* Pagination styling */
+.pagination {
+    margin-top: 15px; /* Reduced spacing between table and pagination */
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination ul {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.pagination li {
+    margin: 0 3px; /* Slightly smaller gap */
+}
+
+.pagination li a {
+    background-color: #e7e7e7;
+    border-radius: 5px;
+    color: #69696E;
+    font-size: 12px; /* Reduced font size for pagination */
+    height: 25px; /* Smaller height */
+    width: 25px; /* Smaller width */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color 100ms ease-in-out;
+    border: none; /* Removed bottom border */
+}
+
+.pagination li.active a {
+    background-color: rgb(0, 0, 0);
+    color: #FFFFFF;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .table th, .table td {
+        padding: 6px;
+        font-size: 10px;
+    }
+
+    .btn-primary, .btn-success, .btn-danger {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+
+    .pagination li a {
+        font-size: 10px;
+        height: 20px;
+        width: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .table th, .table td {
+        padding: 3px;
+        font-size: 9px;
+    }
+
+    .btn-primary, .btn-success, .btn-danger {
+        font-size: 9px;
+        padding: 2px 5px;
+    }
+
+    .pagination li a {
+        font-size: 8px;
+        height: 18px;
+        width: 18px;
+    }
+}

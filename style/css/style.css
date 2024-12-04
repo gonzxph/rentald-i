@@ -1,0 +1,75 @@
+
+
+/*nav.php*/
+a:hover{
+    background-color: #DDE6ED;
+    border-radius: 5px;
+}
+
+.navbar-nav li a{
+    padding: 10px 15px;
+}
+
+.pac-container {
+    z-index: 1060 !important;
+}
+
+.modal{
+    z-index: 20;   
+}
+.modal-backdrop{
+    z-index: 10;        
+}
+
+
+
+.back-btn {
+    background: transparent;  /* Remove background */
+    border: none;             /* Remove border */
+    padding: 0;               /* Remove padding */
+    font-size: 20px;          /* Adjust icon size if needed */
+    cursor: pointer;         /* Change cursor to pointer */
+  }
+  
+  .back-btn i {
+    color: #000;             /* Set the icon color */
+    font-size: 20px;         /* Adjust icon size */
+  }
+
+
+
+  /* Center the calendar container */
+.calendar-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 500px; /* Adjust size */
+    margin: 0 auto;
+}
+
+/* Additional adjustments if needed */
+.vanilla-calendar {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+
+.modal.fade {
+    display: none; /* Hide modal by default */
+}
+
+.modal.show {
+    display: block; /* Show modal when active */
+}
+
+/* Search and Filter*/
+.card-titlesf{
+    background-color: #D9D9D9;
+}
+
+#bookBtn, #viewDetailBtn{
+    background-color: #F95454;
+    color: white;
+}
