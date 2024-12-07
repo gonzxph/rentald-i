@@ -11,8 +11,18 @@
     <div class="container">
             <div class="card mx-auto mt-5" style="max-width: 390px;">
                 <h2 class="mx-auto mt-3">Create an account</h2>
-                <form action="controllers/process_signup.php" method="POST" class="m-3 ajax-form" id="signupForm">
-                
+                <form action="./backend/register_handler.php" method="POST" class="m-3">
+                     <!-- Display Error or Success Messages -->
+                    <?php if (isset($_GET['error'])): ?>
+                        <div class="alert alert-danger" role="alert">
+                            <?php echo htmlspecialchars($_GET['error']); ?>
+                        </div>
+                    <?php elseif (isset($_GET['success'])): ?>
+                        <div class="alert alert-success" role="alert">
+                            <?php echo htmlspecialchars($_GET['success']); ?>
+                        </div>
+                    <?php endif; ?>
+                    
                     <div class="form-group mb-3">
                         <label class="form-label" for="firstname">Firstname</label>
                         <input type="text" id="firstname" name="firstname" class="form-control" placeholder="John"/>

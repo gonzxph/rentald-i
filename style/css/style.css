@@ -38,22 +38,23 @@ a:hover{
 
 
 
-  /* Center the calendar container */
-.calendar-center {
+  .calendar-center {
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 500px; /* Adjust size */
+    max-width: 800px;
     margin: 0 auto;
 }
 
-/* Additional adjustments if needed */
 .vanilla-calendar {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #fff;
+    width: 100%;
+    min-width: 320px;
 }
+
 
 
 .modal.fade {
