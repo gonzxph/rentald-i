@@ -1,10 +1,10 @@
 <?php
 
-require_once 'config/db.php';
+require_once __DIR__ . '/../config/db.php';
 
 try{
     if(!isset($_GET['carid'])){
-        throw new Exception('No car ID provided');
+        header('Location: index.php');
     }
 
     $carid = (int) $_GET['carid'];

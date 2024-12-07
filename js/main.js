@@ -1,10 +1,10 @@
 function validateForm(){
-    const pax = $('#pax').val();
+    /* const pax = $('#pax').val(); */
     const dateTimeInput  = $('#dateTimeInput').val();
     const warningMessage = $('#warningMessage');
 
 
-    if(!pax || !dateTimeInput){
+    if(!dateTimeInput){
         warningMessage.show();
         return false;
     }

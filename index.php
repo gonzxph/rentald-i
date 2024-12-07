@@ -25,10 +25,10 @@
                         <h5 class="card-title mb-3">Find the right car now!</h5>
                         <div class="card-body">
                             <form method="POST" action="./search.php" class="m-3" onsubmit="return validateForm()">
-                                <div class="input-group mb-3">
+                                <!-- <div class="input-group mb-3">
                                     <span class="input-group-text bg-white"><i class="fa-solid fa-users"></i></span>
                                     <input id="pax" name="pax" type="number" class="form-control" placeholder="Number of pax" value="">
-                                </div>
+                                </div> -->
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-white"><i class="fas fa-calendar-alt text-secondary"></i></span>
                                     <input readonly name="dateTimeInput" id="dateTimeInput" type="text" data-bs-toggle="modal" data-bs-target="#dateTimeModal" class="form-control" placeholder="Choose date and time">
