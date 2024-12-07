@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Verify the password
             if (password_verify($password, $user['user_password'])) {
                 session_start();
-                $_SESSION['user_id'] = $user['id'];
-                header('Location: ../public/dashboard.php');
+                $_SESSION['user_id'] = $user['user_id'];
+                header('Location: ../dashboard.php');
                 exit();
             } else {
                 $error = "Invalid email or password.";
