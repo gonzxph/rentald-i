@@ -1,7 +1,9 @@
 <nav class="navbar navbar-expand-sm navbar-light bg-light shadow-sm">
   <div class="container-fluid">
     <a class="navbar-brand mx-auto" href="#">
-        <img src="images/logo/logo1.png" height="50" style="margin-left:25px">
+        <a class="nav-link" href="index.php">
+            <img src="images/logo/logo1.png" height="50" style="margin-left:25px">
+        </a>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <img src="images/icons/menu-alt-right.svg" alt="Menu" style="width: 24px; height: 24px;">
