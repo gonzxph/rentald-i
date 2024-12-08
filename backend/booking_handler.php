@@ -7,6 +7,19 @@ try{
         header('Location: index.php');
     }
 
+
+    $pickup_datetime = isset($_GET['pickup']) ? htmlspecialchars($_GET['pickup']) : null;
+    $dropoff_datetime = isset($_GET['dropoff']) ? htmlspecialchars($_GET['dropoff']) : null;
+
+    // Convert the raw values to a readable format
+    $pickup_datetime_formatted = $pickup_datetime 
+    ? (new DateTime($pickup_datetime))->format('F d, Y \a\t h:i A') 
+    : null;
+
+    $dropoff_datetime_formatted = $pickup_datetime 
+    ? (new DateTime($pickup_datetime))->format('F d, Y \a\t h:i A') 
+    : null;
+
     $carid = (int) $_GET['carid'];
 
     $sql = "SELECT * FROM car WHERE car_id = :carid";

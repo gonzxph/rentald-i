@@ -1,6 +1,7 @@
 <?php
 
 require_once './backend/booking_handler.php';
+require_once './backend/search_handler.php';
 
 ?>
 
@@ -141,7 +142,7 @@ require_once './backend/booking_handler.php';
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <label class="text-muted">Pick up Date & Time</label>
-                                    <div class="fw-medium">October 13, 2024 at 08:00 PM</div>
+                                    <div class="fw-medium"><?= htmlspecialchars($pickup_datetime_formatted ?? 'Not set') ?></div>
                                 </div>
                                 <div class="col-md-8">
                                     <label class="text-muted">Pick up Address</label>
@@ -153,7 +154,7 @@ require_once './backend/booking_handler.php';
                                 <div class="row">
                                 <div class="col-md-4">
                                     <label class="text-muted">Drop off Date & Time</label>
-                                    <div class="fw-medium">October 15, 2024 at 08:30 PM</div>
+                                    <div class="fw-medium"><?= htmlspecialchars($dropoff_datetime_formatted ?? 'Not set') ?></div>
                                 </div>
                                 <div class="col-md-8">
                                     <label class="text-muted">Drop off Address</label>
