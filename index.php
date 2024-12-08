@@ -1,16 +1,10 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <?php include 'includes/head.php' ?>
-
     <title>D & I Cebu Car Rental Testing pre</title>
-    
 </head>
 <body>
-
-
     <?php include 'includes/nav.php' ?>
 
     <div class="container-fluid one vh-75">
@@ -44,7 +38,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Pickup date and time modal -->
     <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
@@ -119,8 +112,6 @@
                             </select>
                         </div>
                     </div>
-
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="pconfirm">Confirm</button>
                 </div>
@@ -128,14 +119,11 @@
         </div>
     </div>
 
-
-
     <?php include 'footer/footer.php' ?>
 
 </body>
 
 <?php include 'includes/scripts.php' ?>
-
 <script src="js/calendar.js"></script>
 <script src="js/main.js"></script>
 

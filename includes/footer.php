@@ -7,9 +7,10 @@
       <a
         data-mdb-ripple-init
         class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
+        href="https://www.facebook.com/profile.php?id=100078937516633"
         role="button"
         data-mdb-ripple-color="dark"
+        target="_blank"
         ><i class="fab fa-facebook-f"></i
       ></a>
 

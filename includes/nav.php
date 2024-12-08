@@ -1,31 +1,46 @@
-<nav class="navbar navbar-expand-sm navbar-light bg-light shadow-sm">
-  <div class="container-fluid">
-    <a class="navbar-brand mx-auto" href="#">
-        <a class="nav-link" href="index.php">
-            <img src="images/logo/logo1.png" height="50" style="margin-left:25px">
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <!-- Logo -->
+        <a class="navbar-brand" href="index.php">
+            <img src="images/logo/logo1.png" alt="Stratlab Logo" height="40">
         </a>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <img src="images/icons/menu-alt-right.svg" alt="Menu" style="width: 24px; height: 24px;">
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="index.php">Home</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Vehicle</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Contact Us</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="login.php">Login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fw-bold" style="border:1px #02A9F5 solid; border-radius:7px; color: white; background-color: #02A9F5" href="register.php">Signup</a>
-            </li>
-        </ul>
+
+        <!-- Hamburger menu for mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navigation items -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Center menu items -->
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item mx-2">
+                    <a class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) === 'index.php') ? 'active-nav' : ''; ?>" href="index.php">
+                        <i class="fas fa-home me-1"></i>Home
+                    </a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="vehicles.php">
+                        <i class="fas fa-car me-1"></i>Vehicles
+                    </a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="tours.php">
+                        <i class="fas fa-map-marked-alt me-1"></i>Tours
+                    </a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="contact.php">
+                        <i class="fas fa-envelope me-1"></i>Contact Us
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Right-aligned buttons -->
+            <div class="navbar-nav">
+                <a class="btn btn-outline-primary rounded-pill px-4" href="login.php">Login</a>
+                <a class="btn btn-primary rounded-pill px-4 ms-2" href="signup.php">Sign Up</a>
+            </div>
+        </div>
     </div>
-  </div>
 </nav>
