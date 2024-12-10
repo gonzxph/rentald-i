@@ -8,16 +8,21 @@ try{
     }
 
 
+
+
     $pickup_datetime = isset($_GET['pickup']) ? htmlspecialchars($_GET['pickup']) : null;
     $dropoff_datetime = isset($_GET['dropoff']) ? htmlspecialchars($_GET['dropoff']) : null;
+
+    $bookingDurationDay = isset($_GET['day']) ? htmlspecialchars($_GET['day']) : null;
+    $bookingDurationHour = isset($_GET['hour']) ? htmlspecialchars($_GET['hour']) : null;
 
     // Convert the raw values to a readable format
     $pickup_datetime_formatted = $pickup_datetime 
     ? (new DateTime($pickup_datetime))->format('F d, Y \a\t h:i A') 
     : null;
 
-    $dropoff_datetime_formatted = $pickup_datetime 
-    ? (new DateTime($pickup_datetime))->format('F d, Y \a\t h:i A') 
+    $dropoff_datetime_formatted = $dropoff_datetime 
+    ? (new DateTime($dropoff_datetime))->format('F d, Y \a\t h:i A') 
     : null;
 
     $carid = (int) $_GET['carid'];
@@ -28,6 +33,26 @@ try{
     $stmt->execute();
 
     $car = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    //Car rate calculation
+    $carRentalRate = isset($car['car_rental_rate']) ? floatval($car['car_rental_rate']) : 0;
+    $carExcessPerHour = isset($car['car_excess_per_hour']) ? floatval($car['car_excess_per_hour']) : 0;
+    $bookingDurationDay = isset($bookingDurationDay) ? intval($bookingDurationDay) : 0;
+    $bookingDurationHour = isset($bookingDurationHour) ? intval($bookingDurationHour) : 0;
+
+    if ($bookingDurationHour > 6) {
+        // Increment the booking days by 1 for hours above 6
+        $bookingDurationDay += 1;
+        $bookingDurationHour = 0; // Reset excess hours
+    }
+
+    $carRentalRate = $carRentalRate * $bookingDurationDay;
+    $carExcessPay = $carExcessPerHour * $bookingDurationHour;
+    $totalRate = $carRentalRate + $carExcessPay;
+
+    
+
+
     
     if(!$car){
         throw new Exception('Car not found');

@@ -8,7 +8,6 @@ function validateForm(){
         warningMessage.show();
         return false;
     }
-
     warningMessage.hide();
     return true;
 
