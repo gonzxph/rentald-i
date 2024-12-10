@@ -24,9 +24,28 @@ require_once './backend/search_handler.php';
                     </div>
                     <div class="card-body">
                         <form id="bookingForm" action="./search.php" method="POST">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text bg-white"><i class="fas fa-calendar-alt text-secondary"></i></span>
-                                <input readonly id="dateTimeInput" name="dateTimeInput" type="text" data-bs-toggle="modal" data-bs-target="#dateTimeModal" class="form-control" value="<?= htmlspecialchars($date) ?>" placeholder="Choose date and time" required>
+                            <div class="input-group mb-3 flex-column">
+                                <h6 class="mb-1">Pickup Date and Time</h6>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">
+                                            <i class="fas fa-calendar-alt text-secondary"></i>
+                                        </span>
+                                        <input readonly id="dateTimeInput" name="dateTimeInput" type="text" 
+                                            data-bs-toggle="modal" data-bs-target="#dateTimeModal" 
+                                            class="form-control" value="<?= htmlspecialchars($date) ?>" 
+                                            placeholder="Choose date and time" required>
+                                    </div>
+                            </div>
+                            <div class="input-group mb-3 flex-column">
+                                <h6 class="mb-1">Duration</h6>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">
+                                            <i class="fas fa-calendar-alt text-secondary"></i>
+                                        </span>
+                                        <input readonly id="duration" name="duration" type="text" class="form-control" value="<?= isset($durationDay) ? htmlspecialchars($durationDay) : ''; ?> Day(s) <?= isset($durationHour) ? htmlspecialchars($durationHour) : ''; ?> Hour(s)" placeholder="Duration" required>
+                                        <input id="durationDay" name="durationDay" type="hidden" value="">
+                                        <input id="durationHour" name="durationHour" type="hidden" value="">
+                                    </div>
                             </div>
                             <h5 class="card-title pb-2">Filter</h5>
                             <div class="mb-3">
@@ -75,7 +94,12 @@ require_once './backend/search_handler.php';
                             <div class="container">
                                 <div class="row">
                                     <div class="col-lg-3 col-6">
-                                        <img class="img-fluid" src="#" alt="" width="200px">
+                                    <img 
+                                        class="img-fluid" 
+                                        src="upload/car/<?= htmlspecialchars($car['img_url'] ?? 'default.png'); ?>" 
+                                        alt="Car Image" 
+                                        width="200px"
+                                    >
                                     </div>
                                     <div class="col-lg-6 col-6">
                                         <h5 class="font-weight-medium"><?= htmlspecialchars($car['car_brand']) . " " . htmlspecialchars($car['car_model']); ?></h5>
@@ -87,7 +111,7 @@ require_once './backend/search_handler.php';
                                         <div class="text-end">
                                             <p class="mb-4"><strong>₱<?= number_format($car['car_rental_rate'], 2); ?></strong></p>
                                             <button id="viewDetailBtn" class="btn mb-2 w-100">VIEW DETAILS</button>
-                                            <a href="booking.php?carid=<?= htmlspecialchars($car['car_id']); ?>&pickup=<?= htmlspecialchars($start_datetime); ?>&dropoff=<?= htmlspecialchars($end_datetime); ?>"><button id="bookBtn" class="btn w-100">BOOK</button></a>
+                                            <a href="booking.php?carid=<?= htmlspecialchars($car['car_id']); ?>&pickup=<?= htmlspecialchars($start_datetime); ?>&dropoff=<?= htmlspecialchars($end_datetime); ?>&day=<?= htmlspecialchars(urlencode($durationDay)); ?>&hour=<?= htmlspecialchars(urlencode($durationHour)); ?>"><button id="bookBtn" class="btn w-100">BOOK</button></a>
                                         </div>
                                     </div>
                                 </div>
@@ -143,7 +167,12 @@ require_once './backend/search_handler.php';
                         <div class="col">
                             <label for="pickupTimeInput">Pickup Time:</label>
                             <select class="form-select" id="pickupTimeInput" name="pickupTimeInput">
-                                <option value="">Select time</option>
+                                <option value="12:00 am">12:00 am</option>
+                                <option value="01:00 am">01:00 am</option>
+                                <option value="02:00 am">02:00 am</option>
+                                <option value="03:00 am">03:00 am</option>
+                                <option value="04:00 am">04:00 am</option>
+                                <option value="05:00 am">05:00 am</option>
                                 <option value="06:00 am">06:00 am</option>
                                 <option value="07:00 am">07:00 am</option>
                                 <option value="08:00 am">08:00 am</option>
@@ -167,7 +196,12 @@ require_once './backend/search_handler.php';
                         <div class="col">
                             <label for="dropOffTimeInput">Dropoff Time:</label>
                             <select class="form-select mb-3" id="dropOffTimeInput" name="dropOffTimeInput">
-                                <option value="">Select time</option>
+                                <option value="12:00 am">12:00 am</option>
+                                <option value="01:00 am">01:00 am</option>
+                                <option value="02:00 am">02:00 am</option>
+                                <option value="03:00 am">03:00 am</option>
+                                <option value="04:00 am">04:00 am</option>
+                                <option value="05:00 am">05:00 am</option>
                                 <option value="06:00 am">06:00 am</option>
                                 <option value="07:00 am">07:00 am</option>
                                 <option value="08:00 am">08:00 am</option>

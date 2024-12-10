@@ -14,6 +14,9 @@ $per_page = 3; // Number of cars per page
 $date = $_POST['dateTimeInput'] ?? $_GET['dateTimeInput'] ?? '';
 $vehicle_types = $_POST['vehicle'] ?? $_GET['vehicle'] ?? [];
 $transmission_types = $_POST['transmission'] ?? $_GET['transmission'] ?? [];
+$durationDay = $_POST['durationDay'] ?? $_GET['durationDay'] ?? '';
+$durationHour = $_POST['durationHour'] ?? $_GET['durationHour'] ?? '';
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['page'])) {
     try {
@@ -83,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['page'])) {
 
         // SQL Query to find available cars with pagination
         $sql = "SELECT * FROM car $where_clause LIMIT :offset, :per_page";
+        
 
         $stmt = $db->prepare($sql);
         foreach ($params as $key => $value) {

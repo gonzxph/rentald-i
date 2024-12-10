@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // If validation errors exist, redirect back with errors
     if (!empty($errors)) {
-        header("Location: ../register.php?error=" . urlencode(implode(', ', $errors)));
+        header("Location: ../signup.php?error=" . urlencode(implode(', ', $errors)));
         exit();
     }
 
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            header("Location: ../register.php?error=" . urlencode("Email is already registered."));
+            header("Location: ../signup.php?error=" . urlencode("Email is already registered."));
             exit();
         }
 
@@ -69,10 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
 
     } catch (PDOException $e) {
-        header("Location: ../register.php?error=" . urlencode("An error occurred: " . $e->getMessage()));
+        header("Location: ../signup.php?error=" . urlencode("An error occurred: " . $e->getMessage()));
         exit();
     }
 } else {
-    header("Location: ../register.php?error=" . urlencode("Invalid request method."));
+    header("Location: ../signup.php?error=" . urlencode("Invalid request method."));
     exit();
 }
