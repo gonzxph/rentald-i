@@ -22,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 session_start();
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['logged_in'] = true;
-                $_SESSION['username'] = $user['user_fname'];
+                $_SESSION['fname'] = $user['user_fname'];
+                $_SESSION['lname'] = $user['user_lname'];
+                $_SESSION['success_message'] = "Welcome back, " . $user['user_fname'] . "!";
                 header('Location: ../dashboard.php');
                 exit();
             } else {
@@ -39,5 +41,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Redirect back to the login page with the error message
-header("Location: ../login.php?error=" . urlencode($error));
+header("Location: ../signin.php?error=" . urlencode($error));
 exit();

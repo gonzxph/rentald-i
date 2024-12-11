@@ -66,7 +66,7 @@
                             </button>
                         </form>
                         <p class="text-center mt-4 mb-0">
-                            Already have an account? <a href="login.php" class="text-decoration-none">Log in</a>
+                            Already have an account? <a href="signin.php" class="text-decoration-none">Log in</a>
                         </p>
                     </div>
                 </div>
@@ -151,7 +151,7 @@
                         </div>`;
                     // Redirect to login page after successful registration
                     setTimeout(() => {
-                        window.location.href = 'login.php';
+                        window.location.href = 'signin.php';
                     }, 2000);
                 }
             })
