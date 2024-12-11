@@ -38,7 +38,7 @@
 
             <!-- Right-aligned buttons -->
             <div class="navbar-nav">
-                <a class="btn btn-outline-primary rounded-pill px-4" href="login.php">Login</a>
+                <a class="btn btn-outline-primary rounded-pill px-4" href="login.php">Sign In</a>
                 <a class="btn btn-primary rounded-pill px-4 ms-2" href="signup.php">Sign Up</a>
             </div>
         </div>

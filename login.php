@@ -8,7 +8,7 @@
     <?php include 'includes/nav.php' ?>
 
     <div class="container">
-        <div class="row min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="row py-5 d-flex align-items-center justify-content-center">
             <div class="col-md-5">
                 <div class="card border-0 shadow-lg login-card">
                     <div class="card-body p-4">
@@ -19,23 +19,21 @@
                         
                         <form action="./backend/login_handler.php" method="POST">
                             <?php if (isset($_GET['error'])): ?>
-                                <div class="alert alert-danger" role="alert">
+                                <div class="alert alert-danger text-center" role="alert">
                                     <?php echo htmlspecialchars($_GET['error']); ?>
                                 </div>
                             <?php elseif (isset($_GET['success'])): ?>
-                                <div class="alert alert-success" role="alert">
+                                <div class="alert alert-success text-center" role="alert">
                                     <?php echo htmlspecialchars($_GET['success']); ?>
                                 </div>
                             <?php endif; ?>
                             
                             <div class="mb-3">
-                                <label class="form-label" for="email">Email</label>
-                                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="johndoe@gmail.com"/>
+                                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email"/>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="password">Password</label>
                                 <div class="input-group">
-                                    <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="••••••••" />
+                                    <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Password" />
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="far fa-eye"></i>
                                     </button>
@@ -46,12 +44,17 @@
                                     <input class="form-check-input" type="checkbox" id="remember" name="remember">
                                     <label class="form-check-label" for="remember">Remember for 30 days</label>
                                 </div>
-                                <a href="#" class="text-decoration-none">Forgot password?</a>
+                                <a href="#" class="text-decoration-none">I forgot my password</a>
                             </div>
-                            <button type="submit" class="btn btn-dark w-100 mb-3">Log In</button>
+                            <button type="submit" class="btn btn-dark w-100 mb-3">Sign In</button>
+                            <div class="d-flex align-items-center mb-3">
+                                <hr class="flex-grow-1 m-0">
+                                <span class="mx-3 text-muted">OR</span>
+                                <hr class="flex-grow-1 m-0">
+                            </div>
                             <button type="button" class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center gap-2">
                                 <img src="images/icons/google.svg" alt="Google" width="20">
-                                Log in with Google
+                                Sign in with Google
                             </button>
                         </form>
                         <p class="text-center mt-4 mb-0">

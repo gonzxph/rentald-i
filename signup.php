@@ -9,7 +9,7 @@
     <?php include 'includes/nav.php' ?>
     
     <div class="container">
-        <div class="row min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="row py-5 d-flex align-items-center justify-content-center">
             <div class="col-md-5">
                 <div class="card border-0 shadow-lg signup-card">
                     <div class="card-body p-4">
@@ -18,45 +18,29 @@
                             <p class="text-muted">Please enter your details</p>
                         </div>
                         
-                        <form action="./backend/register_handler.php" method="POST">
-                            <!-- Error/Success messages -->
-                            <?php if (isset($_GET['error'])): ?>
-                                <div class="alert alert-danger" role="alert">
-                                    <?php echo htmlspecialchars($_GET['error']); ?>
-                                </div>
-                            <?php elseif (isset($_GET['success'])): ?>
-                                <div class="alert alert-success" role="alert">
-                                    <?php echo htmlspecialchars($_GET['success']); ?>
-                                </div>
-                            <?php endif; ?>
+                        <form id="signupForm" action="./backend/register_handler.php" method="POST">
+                            <div id="alertMessages"></div>
                             
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <label class="form-label" for="firstname">First name</label>
-                                    <input type="text" id="firstname" name="firstname" class="form-control form-control-lg" placeholder="John">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label" for="lastname">Last name</label>
-                                    <input type="text" id="lastname" name="lastname" class="form-control form-control-lg" placeholder="Doe">
-                                </div>
+                            <div class="mb-3">
+                                <input type="text" id="firstname" name="firstname" class="form-control form-control-lg" placeholder="First name *">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="email">Email</label>
-                                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="johndoe@gmail.com">
+                                <input type="text" id="lastname" name="lastname" class="form-control form-control-lg" placeholder="Last name *">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="password">Password</label>
+                                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email *">
+                            </div>
+                            <div class="mb-3">
                                 <div class="input-group">
-                                    <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="••••••••">
+                                    <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Password *">
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="far fa-eye"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="mb-4">
-                                <label class="form-label" for="confirm_pass">Confirm Password</label>
-                                <div class="input-group">
-                                    <input type="password" id="confirm_pass" name="confirm_pass" class="form-control form-control-lg" placeholder="••••••••">
+                                    <div class="input-group">
+                                    <input type="password" id="confirm_pass" name="confirm_pass" class="form-control form-control-lg" placeholder="Confirm Password *">
                                     <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
                                         <i class="far fa-eye"></i>
                                     </button>
@@ -70,7 +54,12 @@
                                 </label>
                             </div>
                             
-                            <button type="submit" class="btn btn-dark w-100 mb-3">Create account</button>
+                            <button type="submit" class="btn btn-dark w-100 mb-3">Sign Up</button>
+                            <div class="d-flex align-items-center mb-3">
+                                <hr class="flex-grow-1 m-0">
+                                <span class="mx-3 text-muted">OR</span>
+                                <hr class="flex-grow-1 m-0">
+                            </div>
                             <button type="button" class="btn btn-outline-dark w-100 d-flex align-items-center justify-content-center gap-2">
                                 <img src="images/icons/google.svg" alt="Google" width="20">
                                 Sign up with Google
@@ -136,6 +125,43 @@
                 icon.classList.add('fa-eye');
             }
         }
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch('./backend/register_handler.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const alertDiv = document.getElementById('alertMessages');
+                
+                if (data.status === 'error') {
+                    alertDiv.innerHTML = `
+                        <div class="alert alert-danger text-center" role="alert">
+                            ${data.message}
+                        </div>`;
+                } else if (data.status === 'success') {
+                    alertDiv.innerHTML = `
+                        <div class="alert alert-success text-center" role="alert">
+                            ${data.message}
+                        </div>`;
+                    // Redirect to login page after successful registration
+                    setTimeout(() => {
+                        window.location.href = 'login.php';
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                document.getElementById('alertMessages').innerHTML = `
+                    <div class="alert alert-danger text-center" role="alert">
+                        An error occurred. Please try again later.
+                    </div>`;
+            });
+        });
     </script>
 </body>
 <?php include 'includes/scripts.php' ?>

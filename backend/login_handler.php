@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (password_verify($password, $user['user_password'])) {
                 session_start();
                 $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['logged_in'] = true;
+                $_SESSION['username'] = $user['user_fname'];
                 header('Location: ../dashboard.php');
                 exit();
             } else {
