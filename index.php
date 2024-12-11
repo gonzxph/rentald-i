@@ -27,6 +27,8 @@
                                     <span class="input-group-text bg-white"><i class="fas fa-calendar-alt text-secondary"></i></span>
                                     <input readonly name="dateTimeInput" id="dateTimeInput" type="text" data-bs-toggle="modal" data-bs-target="#dateTimeModal" class="form-control" placeholder="Choose date and time">
                                 </div>
+                                <input id="durationDay" name="durationDay" type="hidden" value="">
+                                <input id="durationHour" name="durationHour" type="hidden" value="">
                                 <div id="warningMessage" class="text-danger m-3" style="display: none;">
                                     Please fill out all fields before submitting!
                                 </div>
@@ -61,12 +63,19 @@
                     <div id="CalEmptyErr" class="text-danger mt-2" style="display: none">
                         <p>Please select the pickup and drop-off dates from the calendar.</p>
                     </div>
+                    
                      <!-- Time Picker Dropdowns -->
                      <div class="row mt-4">
                         <div class="col">
                             <label for="pickupTimeInput">Pickup Time:</label>
                             <select class="form-select" id="pickupTimeInput" name="pickupTimeInput">
                                 <option value="">Select time</option>
+                                <option value="12:00 am">12:00 am</option>
+                                <option value="01:00 am">01:00 am</option>
+                                <option value="02:00 am">02:00 am</option>
+                                <option value="03:00 am">03:00 am</option>
+                                <option value="04:00 am">04:00 am</option>
+                                <option value="05:00 am">05:00 am</option>
                                 <option value="06:00 am">06:00 am</option>
                                 <option value="07:00 am">07:00 am</option>
                                 <option value="08:00 am">08:00 am</option>
@@ -91,6 +100,12 @@
                             <label for="dropOffTimeInput">Dropoff Time:</label>
                             <select class="form-select mb-3" id="dropOffTimeInput" name="dropOffTimeInput">
                                 <option value="">Select time</option>
+                                <option value="12:00 am">12:00 am</option>
+                                <option value="01:00 am">01:00 am</option>
+                                <option value="02:00 am">02:00 am</option>
+                                <option value="03:00 am">03:00 am</option>
+                                <option value="04:00 am">04:00 am</option>
+                                <option value="05:00 am">05:00 am</option>
                                 <option value="06:00 am">06:00 am</option>
                                 <option value="07:00 am">07:00 am</option>
                                 <option value="08:00 am">08:00 am</option>
@@ -112,14 +127,15 @@
                             </select>
                         </div>
                     </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="pconfirm">Confirm</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="pconfirm">Confirm</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <?php include 'footer/footer.php' ?>
+    <?php include 'includes/footer.php' ?>
 
 </body>
 

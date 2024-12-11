@@ -42,36 +42,38 @@ document.addEventListener("DOMContentLoaded", function () {
         if (calendar && calendar.selectedDates.length >= 2) {
             const pickupDate = calendar.selectedDates[0];
             const dropOffDate = calendar.selectedDates[calendar.selectedDates.length - 1];
-        
+
             const pickupTime = document.getElementById('pickupTimeInput').value;
             const dropOffTime = document.getElementById('dropOffTimeInput').value;
-        
-            if (pickupDate && dropOffDate && pickupTime && dropOffTime) {
-                const pickupDateTime = `${new Date(pickupDate).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}, ${pickupTime}`;
-                const dropOffDateTime = `${new Date(dropOffDate).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}, ${dropOffTime}`;
-        
-                const dateTimeDisplay = `${pickupDateTime} - ${dropOffDateTime}`;
-                
-                // Set the formatted date and time in the "Choose date and time" input
-                const dateTimeInput = document.querySelector('input[placeholder="Choose date and time"]');
-                if (dateTimeInput) {
-                    dateTimeInput.value = dateTimeDisplay;
+
+            if (pickupTime && dropOffTime) {
+                // Combine date and time to create Date objects
+                const pickupDateTime = new Date(`${pickupDate} ${pickupTime}`);
+                const dropOffDateTime = new Date(`${dropOffDate} ${dropOffTime}`);
+
+                // Calculate the difference in milliseconds
+                const diffInMillis = dropOffDateTime - pickupDateTime;
+
+                if (diffInMillis > 0) {
+                    // Format the dates
+                    const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+                    const pickupFormatted = pickupDateTime.toLocaleString('en-US', options);
+                    const dropOffFormatted = dropOffDateTime.toLocaleString('en-US', options);
+
+                    // Calculate the days and hours difference
+                    const diffInHours = diffInMillis / (1000 * 60 * 60);
+                    const days = Math.floor(diffInHours / 24);
+                    const hours = Math.floor(diffInHours % 24);
+
+                    // Display the result
+                    document.getElementById('dateTimeInput').value = `${pickupFormatted} - ${dropOffFormatted}`;
+                    document.getElementById('durationDay').value = days;
+                    document.getElementById('durationHour').value = hours;
+
+                    // Optionally close the modal
+                    $('#dateTimeModal').modal('hide');
                 }
-        
-                // Close the modal
-                const dateTimeModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('dateTimeModal'));
-                dateTimeModal.hide();
-            } else {
-                document.getElementById('timeOneFilledErr').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('timeOneFilledErr').style.display = 'none';
-                }, 5000);
             }
-        } else {
-            document.getElementById('CalEmptyErr').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('CalEmptyErr').style.display = 'none';
-            }, 5000);
         }
     });
 });

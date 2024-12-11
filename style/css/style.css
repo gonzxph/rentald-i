@@ -28,22 +28,120 @@ a:hover{
     font-size: 20px;         /* Adjust icon size */
 }
 
-
-.calendar-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 800px;
-    margin: 0 auto;
+/* Vanilla calendar style*/
+/* Base styles */
+.vanilla-calendar {
+    max-width: 100% !important;
+    padding: 10px !important;
 }
 
-.vanilla-calendar {
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
+.vanilla-calendar-grid {
+    grid-template-columns: repeat(7, 1fr) !important;
+    gap: 4px !important;
+}
+
+.vanilla-calendar-day {
+    padding: 5px !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    font-size: 0.9rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.vanilla-calendar-header {
+    padding: 5px 0 10px 0 !important;
+}
+
+.vanilla-calendar-month {
+    font-size: 1.1rem !important;
+}
+
+.vanilla-calendar-arrow {
+    width: 30px !important;
+    height: 30px !important;
+}
+
+.vanilla-calendar-week-numbers {
+    font-size: 0.8rem !important;
+    padding: 5px 0 !important;
+}
+
+.calendar-center {
+    margin: 0 auto;
     width: 100%;
-    min-width: 320px;
+}
+
+.vanilla-calendar-day__selected {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+.vanilla-calendar-day__range {
+    background-color: #e7f1ff !important;
+}
+
+/* Responsive adjustments */
+@media (min-width: 576px) {
+    .vanilla-calendar {
+        padding: 15px !important;
+    }
+
+    .vanilla-calendar-grid {
+        gap: 6px !important;
+    }
+
+    .vanilla-calendar-day {
+        padding: 8px !important;
+        font-size: 1rem !important;
+    }
+
+    .vanilla-calendar-header {
+        padding: 8px 0 15px 0 !important;
+    }
+
+    .vanilla-calendar-month {
+        font-size: 1.2rem !important;
+    }
+
+    .vanilla-calendar-week-numbers {
+        font-size: 0.9rem !important;
+        padding: 8px 0 !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .vanilla-calendar {
+        padding: 20px !important;
+    }
+
+    .vanilla-calendar-grid {
+        gap: 8px !important;
+    }
+
+    .vanilla-calendar-day {
+        padding: 10px !important;
+        font-size: 1.1rem !important;
+    }
+
+    .vanilla-calendar-header {
+        padding: 10px 0 20px 0 !important;
+    }
+
+    .vanilla-calendar-month {
+        font-size: 1.25rem !important;
+    }
+
+    .vanilla-calendar-arrow {
+        width: 35px !important;
+        height: 35px !important;
+    }
+
+    .vanilla-calendar-week-numbers {
+        font-size: 1rem !important;
+        padding: 10px 0 !important;
+    }
 }
 
 .modal.fade {
