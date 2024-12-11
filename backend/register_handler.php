@@ -176,6 +176,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
     exit();
 }
-
-// Ensure script execution ends here
-exit();
