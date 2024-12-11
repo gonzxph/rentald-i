@@ -43,8 +43,8 @@ require_once './backend/search_handler.php';
                                             <i class="fas fa-calendar-alt text-secondary"></i>
                                         </span>
                                         <input readonly id="duration" name="duration" type="text" class="form-control" value="<?= isset($durationDay) ? htmlspecialchars($durationDay) : ''; ?> Day(s) <?= isset($durationHour) ? htmlspecialchars($durationHour) : ''; ?> Hour(s)" placeholder="Duration" required>
-                                        <input id="durationDay" name="durationDay" type="hidden" value="">
-                                        <input id="durationHour" name="durationHour" type="hidden" value="">
+                                        <input id="durationDay" name="durationDay" type="hidden" value="<?= isset($durationDay) ? htmlspecialchars($durationDay) : ''; ?>">
+                                        <input id="durationHour" name="durationHour" type="hidden" value="<?= isset($durationHour) ? htmlspecialchars($durationHour) : ''; ?>">
                                     </div>
                             </div>
                             <h5 class="card-title pb-2">Filter</h5>
@@ -167,6 +167,7 @@ require_once './backend/search_handler.php';
                         <div class="col">
                             <label for="pickupTimeInput">Pickup Time:</label>
                             <select class="form-select" id="pickupTimeInput" name="pickupTimeInput">
+                                <option value="">Select time</option>
                                 <option value="12:00 am">12:00 am</option>
                                 <option value="01:00 am">01:00 am</option>
                                 <option value="02:00 am">02:00 am</option>
@@ -196,6 +197,7 @@ require_once './backend/search_handler.php';
                         <div class="col">
                             <label for="dropOffTimeInput">Dropoff Time:</label>
                             <select class="form-select mb-3" id="dropOffTimeInput" name="dropOffTimeInput">
+                                <option value="">Select time</option>
                                 <option value="12:00 am">12:00 am</option>
                                 <option value="01:00 am">01:00 am</option>
                                 <option value="02:00 am">02:00 am</option>

@@ -286,6 +286,7 @@ require_once './backend/search_handler.php';
                                     </div>
                                     <div class="col-md-8">
                                         <div class="text-muted"><?= htmlspecialchars($pickup_datetime_formatted ?? 'Not set') ?></div>
+                                        <input type="hidden" id="pickupTimeHiddenInput" name="pickupTimeHiddenInput" value="<?= htmlspecialchars($pickup_time) ?>">
                                     </div>
                                 </div>
 
@@ -296,6 +297,7 @@ require_once './backend/search_handler.php';
                                     </div>
                                     <div class="col-md-8">
                                         <div class="text-muted"><?= htmlspecialchars($dropoff_datetime_formatted ?? 'Not set') ?></div>
+                                        <input type="hidden" id="dropoffTimeHiddenInput" name="dropoffTimeHiddenInput" value="<?= htmlspecialchars($dropoff_time) ?>">
                                     </div>
                                 </div>
                                 
@@ -374,7 +376,7 @@ require_once './backend/search_handler.php';
 
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    <button id="submitButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                         Book Now
                     </button>
                 </form>
@@ -405,10 +407,12 @@ require_once './backend/search_handler.php';
                             <i class="fa-solid fa-map me-2"></i>
                             <span>Set location in map</span>
                         </button>
-                        <button class="btn d-flex align-items-center" onclick="pickupGarage()">
-                            <i class="fa-solid fa-warehouse me-2"></i>
-                            <span>Pickup in garage</span>
-                        </button>
+                        <div id="pickupGarage">
+                            <button  class="btn d-flex align-items-center" onclick="pickupGarage()">
+                                <i class="fa-solid fa-warehouse me-2"></i>
+                                <span>Pickup in garage</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Display the location coordinates here -->
@@ -445,6 +449,7 @@ require_once './backend/search_handler.php';
     </div>
 
     <!-- Booking Now Modal -->
+
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
@@ -477,24 +482,53 @@ require_once './backend/search_handler.php';
                             <span class="value"><?= isset($bookingDurationDay) ? htmlspecialchars($bookingDurationDay) : 'sssss'; ?> Day(s) <?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
                         </div>
                         <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Vehicle Rate</span>
-                            <span class="value"><?= htmlspecialchars('PHP ' . number_format($totalRate, 2));?></span>
+                            <span class="label">Excess Hour</span>
+                            <span class="value text-danger"><?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
+                            <input type="hidden" id="excessHour" name="excessHour" value="<?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?>">
                         </div>
                         <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">VAT and other charges</span>
-                            <span class="value text-success">+ PHP 531.66</span>
+                            <span class="label">
+                                Excess Fee
+                                <i 
+                                class="fas fa-info-circle text-muted" 
+                                data-bs-toggle="tooltip" 
+                                data-bs-placement="top" 
+                                title="6 hours limit for excess per hour, beyond that considered as 1 day rate."
+                                style="cursor: pointer;">
+                                </i>
+                            </span>
+                            <span class="value text-danger">PHP <?= htmlspecialchars($carExcessPay) ?></span>
+                            <input type="hidden" id="excessPay" name="excessPay" value="<?= htmlspecialchars($carExcessPay) ?>">
+                        </div>
+                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                            <span class="label">Vehicle Rate</span>
+                            <span class="value"><?= htmlspecialchars('PHP ' . number_format($totalRate, 2));?></span>
+                            <input type="hidden" id="vehicleRate" name="vehicleRate" value="<?= htmlspecialchars($totalRate) ?>">
+                        </div>
+                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                            <span class="label">Delivery Fee</span>
+                            <span id="DeliverySpan" class="value text-success"></span>
+                            <input type="hidden" id="DeliveryFeeInput" name="DeliveryFeeInput" value="">
+                        </div>
+                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                            <span class="label">Return Fee</span>
+                            <span id="pickupSpan" class="value"></span>
+                            <input type="hidden" id="PickupFeeInput" name="PickupFeeInput" value="">
                         </div>
                         <div class="detail-row d-flex justify-content-between border-bottom py-2">
                             <span class="label">Total Rental Fee</span>
-                            <span class="value">PHP 2,530.66</span>
+                            <span id="totalRentFeeSpan" class="value text-success"></span>
+                            <input type="hidden" id="totalRentFeeInput" name="totalRentFeeInput" value="">
                         </div>
                     </div>
 
                     <div class="reservation-fee text-center mt-4">
-                        <h3 class="text-success fs-4 mb-0">PHP 1,130.66</h3>
+                        <h3 class="text-success fs-4 mb-0">PHP 500</h3>
                         <p class="text-muted mb-1">Reservation Fee to Pay</p>
                         <p class="text-muted small mb-3">VAT Inclusive</p>
                         <h4 class="fs-3 fw-bold mb-0">PHP 1,400.00</h4>
+                        <p class="text-muted small mb-3">Remaining Balance Upon Pick Up</p>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -504,137 +538,13 @@ require_once './backend/search_handler.php';
             </div>
         </div>
     </div>
+    </form>
 
 
 </body>
 <?php include 'includes/scripts.php' ?>
 <script src="js/address.js"></script>
+<script src="js/main.js"></script>
 <script src="js/uploader.js"></script>
 
-<script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const mainImage = document.getElementById('mainImage');
-            const thumbnailWrapper = document.querySelector('.thumbnail-wrapper');
-            const thumbnails = document.querySelectorAll('.thumbnail-item');
-            const prevButton = document.querySelector('.nav-arrow.prev');
-            const nextButton = document.querySelector('.nav-arrow.next');
-
-            //Column 2
-            const selfDrive = document.getElementById('selfDrive');
-            const withDriver = document.getElementById('withDriver');
-            const driverInfo = document.getElementById('driverInfo');
-            
-            let currentIndex = 0;
-            const maxIndex = Math.max(0, thumbnails.length - 5);
-
-            function updateArrows() {
-                prevButton.style.display = currentIndex > 0 ? 'flex' : 'none';
-                nextButton.style.display = currentIndex < maxIndex ? 'flex' : 'none';
-            }
-
-            function scrollThumbnails(direction) {
-                currentIndex = Math.max(0, Math.min(currentIndex + direction, maxIndex));
-                thumbnailWrapper.style.transform = `translateX(-${currentIndex * 20}%)`;
-                updateArrows();
-            }
-
-            prevButton.addEventListener('click', () => scrollThumbnails(-1));
-            nextButton.addEventListener('click', () => scrollThumbnails(1));
-
-            thumbnails.forEach(thumb => {
-                thumb.addEventListener('click', function() {
-                    thumbnails.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    mainImage.src = this.getAttribute('data-image');
-                });
-            });
-
-            //Column 2 function
-            function toggleDriverInfo() {
-                if (withDriver.checked) {
-                driverInfo.classList.remove('d-none');
-                } else {
-                driverInfo.classList.add('d-none');
-                }
-            }
-
-            
-
-            // Add event listeners to radio buttons
-            selfDrive.addEventListener('change', toggleDriverInfo);
-            withDriver.addEventListener('change', toggleDriverInfo);
-
-            updateArrows();
-
-
-
-
-            const toggle = document.getElementById("sameLocationToggle");
-            const pickupInput = document.getElementById("pickupInput");
-            const dropoffGroup = document.getElementById("dropoffGroup");
-            const dropoffInput = document.getElementById("dropoffInput");
-
-            // Function to initialize the state of the drop-off field
-            function initializeDropoff() {
-                if (!toggle.checked) {
-                    dropoffGroup.style.display = "none"; // Hide drop-off input
-                    dropoffInput.value = pickupInput.value; // Sync pickup and drop-off values
-                } else {
-                    dropoffGroup.style.display = "flex"; // Show drop-off input
-                }
-            }
-
-            // Real-time synchronization of pickup and drop-off values
-            function syncDropoffValue() {
-                if (!toggle.checked) {
-                    dropoffInput.value = pickupInput.value; // Sync values dynamically
-                }
-            }
-
-            // Initialize drop-off input on page load
-            initializeDropoff();
-
-            // Listen for changes in the toggle switch
-            toggle.addEventListener("change", () => {
-                initializeDropoff();
-            });
-
-            // Update drop-off value dynamically if pickup changes while toggle is OFF
-            pickupInput.addEventListener("input", syncDropoffValue);
-
-            submitButton.onclick = () => {
-                
-                // Alert the values for testing
-                alert(`Pickup Location: ${pickupInput.value}\nDrop-off Location: ${dropoffInput.value}`);
-            };
-            
-
-
-
-        });
-
-        function processPayment() {
-                const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
-                
-                if (!selectedMethod) {
-                    alert('Please select a payment method');
-                    return;
-                }
-
-                // Redirect based on payment method
-                switch(selectedMethod.value) {
-                    case 'gcash':
-                    window.location.href = '/gcash-payment';
-                    break;
-                    case 'card':
-                    window.location.href = '/card-payment';
-                    break;
-                    case 'paymaya':
-                    window.location.href = '/paymaya-payment';
-                    break;
-                }
-        }
-
-        
-    </script>
 </html>
