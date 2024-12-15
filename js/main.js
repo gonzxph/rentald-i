@@ -52,6 +52,16 @@ document.addEventListener("DOMContentLoaded", function(){
                 }
             }
 
+            function updatePaymentOptionValue() {
+                if (reservationRadio.checked) {
+                    paymentOptionInput.value = 'reservation';
+                } else if (fullPaymentRadio.checked) {
+                    paymentOptionInput.value = 'fullPayment';
+                }
+            }
+
+            
+           
             
 
             // Add event listeners to radio buttons
@@ -60,6 +70,11 @@ document.addEventListener("DOMContentLoaded", function(){
 
             updateArrows();
 
+            
+
+            const reservationRadio = document.getElementById('reservation');
+            const fullPaymentRadio = document.getElementById('fullPayment');
+            const paymentOptionInput = document.getElementById('paymentOption');
 
             const toggle = document.getElementById("sameLocationToggle");
             const pickupInput = document.getElementById("pickupInput");
@@ -121,12 +136,28 @@ document.addEventListener("DOMContentLoaded", function(){
 
             submitButton.onclick = () => {
 
+                
+
                 if (!toggle.checked) {
                     dropoffInput.value = pickupInput.value; // Sync values
                 }
+
+                reservationRadio.addEventListener('change', updatePaymentOptionValue);
+                fullPaymentRadio.addEventListener('change', updatePaymentOptionValue);
+
+                // Set initial value
+                updatePaymentOptionValue();
+                
                 
                 const pickupInput1 = pickupInput.value;
                 const dropoffInput1 = dropoffInput.value;
+
+                $('#pickupAddress').val(pickupInput1);
+                $('#pickupAddressText').text(pickupInput1);
+                $('#returnAddress').val(dropoffInput1);
+                $('#returnAddressText').text(dropoffInput1);
+
+
 
                 if (pickupInput1 === "Guada Plains Guadalupe 6000 Cebu City, Philippines") {
                     // If it's the garage, set the delivery fee to 0
@@ -213,26 +244,4 @@ function validateForm(){
     return true;
 
 
-}
-
-function processPayment() {
-    const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
-    
-    if (!selectedMethod) {
-        alert('Please select a payment method');
-        return;
-    }
-
-    // Redirect based on payment method
-    switch(selectedMethod.value) {
-        case 'gcash':
-        window.location.href = '/gcash-payment';
-        break;
-        case 'card':
-        window.location.href = '/card-payment';
-        break;
-        case 'paymaya':
-        window.location.href = '/paymaya-payment';
-        break;
-    }
 }

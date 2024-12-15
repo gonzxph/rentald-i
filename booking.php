@@ -457,104 +457,119 @@ require_once './backend/search_handler.php';
 
     <!-- Booking Now Modal -->
 
-    <form action="" method="POST">
+    <form action="./backend/booking_cal_handler.php" method="POST">
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Booking Details</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Booking Details</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-muted mb-4">Please double check your trip details below and click Book Now to proceed.</p>
+                        
+                        <div class="booking-details">
+                            <input type="hidden" id="paymentOption" name="paymentOption" value="">
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Vehicle</span>
+                                <span class="value"><?= htmlspecialchars($car['car_brand'] . ' ' . $car['car_model']);?></span>
+                                <input type="hidden" id="carId" name="carId" value="<?= htmlspecialchars($car['car_id']);?>">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Type</span>
+                                <span class="value"><?= htmlspecialchars($car['car_type']);?></span>
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Pickup Address</span>
+                                <span class="value" id="pickupAddressText"></span>
+                                <input type="hidden" id="pickupAddress" name="pickupAddress" value="">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Pickup Date</span>
+                                <span class="value"><?= htmlspecialchars($pickup_datetime_formatted ?? 'Not set') ?></span>
+                                <input type="hidden" name="pickupDate" value="<?= htmlspecialchars($pickup_datetime_formatted ?? '') ?>">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Return Address</span>
+                                <span class="value" id="returnAddressText"></span>
+                                <input type="hidden" id="returnAddress" name="returnAddress" value="">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Return Date</span>
+                                <span class="value"><?= htmlspecialchars($dropoff_datetime_formatted ?? 'Not set') ?></span>
+                                <input type="hidden" name="returnDate" value="<?= htmlspecialchars($dropoff_datetime_formatted ?? '') ?>">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Duration</span>
+                                <span class="value"><?= isset($bookingDurationDay) ? htmlspecialchars($bookingDurationDay) : ''; ?> Day(s) <?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Excess Hour</span>
+                                <span class="value text-danger"><?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
+                                <input type="hidden" id="excessHour" name="excessHour" value="<?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?>">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">
+                                    Excess Fee
+                                    <i 
+                                    class="fas fa-info-circle text-muted" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="6 hours limit for excess per hour, beyond that considered as 1 day rate."
+                                    style="cursor: pointer;">
+                                    </i>
+                                </span>
+                                <span class="value text-danger">PHP <?= htmlspecialchars($carExcessPay) ?></span>
+                                <input type="hidden" id="excessPay" name="excessPay" value="<?= htmlspecialchars($carExcessPay) ?>">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Vehicle Rate</span>
+                                <span class="value"><?= htmlspecialchars('PHP ' . number_format($totalRate, 2));?></span>
+                                <input type="hidden" id="vehicleRate" name="vehicleRate" value="<?= htmlspecialchars($totalRate) ?>">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Delivery Fee</span>
+                                <span id="DeliverySpan" class="value text-success"></span>
+                                <input type="hidden" id="DeliveryFeeInput" name="DeliveryFeeInput" value="">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Return Fee</span>
+                                <span id="pickupSpan" class="value"></span>
+                                <input type="hidden" id="PickupFeeInput" name="PickupFeeInput" value="">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Total Rental Fee</span>
+                                <span id="totalRentFeeSpan" class="value text-success"></span>
+                                <input type="hidden" id="totalRentFeeInput" name="totalRentFeeInput" value="">
+                            </div>
+                        </div>
+
+                        <div class="reservation-fee text-center mt-4">
+                            <h3 class="text-success fs-4 mb-0">PHP 500</h3>
+                            <input type="hidden" id="reservationFeeInput" name="reservationFeeInput" value="500">
+                            <p class="text-muted mb-1">Reservation Fee to Pay</p>
+                            <p class="text-muted small mb-3">VAT Inclusive</p>
+                            <h4 id="remBalance" class="fs-3 fw-bold mb-0"></h4>
+                            <input type="hidden" id="remBalanceInput" name="remBalanceInput" value="">
+                            <p class="text-muted small mb-3">Remaining Balance Upon Pick Up</p>
+                        </div>
+
+                        <div class="full-payment-fee text-center mt-4">
+                            <h3 class="text-success fs-4 mb-0" id="fullPaymentAmount"></h3>
+                            <input type="hidden" name="fullPaymentAmount" id="fullPaymentAmountInput" value="">
+                            <p class="text-muted mb-1">Full Payment Amount</p>
+                            <p class="text-muted small mb-3">VAT Inclusive</p>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary w-100">Pay Now</button>
+                    </div> 
                 </div>
-                <div class="modal-body">
-                    <p class="text-muted mb-4">Please double check your trip details below and click Book Now to proceed.</p>
-                    
-                    <div class="booking-details">
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Vehicle</span>
-                            <span class="value"><?= htmlspecialchars($car['car_brand'] . ' ' . $car['car_model']);?></span>
-                        </div>
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Type</span>
-                            <span class="value"><?= htmlspecialchars($car['car_type']);?></span>
-                        </div>
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Pickup Date</span>
-                            <span class="value"><?= htmlspecialchars($pickup_datetime_formatted ?? 'Not set') ?></span>
-                        </div>
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Return Date</span>
-                            <span class="value"><?= htmlspecialchars($dropoff_datetime_formatted ?? 'Not set') ?></span>
-                        </div>
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Duration</span>
-                            <span class="value"><?= isset($bookingDurationDay) ? htmlspecialchars($bookingDurationDay) : 'sssss'; ?> Day(s) <?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
-                        </div>
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Excess Hour</span>
-                            <span class="value text-danger"><?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
-                            <input type="hidden" id="excessHour" name="excessHour" value="<?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?>">
-                        </div>
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">
-                                Excess Fee
-                                <i 
-                                class="fas fa-info-circle text-muted" 
-                                data-bs-toggle="tooltip" 
-                                data-bs-placement="top" 
-                                title="6 hours limit for excess per hour, beyond that considered as 1 day rate."
-                                style="cursor: pointer;">
-                                </i>
-                            </span>
-                            <span class="value text-danger">PHP <?= htmlspecialchars($carExcessPay) ?></span>
-                            <input type="hidden" id="excessPay" name="excessPay" value="<?= htmlspecialchars($carExcessPay) ?>">
-                        </div>
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Vehicle Rate</span>
-                            <span class="value"><?= htmlspecialchars('PHP ' . number_format($totalRate, 2));?></span>
-                            <input type="hidden" id="vehicleRate" name="vehicleRate" value="<?= htmlspecialchars($totalRate) ?>">
-                        </div>
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Delivery Fee</span>
-                            <span id="DeliverySpan" class="value text-success"></span>
-                            <input type="hidden" id="DeliveryFeeInput" name="DeliveryFeeInput" value="">
-                        </div>
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Return Fee</span>
-                            <span id="pickupSpan" class="value"></span>
-                            <input type="hidden" id="PickupFeeInput" name="PickupFeeInput" value="">
-                        </div>
-                        <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                            <span class="label">Total Rental Fee</span>
-                            <span id="totalRentFeeSpan" class="value text-success"></span>
-                            <input type="hidden" id="totalRentFeeInput" name="totalRentFeeInput" value="">
-                        </div>
-                    </div>
-
-                    <div class="reservation-fee text-center mt-4">
-                        <h3 class="text-success fs-4 mb-0">PHP 500</h3>
-                        <input type="hidden" id="reservationFeeInput" name="reservationFeeInput" value="500">
-                        <p class="text-muted mb-1">Reservation Fee to Pay</p>
-                        <p class="text-muted small mb-3">VAT Inclusive</p>
-                        <h4 id="remBalance" class="fs-3 fw-bold mb-0"></h4>
-                        <input type="hidden" id="remBalanceInput" name="remBalanceInput" value="">
-                        <p class="text-muted small mb-3">Remaining Balance Upon Pick Up</p>
-                    </div>
-
-                    <div class="full-payment-fee text-center mt-4">
-                        <h3 class="text-success fs-4 mb-0" id="fullPaymentAmount"></h3>
-                        <input type="hidden" name="fullPaymentAmount" id="fullPaymentAmountInput" value="">
-                        <p class="text-muted mb-1">Full Payment Amount</p>
-                        <p class="text-muted small mb-3">VAT Inclusive</p>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary w-100">Pay Now</button>
-                </div> 
             </div>
         </div>
-    </div>
+    </from>
 
 
 
