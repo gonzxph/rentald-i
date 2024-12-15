@@ -222,6 +222,13 @@ require_once './backend/search_handler.php';
         padding: 1.5rem;
         border-radius: 0.5rem;
     }
+
+    .full-payment-fee {
+        display: none;
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+    }
             
 
 
@@ -309,13 +316,13 @@ require_once './backend/search_handler.php';
                             <div class="mb-4">
                                 <h5 class="mb-3">Payment Options</h5>
                                 <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="paymentOption" id="reservation" checked>
+                                <input class="form-check-input" type="radio" name="paymentOption" id="reservation" value="reservation" checked>
                                 <label class="form-check-label" for="reservation">
                                     Reservation
                                 </label>
                                 </div>
                                 <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentOption" id="fullPayment">
+                                <input class="form-check-input" type="radio" name="paymentOption" id="fullPayment" value="fullPayment">
                                 <label class="form-check-label" for="fullPayment">
                                     Full payment
                                 </label>
@@ -450,7 +457,8 @@ require_once './backend/search_handler.php';
 
     <!-- Booking Now Modal -->
 
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <form action="" method="POST">
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -524,12 +532,21 @@ require_once './backend/search_handler.php';
 
                     <div class="reservation-fee text-center mt-4">
                         <h3 class="text-success fs-4 mb-0">PHP 500</h3>
+                        <input type="hidden" id="reservationFeeInput" name="reservationFeeInput" value="500">
                         <p class="text-muted mb-1">Reservation Fee to Pay</p>
                         <p class="text-muted small mb-3">VAT Inclusive</p>
-                        <h4 class="fs-3 fw-bold mb-0">PHP 1,400.00</h4>
+                        <h4 id="remBalance" class="fs-3 fw-bold mb-0"></h4>
+                        <input type="hidden" id="remBalanceInput" name="remBalanceInput" value="">
                         <p class="text-muted small mb-3">Remaining Balance Upon Pick Up</p>
-
                     </div>
+
+                    <div class="full-payment-fee text-center mt-4">
+                        <h3 class="text-success fs-4 mb-0" id="fullPaymentAmount"></h3>
+                        <input type="hidden" name="fullPaymentAmount" id="fullPaymentAmountInput" value="">
+                        <p class="text-muted mb-1">Full Payment Amount</p>
+                        <p class="text-muted small mb-3">VAT Inclusive</p>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">Close</button>
@@ -538,7 +555,7 @@ require_once './backend/search_handler.php';
             </div>
         </div>
     </div>
-    </form>
+
 
 
 </body>
@@ -546,5 +563,52 @@ require_once './backend/search_handler.php';
 <script src="js/address.js"></script>
 <script src="js/main.js"></script>
 <script src="js/uploader.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const reservationRadio = document.getElementById('reservation');
+    const fullPaymentRadio = document.getElementById('fullPayment');
+    const reservationFeeDiv = document.querySelector('.reservation-fee');
+    const fullPaymentFeeDiv = document.querySelector('.full-payment-fee');
+    const fullPaymentAmount = document.getElementById('fullPaymentAmount');
+    const fullPaymentAmountInput = document.getElementById('fullPaymentAmountInput');
+    const totalRentFeeInput = document.getElementById('totalRentFeeInput');
+
+    // Function to update payment display
+    function updatePaymentDisplay() {
+        if (reservationRadio.checked) {
+            reservationFeeDiv.style.display = 'block';
+            fullPaymentFeeDiv.style.display = 'none';
+        } else {
+            reservationFeeDiv.style.display = 'none';
+            fullPaymentFeeDiv.style.display = 'block';
+            
+            // Get total rental fee and ensure it's a valid number
+            const totalFee = parseFloat(totalRentFeeInput.value) || 0;
+            fullPaymentAmount.textContent = `PHP ${totalFee.toFixed(2)}`;
+            fullPaymentAmountInput.value = totalFee;
+        }
+    }
+
+    // Add event listeners
+    reservationRadio.addEventListener('change', updatePaymentDisplay);
+    fullPaymentRadio.addEventListener('change', updatePaymentDisplay);
+
+    // Add event listener for when totalRentFeeInput changes
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === "attributes" && mutation.attributeName === "value") {
+                updatePaymentDisplay();
+            }
+        });
+    });
+
+    observer.observe(totalRentFeeInput, {
+        attributes: true
+    });
+
+    // Initial display
+    updatePaymentDisplay();
+});
+</script>
 
 </html>

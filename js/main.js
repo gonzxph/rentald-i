@@ -190,7 +190,9 @@ document.addEventListener("DOMContentLoaded", function(){
                 totalRentFeeSpan.text("PHP " + totalRentFee); // Use jQuery `.text()` for span
                 totalRentFeeInput.val(totalRentFee);          // Use `.val()` for input
 
-
+                const remBalance = $('#remBalance');
+                remBalance.text("PHP " + (totalRentFee - 500));
+                remBalanceInput.val = totalRentFee - 500;
                 
             };
 
