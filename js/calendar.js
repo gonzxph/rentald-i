@@ -2,6 +2,44 @@ document.addEventListener("DOMContentLoaded", function () {
     const calendarElement = document.querySelector('#vanillaCalendar');
     let calendar = null;
 
+    // Add this function to update time options based on selected date
+    function updateTimeOptions() {
+        const pickupTimeSelect = document.getElementById('pickupTimeInput');
+        const today = new Date();
+        const selectedDate = calendar.selectedDates[0];
+        
+        // Reset all options first
+        Array.from(pickupTimeSelect.options).forEach(option => {
+            option.disabled = false;
+        });
+
+        // If selected date is today, disable past times
+        if (selectedDate === today.toISOString().split('T')[0]) {
+            const currentHour = today.getHours();
+            const currentMinutes = today.getMinutes();
+
+            Array.from(pickupTimeSelect.options).forEach(option => {
+                if (option.value) {
+                    const timeStr = option.value;
+                    const [hours, minutes] = timeStr.split(':');
+                    let hour = parseInt(hours);
+                    
+                    // Convert to 24-hour format
+                    if (timeStr.includes('pm') && hour !== 12) {
+                        hour += 12;
+                    } else if (timeStr.includes('am') && hour === 12) {
+                        hour = 0;
+                    }
+
+                    // Disable if hour is before current time
+                    if (hour < currentHour || (hour === currentHour && parseInt(minutes) <= currentMinutes)) {
+                        option.disabled = true;
+                    }
+                }
+            });
+        }
+    }
+
     if (calendarElement) {
         calendar = new VanillaCalendar('#vanillaCalendar', {
             settings: {
@@ -21,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
             actions: {
                 clickDay(event, self) {
                     console.log("Selected Dates:", self.selectedDates);
+                    updateTimeOptions();
                 },
                 clickMonth: (month, year) => {
                     const minYear = new Date().getFullYear();
@@ -34,6 +73,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
         calendar.init();
+        
+        // Initial update of time options
+        updateTimeOptions();
     } else {
         console.error("Calendar element not found.");
     }
@@ -77,4 +119,3 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-
