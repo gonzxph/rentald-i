@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $db->prepare($pendingPaymentQuery);
         $stmt->execute([
             $carId,
-            42,
+            1,
             $paymentOption,
             $pickupAddress,
             $pickupDate,
@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           ORDER BY id DESC LIMIT 1";
             
             $stmt = $db->prepare($updateQuery);
-            $stmt->execute([$paymentReference, $carId, 42]);
+            $stmt->execute([$paymentReference, $carId, 1]);
             
             $db->commit();
             header("Location: " . $response['data']['attributes']['checkout_url']);
