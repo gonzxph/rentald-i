@@ -30,8 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Calculate payment amount based on option
         $paymentAmount = ($paymentOption === 'reservation') ? 500 : $totalRentalFee;
-
-        file_put_contents('date.txt', $pickupDate . " " . $returnDate); 
         
         // Before DB transaction
         error_log("Debug 3: Starting DB transaction");
@@ -80,42 +78,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ? "Reservation Fee for Car Rental" 
             : "Full Payment for Car Rental";
 
-        // Prepare PayMongo data with success_url and cancel_url
+        $baseUrl = "https://b757-2001-4454-1bc-500-1a3-ec25-583b-2a22.ngrok-free.app/rental";
         $data = [
-            "data" => [
-                "attributes" => [
-                    "amount" => $amount,
-                    "currency" => "PHP",
-                    "description" => $description
+            'data' => [
+                'attributes' => [
+                    'amount' => $amount,
+                    'description' => $description,
+                    'remarks' => 'Car Rental Payment',
+                    'success_url' => $baseUrl . "/payment_success.php",
+                    'cancel_url' => $baseUrl . "/payment_failed.php"
                 ]
             ]
         ];
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://api.paymongo.com/v1/links");
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Content-Type: application/json",
-            "Authorization: Basic " . base64_encode($secretKey . ":")
+        curl_setopt_array($ch, [
+            CURLOPT_URL => "https://api.paymongo.com/v1/links",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => [
+                "Accept: application/json",
+                "Authorization: Basic " . base64_encode($secretKey . ":"),
+                "Content-Type: application/json"
+            ]
         ]);
-        
 
         $result = curl_exec($ch);
+        $err = curl_error($ch);
         curl_close($ch);
 
-        error_log("Debug 5: Preparing PayMongo API call - Amount: $amount");
-        
-        error_log("Debug 6: PayMongo API Response: " . $result);
-        
+        if ($err) {
+            error_log("Debug ERROR: CURL Error - " . $err);
+            throw new Exception("Payment gateway error");
+        }
+
         $response = json_decode($result, true);
 
         if (isset($response['data']['attributes']['checkout_url'])) {
             error_log("Debug 7: Got checkout URL, updating payment reference");
             // Update pending_payment with payment reference
             $paymentReference = $response['data']['attributes']['reference_number'];
-            file_put_contents('payment_reference.txt', $paymentReference);
             $updateQuery = "UPDATE pending_payments 
                           SET payment_reference = ? 
                           WHERE car_id = ? AND user_id = ? 
@@ -125,6 +132,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$paymentReference, $carId, 42]);
             
             $db->commit();
+
+            // Add debug logging
+            error_log("Final PayMongo Response: " . $result);
+
             header("Location: " . $response['data']['attributes']['checkout_url']);
             exit();
         } else {

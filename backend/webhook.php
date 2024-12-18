@@ -3,7 +3,7 @@
 require_once '../config/db.php';
 
 // PayMongo webhook secret key
-$webhookSecret = 'whsk_qK25r6Hsc8rCy4noYwKK7UTQ';
+$webhookSecret = 'whsk_EG3GqWPUMedrrGUK8EzRncgY';
 
 // Add these validation functions at the top
 function computeHmacSignature($payload, $webhookSecret, $timestamp) {
@@ -175,12 +175,14 @@ try {
         $stmt->execute([$pendingPayment['id']]);
 
         error_log("Payment and rental created successfully");
+        http_response_code(200);
     } else {
         // Handle failed/expired payment using reference number
         $stmt = $db->prepare("DELETE FROM pending_payments WHERE payment_reference = ?");
         $stmt->execute([$referenceNumber]);
         
         error_log("Failed payment - pending payment deleted for reference: " . $referenceNumber);
+        
     }
     
     $db->commit();
