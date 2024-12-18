@@ -90,7 +90,9 @@ require_once './backend/search_handler.php';
             <div class="col-lg-8 col-md-8">
                 <?php if (!empty($available_cars)): ?>
                     <?php foreach ($available_cars as $car): ?>
-                        <div class="d-flex justify-content-between p-3 border mb-3 rounded">
+                        <div class="d-flex justify-content-between p-3 border mb-3 rounded" 
+                             onclick="window.location.href='vehicle-details.php?id=<?= htmlspecialchars($car['car_id']); ?>'" 
+                             style="cursor: pointer;">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-lg-3 col-6">
@@ -102,16 +104,20 @@ require_once './backend/search_handler.php';
                                     >
                                     </div>
                                     <div class="col-lg-6 col-6">
-                                        <h5 class="font-weight-medium"><?= htmlspecialchars($car['car_brand']) . " " . htmlspecialchars($car['car_model']); ?></h5>
-                                        <span class="mdi mdi-car"> <?= htmlspecialchars($car['car_type']); ?></span>
-                                        <span class="mdi mdi-cog"> <?= htmlspecialchars($car['car_transmission_type']); ?></span>
-                                        <span class="mdi mdi-car-seat"> <?= htmlspecialchars($car['car_seats']); ?> Seats</span>
+                                        <h5 class="font-weight-medium">
+                                            <?= htmlspecialchars($car['car_brand'] ?? '') . " " . htmlspecialchars($car['car_model'] ?? ''); ?>
+                                        </h5>
+                                        <span class="mdi mdi-car"> <?= htmlspecialchars($car['car_type'] ?? ''); ?></span>
+                                        <span class="mdi mdi-cog"> <?= htmlspecialchars($car['car_transmission_type'] ?? ''); ?></span>
+                                        <span class="mdi mdi-car-seat"> <?= htmlspecialchars($car['car_seats'] ?? ''); ?> Seats</span>
                                     </div>
                                     <div class="col-lg-3 col-12 mt-5">
                                         <div class="text-end">
-                                            <p class="mb-4"><strong>₱<?= number_format($car['car_rental_rate'], 2); ?></strong></p>
-                                            <button id="viewDetailBtn" class="btn mb-2 w-100">VIEW DETAILS</button>
-                                            <a href="booking.php?carid=<?= htmlspecialchars($car['car_id']); ?>&pickup=<?= htmlspecialchars($start_datetime); ?>&dropoff=<?= htmlspecialchars($end_datetime); ?>&day=<?= htmlspecialchars(urlencode($durationDay)); ?>&hour=<?= htmlspecialchars(urlencode($durationHour)); ?>"><button id="bookBtn" class="btn w-100">BOOK</button></a>
+                                            <p class="mb-4"><strong>₱<?= number_format($car['car_rental_rate'] ?? 0, 2); ?></strong></p>
+                                            <a href="booking.php?carid=<?= htmlspecialchars($car['car_id']); ?>&pickup=<?= htmlspecialchars($start_datetime); ?>&dropoff=<?= htmlspecialchars($end_datetime); ?>&day=<?= htmlspecialchars(urlencode($durationDay)); ?>&hour=<?= htmlspecialchars(urlencode($durationHour)); ?>" 
+                                               onclick="event.stopPropagation();">
+                                                <button id="bookBtn" class="btn w-100">BOOK</button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

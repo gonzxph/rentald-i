@@ -7,9 +7,6 @@ try{
         header('Location: index.php');
     }
 
-
-
-
     $pickup_datetime = isset($_GET['pickup']) ? htmlspecialchars($_GET['pickup']) : null;
     $dropoff_datetime = isset($_GET['dropoff']) ? htmlspecialchars($_GET['dropoff']) : null;
 
@@ -35,12 +32,35 @@ try{
 
     $carid = (int) $_GET['carid'];
 
-    $sql = "SELECT * FROM car WHERE car_id = :carid";
+    $sql = "SELECT 
+        car_id,
+        car_brand,
+        car_model,
+        car_type,
+        car_transmission_type,
+        car_seats,
+        car_rental_rate,
+        car_excess_per_hour,
+        car_availability
+    FROM car 
+    WHERE car_id = :carid";
     $stmt = $db->prepare($sql);
     $stmt->bindParam(':carid', $carid, PDO::PARAM_INT);
     $stmt->execute();
 
     $car = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if(!$car) {
+        throw new Exception('Car not found');
+    }
+
+    // Add validation to ensure required fields exist
+    $required_fields = ['car_brand', 'car_model', 'car_type'];
+    foreach ($required_fields as $field) {
+        if (!isset($car[$field]) || empty($car[$field])) {
+            throw new Exception("Missing required car information: $field");
+        }
+    }
 
     //Car rate calculation
     $carRentalRate = isset($car['car_rental_rate']) ? floatval($car['car_rental_rate']) : 0;
@@ -48,15 +68,21 @@ try{
     $bookingDurationDay1 = isset($bookingDurationDay) ? intval($bookingDurationDay) : 0;
     $bookingDurationHour1 = isset($bookingDurationHour) ? intval($bookingDurationHour) : 0;
 
-    if ($bookingDurationHour > 6) {
-        // Increment the booking days by 1 for hours above 6
+    // If excess hours are more than 6, convert to an additional day
+    if ($bookingDurationHour1 > 6) {
         $bookingDurationDay1 += 1;
-        $bookingDurationHour1 = 0; // Reset excess hours
+        $bookingDurationHour1 = 0; // Reset excess hours since we're charging a full day
+        $carExcessPay = 0; // No excess hour charges when converting to a full day
+    } else {
+        // Calculate excess hour charges only if 6 hours or less
+        $carExcessPay = $carExcessPerHour * $bookingDurationHour1;
     }
 
+    // Calculate total rental rate for the days
     $carRentalRate = $carRentalRate * $bookingDurationDay1;
-    $carExcessPay = $carExcessPerHour * $bookingDurationHour1;
-    $totalRate = $carRentalRate;
+
+    // Total rate includes both the daily rate and any excess hour charges
+    $totalRate = $carRentalRate + $carExcessPay;
 
 
     
@@ -74,7 +100,8 @@ try{
     $stmtImages->execute();
     $carImages = $stmtImages->fetchAll(PDO::FETCH_COLUMN); // Fetch image paths as array
 
-
+    error_log("Car ID received: " . $_GET['carid']);
+    error_log("Car data fetched: " . print_r($car, true));
 
 }catch (PDOException $e) {
     // Handle database errors

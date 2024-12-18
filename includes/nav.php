@@ -9,18 +9,8 @@
         <div class="d-none d-lg-flex ms-4">
             <ul class="navbar-nav me-auto mb-0">
                 <li class="nav-item mx-2">
-                    <a class="nav-link" href="vehicles.php">
-                        <i class="fas fa-car me-1"></i>Vehicles
-                    </a>
-                </li>
-                <li class="nav-item mx-2">
                     <a class="nav-link" href="tours.php">
                         <i class="fas fa-map-marked-alt me-1"></i>Tours
-                    </a>
-                </li>
-                <li class="nav-item mx-2">
-                    <a class="nav-link" href="contact.php">
-                        <i class="fas fa-envelope me-1"></i>Contact Us
                     </a>
                 </li>
             </ul>

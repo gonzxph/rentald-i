@@ -8,7 +8,7 @@ $error_message = "";
 $total_cars = 0;
 $total_pages = 0;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$per_page = 3; // Number of cars per page
+$per_page = 10; // Number of cars per page
 
 // Retrieve filter values
 $date = $_POST['dateTimeInput'] ?? $_GET['dateTimeInput'] ?? '';
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['page'])) {
         $end_datetime = date("Y-m-d H:i:s", strtotime($end));
 
         // Prepare the WHERE clause for filters
-        $where_clause = "WHERE car_id NOT IN (
+        $where_clause = "WHERE car.car_id NOT IN (
             SELECT car_id
             FROM rental
             WHERE NOT (
@@ -73,7 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['page'])) {
         $offset = ($page - 1) * $per_page;
 
         // SQL Query to count total available cars
-        $count_sql = "SELECT COUNT(*) FROM car $where_clause";
+        $count_sql = "SELECT COUNT(*) FROM car 
+LEFT JOIN car_image ON car.car_id = car_image.car_id 
+AND car_image.is_primary = 1 
+$where_clause";
 
         $count_stmt = $db->prepare($count_sql);
         $count_stmt->execute($params);
@@ -85,7 +88,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['page'])) {
         $offset = ($page - 1) * $per_page;
 
         // SQL Query to find available cars with pagination
-        $sql = "SELECT * FROM car $where_clause LIMIT :offset, :per_page";
+        $sql = "SELECT 
+            car.car_id,
+            car.car_brand,
+            car.car_model,
+            car.car_type,
+            car.car_transmission_type,
+            car.car_seats,
+            car.car_rental_rate,
+            car_image.img_url 
+        FROM car 
+        LEFT JOIN car_image ON car.car_id = car_image.car_id 
+        AND car_image.is_primary = 1 
+        $where_clause 
+        LIMIT :offset, :per_page";
         
 
         $stmt = $db->prepare($sql);

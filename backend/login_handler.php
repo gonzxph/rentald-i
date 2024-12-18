@@ -9,8 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     try {
-        // Prepare and execute the query using prepared statements
-        $stmt = $db->prepare("SELECT * FROM user WHERE user_email = :email");
+        // Updated query with correct table name case and status check
+        $stmt = $db->prepare("SELECT * FROM USER WHERE USER_EMAIL = :email AND USER_STATUS = 'active'");
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
 
@@ -18,13 +18,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             // Verify the password
-            if (password_verify($password, $user['user_password'])) {
+            if (password_verify($password, $user['USER_PASSWORD'])) { // Note: Updated column name case
                 session_start();
-                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['user_id'] = $user['USER_ID'];
                 $_SESSION['logged_in'] = true;
-                $_SESSION['fname'] = $user['user_fname'];
-                $_SESSION['lname'] = $user['user_lname'];
-                $_SESSION['success_message'] = "Welcome back, " . $user['user_fname'] . "!";
+                $_SESSION['fname'] = $user['USER_FNAME'];
+                $_SESSION['lname'] = $user['USER_LNAME'];
+                
+                // Update user online status
+                $updateStmt = $db->prepare("UPDATE USER SET USER_IS_ONLINE = 1 WHERE USER_ID = :user_id");
+                $updateStmt->bindParam(':user_id', $user['USER_ID'], PDO::PARAM_INT);
+                $updateStmt->execute();
+                
+                $_SESSION['success_message'] = "Welcome back, " . $user['USER_FNAME'] . "!";
                 header('Location: ../dashboard.php');
                 exit();
             } else {
