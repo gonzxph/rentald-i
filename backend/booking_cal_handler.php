@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Debug 4: Inserted into pending_payments");
         
         // Create PayMongo payment link
-        $secretKey = "sk_test_6XrwLnwC4nHDCf4CuTLxDcKq";
+        $secretKey = "sk_test_TJcSoy6nm2PXoqrRiFgguKth";
         $amount = $paymentAmount * 100;
         
         $description = $paymentOption === 'reservation' 
