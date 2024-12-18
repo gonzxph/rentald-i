@@ -3,7 +3,7 @@
 require_once '../config/db.php';
 
 // PayMongo webhook secret key
-$webhookSecret = 'whsk_mdPPVBDtkqMCw9CV4eepbU3B';
+$webhookSecret = 'whsk_qK25r6Hsc8rCy4noYwKK7UTQ';
 
 // Add these validation functions at the top
 function computeHmacSignature($payload, $webhookSecret, $timestamp) {
@@ -121,9 +121,8 @@ try {
             RENT_PICKUP_LOCATION,
             rent_dropoff_datetime,
             RENT_DROPOFF_LOCATION,
-            RENTAL_STATUS,
             RENT_TOTAL_PRICE
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $db->prepare($rentalQuery);
         $stmt->execute([
@@ -134,7 +133,6 @@ try {
             $pendingPayment['pickup_address'],
             $pendingPayment['return_date'],
             $pendingPayment['return_address'],
-            'accepted',
             $pendingPayment['total_amount']
         ]);
 

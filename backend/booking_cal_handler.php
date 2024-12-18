@@ -17,13 +17,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $deliveryFee = floatval($_POST['DeliveryFeeInput']);
         $returnFee = floatval($_POST['PickupFeeInput']);
 
+        // Convert dates from "December 29, 2024 at 04:00 AM" to "2024-12-29 04:00:00"
+        $pickupDate = DateTime::createFromFormat('F j, Y \a\t h:i A', $_POST['pickupDate']);
+        $returnDate = DateTime::createFromFormat('F j, Y \a\t h:i A', $_POST['returnDate']);
+        
+        // Format dates for database storage
+        $pickupDate = $pickupDate->format('Y-m-d H:i:s');
+        $returnDate = $returnDate->format('Y-m-d H:i:s');
+
         // Recalculate total rental fee
         $totalRentalFee = $vehicleRate + $excessPay + $deliveryFee + $returnFee;
         
         // Calculate payment amount based on option
         $paymentAmount = ($paymentOption === 'reservation') ? 500 : $totalRentalFee;
 
-        error_log("Debug 2: POST data received - carId: $carId, paymentOption: $paymentOption");
+        file_put_contents('date.txt', $pickupDate . " " . $returnDate); 
         
         // Before DB transaction
         error_log("Debug 3: Starting DB transaction");
