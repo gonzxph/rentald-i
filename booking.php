@@ -569,7 +569,7 @@ require_once './backend/search_handler.php';
                 </div>
             </div>
         </div>
-    </from>
+    </form>
 
 
 
