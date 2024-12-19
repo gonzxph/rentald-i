@@ -46,9 +46,13 @@ document.addEventListener("DOMContentLoaded", function(){
             //Column 2 function
             function toggleDriverInfo() {
                 if (withDriver.checked) {
-                driverInfo.classList.remove('d-none');
+                    driverInfo.classList.remove('d-none');
+                    isCustomDriver.value = "1";
+                    console.log('isCustomDriver value:', isCustomDriver.value);
                 } else {
-                driverInfo.classList.add('d-none');
+                    driverInfo.classList.add('d-none');
+                    isCustomDriver.value = "0";
+                    console.log('isCustomDriver value:', isCustomDriver.value);
                 }
             }
 
@@ -67,6 +71,8 @@ document.addEventListener("DOMContentLoaded", function(){
             // Add event listeners to radio buttons
             selfDrive.addEventListener('change', toggleDriverInfo);
             withDriver.addEventListener('change', toggleDriverInfo);
+            toggleDriverInfo();
+
 
             updateArrows();
 
@@ -135,8 +141,41 @@ document.addEventListener("DOMContentLoaded", function(){
             
 
             submitButton.onclick = () => {
-
+                // Create FormData from the file input
+                const fileInput = document.getElementById('file-input');
+                const files = fileInput.files;
                 
+                // Get the form that submits to booking_cal_handler.php
+                const mainForm = document.querySelector('form[action="./backend/booking_cal_handler.php"]');
+                
+                // Create a single hidden input field for all files
+                if (selectedFiles.length > 0) {
+                    const formData = new FormData();
+                    selectedFiles.forEach((file, index) => {
+                        formData.append('file-input[]', file);
+                    });
+                    
+                    // Create a new input for each file
+                    selectedFiles.forEach(file => {
+                        const fileField = document.createElement('input');
+                        fileField.type = 'file';
+                        fileField.name = 'file-input[]';
+                        fileField.style.display = 'none';
+                        
+                        // Create a DataTransfer object for this file
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileField.files = dataTransfer.files;
+                        
+                        mainForm.appendChild(fileField);
+                    });
+                }
+
+                if(withDriver.checked){
+                    driverName.value = nameInput.value;
+                    driverPhone.value = phoneInput.value;
+                    driverLicense.value = licenseInput.value;
+                }
 
                 if (!toggle.checked) {
                     dropoffInput.value = pickupInput.value; // Sync values

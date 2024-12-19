@@ -1,7 +1,7 @@
 // backend/webhook_handler.php
 <?php
 require_once '../config/db.php';
-
+session_start();
 // PayMongo webhook secret key
 $webhookSecret = 'whsk_UT6owvZDHn1FiCpSU9KQthqL';
 
@@ -112,23 +112,29 @@ try {
             throw new Exception('No pending payment found for reference: ' . $referenceNumber);
         }
 
-        // Insert rental record
+        // Insert rental record with driver information
         $rentalQuery = "INSERT INTO rental (
             car_id,
             user_id,
             is_custom_driver,
+            custom_driver_name,
+            custom_driver_phone,
+            custom_driver_license_number,
             rent_pickup_datetime,
             RENT_PICKUP_LOCATION,
             rent_dropoff_datetime,
             RENT_DROPOFF_LOCATION,
             RENT_TOTAL_PRICE
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $db->prepare($rentalQuery);
         $stmt->execute([
             $pendingPayment['car_id'],
             $pendingPayment['user_id'],
-            0,
+            $pendingPayment['is_custom_driver'],
+            $pendingPayment['custom_driver_name'],
+            $pendingPayment['custom_driver_phone'],
+            $pendingPayment['custom_driver_license_number'],
             $pendingPayment['pickup_date'],
             $pendingPayment['pickup_address'],
             $pendingPayment['return_date'],
@@ -137,6 +143,39 @@ try {
         ]);
 
         $rentalId = $db->lastInsertId();
+
+        // After rental record is created and we have $rentalId
+        // Handle the driver ID images if they exist in the session
+        if ($pendingPayment['is_custom_driver']) {
+            $tempUploadDir = '../upload/temp/';
+            $finalUploadDir = '../upload/driver_ids/';
+            
+            // Create final directory if it doesn't exist
+            if (!file_exists($finalUploadDir)) {
+                mkdir($finalUploadDir, 0777, true);
+            }
+
+            // Get temporary image filenames from pending_payment record instead of session
+            $tempImages = json_decode($pendingPayment['temp_driver_images'] ?? '[]', true);
+            file_put_contents('temp_images.txt', print_r($tempImages, true));
+            
+            if (!empty($tempImages)) {
+                $imageQuery = "INSERT INTO driver_id_images (rental_id, dimg_path) VALUES (?, ?)";
+                $stmt = $db->prepare($imageQuery);
+                
+                foreach ($tempImages as $tempFileName) {
+                    $tempPath = $tempUploadDir . $tempFileName;
+                    $finalPath = $finalUploadDir . $tempFileName;
+                    file_put_contents('tempFile.txt', $tempFileName);  
+                    
+                    // Move file from temp to final location
+                    if (file_exists($tempPath) && rename($tempPath, $finalPath)) {
+                        // Save record to database
+                        $stmt->execute([$rentalId, $tempFileName]);
+                    }
+                }
+            }
+        }
 
         // Insert payment record
         $paymentQuery = "INSERT INTO payment (
