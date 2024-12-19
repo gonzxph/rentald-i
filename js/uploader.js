@@ -42,3 +42,39 @@ const fileInput = document.getElementById('file-input');
         function updateFileCount() {
             fileCount.textContent = `${selectedFiles.length} Files Selected`;
         }
+
+        // Add form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const withDriverRadio = document.getElementById('withDriver');
+            
+            if (withDriverRadio.checked) {
+                const nameInput = document.querySelector('#driverInfo input[placeholder="Name"]');
+                const phoneInput = document.querySelector('#driverInfo input[placeholder="Mobile number"]');
+                const licenseInput = document.querySelector('#driverInfo input[placeholder="Driver\'s License Number"]');
+                const fileInput = document.getElementById('file-input');
+                
+                if (!nameInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Please enter driver\'s name');
+                    return;
+                }
+                
+                if (!phoneInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Please enter driver\'s phone number');
+                    return;
+                }
+                
+                if (!licenseInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Please enter driver\'s license number');
+                    return;
+                }
+                
+                if (selectedFiles.length < 1) {
+                    e.preventDefault();
+                    alert('Please upload at least one ID document');
+                    return;
+                }
+            }
+        });

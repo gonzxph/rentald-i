@@ -3,8 +3,8 @@ session_start();
 require_once '../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
     try {
-        error_log("Debug 1: Starting payment process");
         
         $carId = $_POST['carId'];
         $paymentOption = $_POST['paymentOption'];
@@ -32,8 +32,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $paymentAmount = ($paymentOption === 'reservation') ? 500 : $totalRentalFee;
         
         // Before DB transaction
-        error_log("Debug 3: Starting DB transaction");
         $db->beginTransaction();
+
+        // Get driver information
+        $isCustomDriver = $_POST['isCustomDriver'] === '1';
+        $driverName = $isCustomDriver ? $_POST['driverName'] : null;
+        $driverPhone = $isCustomDriver ? $_POST['driverPhone'] : null;
+        $driverLicense = $isCustomDriver ? $_POST['driverLicense'] : null;
+
+        // Handle file uploads if custom driver
+        $driverIdImages = [];
+        if ($isCustomDriver && isset($_FILES['file-input'])) {
+            $tempUploadDir = '../upload/temp/';
+            
+            if (!file_exists($tempUploadDir)) {
+                mkdir($tempUploadDir, 0777, true);
+            }
+            
+            $fileCount = count($_FILES['file-input']['name']);
+            for ($i = 0; $i < $fileCount; $i++) {
+                $fileName = uniqid() . '_' . $_FILES['file-input']['name'][$i];
+                $tmpName = $_FILES['file-input']['tmp_name'][$i];
+                $targetPath = $tempUploadDir . $fileName;
+                
+                if (move_uploaded_file($tmpName, $targetPath)) {
+                    $driverIdImages[] = $fileName;
+                }
+            }
+            
+            // Store filenames in pending_payments instead of session
+            $imageJson = json_encode($driverIdImages);
+        }
 
         // Insert into pending_payments table
         $pendingPaymentQuery = "INSERT INTO pending_payments (
@@ -49,8 +78,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             return_fee,
             total_amount,
             amount_paid,
+            is_custom_driver,
+            custom_driver_name,
+            custom_driver_phone,
+            custom_driver_license_number,
+            temp_driver_images,
             created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $stmt = $db->prepare($pendingPaymentQuery);
         $stmt->execute([
@@ -65,7 +99,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $deliveryFee,
             $returnFee,
             $totalRentalFee,
-            $paymentAmount
+            $paymentAmount,
+            $isCustomDriver,
+            $driverName,
+            $driverPhone,
+            $driverLicense,
+            $imageJson ?? null,
         ]);
 
         error_log("Debug 4: Inserted into pending_payments");
