@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Format dates for database storage
         $pickupDate = $pickupDate->format('Y-m-d H:i:s');
         $returnDate = $returnDate->format('Y-m-d H:i:s');
-
+        $userId = $_SESSION['user_id'];
         // Recalculate total rental fee
         $totalRentalFee = $vehicleRate + $excessPay + $deliveryFee + $returnFee;
         
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $db->prepare($pendingPaymentQuery);
         $stmt->execute([
             $carId,
-            42,
+            $userId,
             $paymentOption,
             $pickupAddress,
             $pickupDate,
@@ -129,14 +129,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           ORDER BY id DESC LIMIT 1";
             
             $stmt = $db->prepare($updateQuery);
-            $stmt->execute([$paymentReference, $carId, 42]);
+            $stmt->execute([$paymentReference, $carId, $userId]);
             
             $db->commit();
 
-            // Add debug logging
-            error_log("Final PayMongo Response: " . $result);
-
-            header("Location: " . $response['data']['attributes']['checkout_url']);
+            // Store payment information in session
+            $_SESSION['payment_checkout_url'] = $response['data']['attributes']['checkout_url'];
+            $_SESSION['payment_reference'] = $paymentReference;
+            
+            // Redirect to an intermediate payment page
+            header("Location: ../process_payment.php");
             exit();
         } else {
             error_log("Debug 8: ERROR - No checkout URL in response");
