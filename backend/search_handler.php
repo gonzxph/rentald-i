@@ -36,8 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['page'])) {
         $end_datetime = date("Y-m-d H:i:s", strtotime($end));
 
         // Prepare the WHERE clause for filters
-        $where_clause = "WHERE car_id NOT IN (
-            SELECT car_id
+        $where_clause = "WHERE car.car_id NOT IN (
+            SELECT rental.car_id
             FROM rental
             WHERE NOT (
                 RENT_PICKUP_DATETIME >= :end_datetime OR RENT_DROPOFF_DATETIME <= :start_datetime
@@ -85,7 +85,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['page'])) {
         $offset = ($page - 1) * $per_page;
 
         // SQL Query to find available cars with pagination
-        $sql = "SELECT * FROM car $where_clause LIMIT :offset, :per_page";
+        $sql = "
+    SELECT 
+        car.*, 
+        COALESCE(MIN(car_image.img_url), 'default.png') AS img_url 
+    FROM 
+        car 
+    LEFT JOIN 
+        car_image 
+    ON 
+        car.car_id = car_image.car_id 
+    $where_clause 
+    GROUP BY 
+        car.car_id 
+    LIMIT :offset, :per_page
+";
         
 
         $stmt = $db->prepare($sql);

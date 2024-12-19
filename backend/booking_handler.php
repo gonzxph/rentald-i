@@ -7,9 +7,6 @@ try{
         header('Location: index.php');
     }
 
-
-
-
     $pickup_datetime = isset($_GET['pickup']) ? htmlspecialchars($_GET['pickup']) : null;
     $dropoff_datetime = isset($_GET['dropoff']) ? htmlspecialchars($_GET['dropoff']) : null;
 
@@ -35,6 +32,28 @@ try{
 
     $carid = (int) $_GET['carid'];
 
+    // Check if car is already booked for these dates
+    $check_sql = "SELECT COUNT(*) FROM rental 
+                  WHERE car_id = :carid 
+                  AND (
+                      (RENT_PICKUP_DATETIME <= :end_datetime AND RENT_DROPOFF_DATETIME >= :start_datetime)
+                      OR (RENT_PICKUP_DATETIME <= :start_datetime AND RENT_DROPOFF_DATETIME >= :start_datetime)
+                      OR (RENT_PICKUP_DATETIME <= :end_datetime AND RENT_DROPOFF_DATETIME >= :end_datetime)
+                  )";
+    
+    // Prepare and execute the check query
+    $check_stmt = $db->prepare($check_sql);
+    $check_stmt->bindParam(':carid', $carid, PDO::PARAM_INT);
+    $check_stmt->bindParam(':start_datetime', $pickup_datetime);
+    $check_stmt->bindParam(':end_datetime', $dropoff_datetime);
+    $check_stmt->execute();
+    
+    if ($check_stmt->fetchColumn() > 0) {
+        // Car is already booked for these dates
+        header('Location: search.php?error=already_booked');
+        exit;
+    }
+
     $sql = "SELECT * FROM car WHERE car_id = :carid";
     $stmt = $db->prepare($sql);
     $stmt->bindParam(':carid', $carid, PDO::PARAM_INT);
@@ -58,11 +77,6 @@ try{
     $carExcessPay = $carExcessPerHour * $bookingDurationHour1;
     $totalRate = $carRentalRate;
 
-
-    
-
-
-    
     if(!$car){
         throw new Exception('Car not found');
     }
@@ -74,8 +88,6 @@ try{
     $stmtImages->execute();
     $carImages = $stmtImages->fetchAll(PDO::FETCH_COLUMN); // Fetch image paths as array
 
-
-
 }catch (PDOException $e) {
     // Handle database errors
     error_log("Database error: " . $e->getMessage());
@@ -84,7 +96,6 @@ try{
     // Handle other errors
     $error_message = $e->getMessage();
 }
-
 
 /* require_once 'views/booking_view.php'; */
 
