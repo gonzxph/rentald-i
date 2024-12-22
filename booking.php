@@ -354,13 +354,13 @@ require_once './backend/search_handler.php';
                                     </div>
                                     <div class="card-body">
                                         <div class="mb-3">
-                                            <input type="text" class="form-control" placeholder="Name">
+                                            <input type="text" id="nameInput" class="form-control" placeholder="Name">
                                         </div>
                                         <div class="mb-3">
-                                            <input type="tel" class="form-control" placeholder="Mobile number">
+                                            <input type="tel" id="phoneInput" class="form-control" placeholder="Mobile number">
                                         </div>
                                         <div class="mb-3">
-                                            <input type="text" class="form-control" placeholder="Driver's License Number">
+                                            <input type="text" id="licenseInput" class="form-control" placeholder="Driver's License Number">
                                         </div>
                                         <div class="mb-3">
                                             <h6 class="mb-2">Upload Driver's License and 2 valid ID</h6>
