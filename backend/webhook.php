@@ -157,7 +157,6 @@ try {
 
             // Get temporary image filenames from pending_payment record instead of session
             $tempImages = json_decode($pendingPayment['temp_driver_images'] ?? '[]', true);
-            file_put_contents('temp_images.txt', print_r($tempImages, true));
             
             if (!empty($tempImages)) {
                 $imageQuery = "INSERT INTO driver_id_images (rental_id, dimg_path) VALUES (?, ?)";
@@ -166,7 +165,6 @@ try {
                 foreach ($tempImages as $tempFileName) {
                     $tempPath = $tempUploadDir . $tempFileName;
                     $finalPath = $finalUploadDir . $tempFileName;
-                    file_put_contents('tempFile.txt', $tempFileName);  
                     
                     // Move file from temp to final location
                     if (file_exists($tempPath) && rename($tempPath, $finalPath)) {
