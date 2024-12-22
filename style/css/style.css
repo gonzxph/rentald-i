@@ -1,8 +1,5 @@
 /*nav.php*/
-a:hover{
-    background-color: #DDE6ED;
-    border-radius: 5px;
-}
+
 
 .pac-container {
     z-index: 1060 !important;
@@ -369,6 +366,7 @@ body {
     margin-top: auto;
 }
 
+
 /* Date Time Modal Styles */
 .modal-content {
     border: none;
@@ -517,17 +515,4 @@ body {
     display: none !important;
 }
 
-/* Add these styles for past dates */
-.vanilla-calendar-day__disabled {
-    opacity: 0.4 !important;
-    cursor: not-allowed !important;
-    background-color: #f0f0f0 !important;
-    pointer-events: none !important;
-}
 
-.vanilla-calendar-day--disabled {
-    opacity: 0.4 !important;
-    cursor: not-allowed !important;
-    background-color: #f0f0f0 !important;
-    pointer-events: none !important;
-}

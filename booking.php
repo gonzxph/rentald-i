@@ -354,13 +354,13 @@ require_once './backend/search_handler.php';
                                     </div>
                                     <div class="card-body">
                                         <div class="mb-3">
-                                            <input type="text" class="form-control" placeholder="Name">
+                                            <input type="text" id="nameInput" class="form-control" placeholder="Name">
                                         </div>
                                         <div class="mb-3">
-                                            <input type="tel" class="form-control" placeholder="Mobile number">
+                                            <input type="tel" id="phoneInput" class="form-control" placeholder="Mobile number">
                                         </div>
                                         <div class="mb-3">
-                                            <input type="text" class="form-control" placeholder="Driver's License Number">
+                                            <input type="text" id="licenseInput" class="form-control" placeholder="Driver's License Number">
                                         </div>
                                         <div class="mb-3">
                                             <h6 class="mb-2">Upload Driver's License and 2 valid ID</h6>
@@ -457,7 +457,12 @@ require_once './backend/search_handler.php';
 
     <!-- Booking Now Modal -->
 
-    <form action="./backend/booking_cal_handler.php" method="POST">
+    <form action="./backend/booking_cal_handler.php" method="POST" enctype="multipart/form-data">
+        <!-- Add hidden input for driver details -->
+        <input type="hidden" id="isCustomDriver" name="isCustomDriver" value="0">
+        <input type="hidden" id="driverName" name="driverName" value="">
+        <input type="hidden" id="driverPhone" name="driverPhone" value="">
+        <input type="hidden" id="driverLicense" name="driverLicense" value="">
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable">
                 <div class="modal-content">
@@ -470,6 +475,7 @@ require_once './backend/search_handler.php';
                         
                         <div class="booking-details">
                             <input type="hidden" id="paymentOption" name="paymentOption" value="">
+                            <input type="hidden" id="rentalType" name="rentalType" value="">
                             <div class="detail-row d-flex justify-content-between border-bottom py-2">
                                 <span class="label">Vehicle</span>
                                 <span class="value"><?= htmlspecialchars($car['car_brand'] . ' ' . $car['car_model']);?></span>
@@ -588,6 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const fullPaymentAmountInput = document.getElementById('fullPaymentAmountInput');
     const totalRentFeeInput = document.getElementById('totalRentFeeInput');
 
+
     // Function to update payment display
     function updatePaymentDisplay() {
         if (reservationRadio.checked) {
@@ -623,6 +630,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial display
     updatePaymentDisplay();
+
+    // Get radio button elements
+    const selfDriveRadio = document.getElementById('selfDrive');
+    const withDriverRadio = document.getElementById('withDriver');
+    const driverInfo = document.getElementById('driverInfo');
+    const isCustomDriver = document.getElementById('isCustomDriver');
+    
+    // Update function
+    function updateDriverInfo() {
+        console.log('Radio changed:', withDriverRadio.checked); // Debug log
+        if (withDriverRadio.checked) {
+            driverInfo.classList.remove('d-none');
+            isCustomDriver.value = "1";
+        } else {
+            driverInfo.classList.add('d-none');
+            isCustomDriver.value = "0";
+        }
+        console.log('isCustomDriver value:', isCustomDriver.value); // Debug log
+    }
+
+    // Add event listeners using 'click' instead of 'change'
+    withDriverRadio.addEventListener('click', updateDriverInfo);
+    selfDriveRadio.addEventListener('click', updateDriverInfo);
+
+    // Run initial check
+    updateDriverInfo();
+
 });
 </script>
 

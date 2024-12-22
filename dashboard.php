@@ -4,6 +4,15 @@ require_once 'includes/session.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: signin.php");
     exit();
+
+    if (isset($_SESSION['pending_booking'])) {
+        error_log('Session data stored successfully:');
+        error_log(print_r($_SESSION['pending_booking'], true));
+    } else {
+        error_log('Failed to store session data');
+    }
+
+
 }
 ?>
 

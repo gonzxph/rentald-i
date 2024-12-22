@@ -43,10 +43,16 @@
                     </div>
                 </div>
             </div>
+            <hr class="m-3">
+            <div class="container my-5">
+                <div class="row">
+                    <?php include 'includes/policies_guidelines.php' ?>
+                </div>
+            </div>
         </div>
-
-    <!-- Pickup date and time modal -->
-    <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
+   
+        <!-- Pickup date and time modal -->
+        <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered"> <!-- Adjusted modal size and centering -->
                 <div class="modal-content">
                     <div class="modal-header">
@@ -140,6 +146,7 @@
         </div>
     </section> <!-- end of booking-section -->
 
+  
     <!-- Footer wrapper -->
     <div class="footer-wrapper">
         <?php include 'includes/footer.php' ?>
