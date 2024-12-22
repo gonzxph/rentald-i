@@ -46,102 +46,114 @@
                     </div>
                 </div>
             </div>
+            <hr class="m-3">
+            <div class="row p-5">
+                <div class="container">
+                    <?php include 'includes/policies_guidelines.php' ?>
+                </div>
+            </div>
         </div>
 
-    <!-- Pickup date and time modal -->
-    <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered"> <!-- Adjusted modal size and centering -->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="dateTimeModalLabel">Select Pickup & Drop-off Dates and Times</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Centered Calendar Container for Pick-up Date -->
-                    <div id="vanillaCalendar" class="vanilla-calendar calendar-center"></div>
-                    
-                    <!-- Time Picker -->
-                    <div id="timeEmptyErr" class="text-danger mt-2" style="display: none">
-                        <p>Please select the Pickup Time or Drop-Off Time input below before setting the time.</p>
+        
+
+        
+        <!-- Pickup date and time modal -->
+        <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered"> <!-- Adjusted modal size and centering -->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="dateTimeModalLabel">Select Pickup & Drop-off Dates and Times</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div id="timeOneFilledErr" class="text-danger mt-2" style="display: none">
-                        <p>Please select both pickup and drop-off dates and times.</p>
-                    </div>
-                    <div id="CalEmptyErr" class="text-danger mt-2" style="display: none">
-                        <p>Please select the pickup and drop-off dates from the calendar.</p>
-                    </div>
-                    
-                     <!-- Time Picker Dropdowns -->
-                     <div class="row mt-4">
-                        <div class="col">
-                            <label for="pickupTimeInput">Pickup Time:</label>
-                            <select class="form-select" id="pickupTimeInput" name="pickupTimeInput">
-                                <option value="">Select time</option>
-                                <option value="12:00 am">12:00 am</option>
-                                <option value="01:00 am">01:00 am</option>
-                                <option value="02:00 am">02:00 am</option>
-                                <option value="03:00 am">03:00 am</option>
-                                <option value="04:00 am">04:00 am</option>
-                                <option value="05:00 am">05:00 am</option>
-                                <option value="06:00 am">06:00 am</option>
-                                <option value="07:00 am">07:00 am</option>
-                                <option value="08:00 am">08:00 am</option>
-                                <option value="09:00 am">09:00 am</option>
-                                <option value="10:00 am">10:00 am</option>
-                                <option value="11:00 am">11:00 am</option>
-                                <option value="12:00 pm">12:00 pm</option>
-                                <option value="01:00 pm">01:00 pm</option>
-                                <option value="02:00 pm">02:00 pm</option>
-                                <option value="03:00 pm">03:00 pm</option>
-                                <option value="04:00 pm">04:00 pm</option>
-                                <option value="05:00 pm">05:00 pm</option>
-                                <option value="06:00 pm">06:00 pm</option>
-                                <option value="07:00 pm">07:00 pm</option>
-                                <option value="08:00 pm">08:00 pm</option>
-                                <option value="09:00 pm">09:00 pm</option>
-                                <option value="10:00 pm">10:00 pm</option>
-                                <option value="11:00 pm">11:00 pm</option>
-                            </select>
+                    <div class="modal-body">
+                        <!-- Centered Calendar Container for Pick-up Date -->
+                        <div id="vanillaCalendar" class="vanilla-calendar calendar-center"></div>
+                        
+                        <!-- Time Picker -->
+                        <div id="timeEmptyErr" class="text-danger mt-2" style="display: none">
+                            <p>Please select the Pickup Time or Drop-Off Time input below before setting the time.</p>
                         </div>
-                        <div class="col">
-                            <label for="dropOffTimeInput">Dropoff Time:</label>
-                            <select class="form-select mb-3" id="dropOffTimeInput" name="dropOffTimeInput">
-                                <option value="">Select time</option>
-                                <option value="12:00 am">12:00 am</option>
-                                <option value="01:00 am">01:00 am</option>
-                                <option value="02:00 am">02:00 am</option>
-                                <option value="03:00 am">03:00 am</option>
-                                <option value="04:00 am">04:00 am</option>
-                                <option value="05:00 am">05:00 am</option>
-                                <option value="06:00 am">06:00 am</option>
-                                <option value="07:00 am">07:00 am</option>
-                                <option value="08:00 am">08:00 am</option>
-                                <option value="09:00 am">09:00 am</option>
-                                <option value="10:00 am">10:00 am</option>
-                                <option value="11:00 am">11:00 am</option>
-                                <option value="12:00 pm">12:00 pm</option>
-                                <option value="01:00 pm">01:00 pm</option>
-                                <option value="02:00 pm">02:00 pm</option>
-                                <option value="03:00 pm">03:00 pm</option>
-                                <option value="04:00 pm">04:00 pm</option>
-                                <option value="05:00 pm">05:00 pm</option>
-                                <option value="06:00 pm">06:00 pm</option>
-                                <option value="07:00 pm">07:00 pm</option>
-                                <option value="08:00 pm">08:00 pm</option>
-                                <option value="09:00 pm">09:00 pm</option>
-                                <option value="10:00 pm">10:00 pm</option>
-                                <option value="11:00 pm">11:00 pm</option>
-                            </select>
+                        <div id="timeOneFilledErr" class="text-danger mt-2" style="display: none">
+                            <p>Please select both pickup and drop-off dates and times.</p>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="pconfirm">Confirm</button>
+                        <div id="CalEmptyErr" class="text-danger mt-2" style="display: none">
+                            <p>Please select the pickup and drop-off dates from the calendar.</p>
+                        </div>
+                        
+                        <!-- Time Picker Dropdowns -->
+                        <div class="row mt-4">
+                            <div class="col">
+                                <label for="pickupTimeInput">Pickup Time:</label>
+                                <select class="form-select" id="pickupTimeInput" name="pickupTimeInput">
+                                    <option value="">Select time</option>
+                                    <option value="12:00 am">12:00 am</option>
+                                    <option value="01:00 am">01:00 am</option>
+                                    <option value="02:00 am">02:00 am</option>
+                                    <option value="03:00 am">03:00 am</option>
+                                    <option value="04:00 am">04:00 am</option>
+                                    <option value="05:00 am">05:00 am</option>
+                                    <option value="06:00 am">06:00 am</option>
+                                    <option value="07:00 am">07:00 am</option>
+                                    <option value="08:00 am">08:00 am</option>
+                                    <option value="09:00 am">09:00 am</option>
+                                    <option value="10:00 am">10:00 am</option>
+                                    <option value="11:00 am">11:00 am</option>
+                                    <option value="12:00 pm">12:00 pm</option>
+                                    <option value="01:00 pm">01:00 pm</option>
+                                    <option value="02:00 pm">02:00 pm</option>
+                                    <option value="03:00 pm">03:00 pm</option>
+                                    <option value="04:00 pm">04:00 pm</option>
+                                    <option value="05:00 pm">05:00 pm</option>
+                                    <option value="06:00 pm">06:00 pm</option>
+                                    <option value="07:00 pm">07:00 pm</option>
+                                    <option value="08:00 pm">08:00 pm</option>
+                                    <option value="09:00 pm">09:00 pm</option>
+                                    <option value="10:00 pm">10:00 pm</option>
+                                    <option value="11:00 pm">11:00 pm</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label for="dropOffTimeInput">Dropoff Time:</label>
+                                <select class="form-select mb-3" id="dropOffTimeInput" name="dropOffTimeInput">
+                                    <option value="">Select time</option>
+                                    <option value="12:00 am">12:00 am</option>
+                                    <option value="01:00 am">01:00 am</option>
+                                    <option value="02:00 am">02:00 am</option>
+                                    <option value="03:00 am">03:00 am</option>
+                                    <option value="04:00 am">04:00 am</option>
+                                    <option value="05:00 am">05:00 am</option>
+                                    <option value="06:00 am">06:00 am</option>
+                                    <option value="07:00 am">07:00 am</option>
+                                    <option value="08:00 am">08:00 am</option>
+                                    <option value="09:00 am">09:00 am</option>
+                                    <option value="10:00 am">10:00 am</option>
+                                    <option value="11:00 am">11:00 am</option>
+                                    <option value="12:00 pm">12:00 pm</option>
+                                    <option value="01:00 pm">01:00 pm</option>
+                                    <option value="02:00 pm">02:00 pm</option>
+                                    <option value="03:00 pm">03:00 pm</option>
+                                    <option value="04:00 pm">04:00 pm</option>
+                                    <option value="05:00 pm">05:00 pm</option>
+                                    <option value="06:00 pm">06:00 pm</option>
+                                    <option value="07:00 pm">07:00 pm</option>
+                                    <option value="08:00 pm">08:00 pm</option>
+                                    <option value="09:00 pm">09:00 pm</option>
+                                    <option value="10:00 pm">10:00 pm</option>
+                                    <option value="11:00 pm">11:00 pm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="pconfirm">Confirm</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </section> <!-- end of booking-section -->
+
+    
+
 
     <!-- Footer wrapper -->
     <div class="footer-wrapper">
