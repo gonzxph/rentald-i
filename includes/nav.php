@@ -9,11 +9,6 @@
         <div class="d-none d-lg-flex ms-4">
             <ul class="navbar-nav me-auto mb-0">
                 <li class="nav-item mx-2">
-                    <a class="nav-link" href="vehicles.php">
-                        <i class="fas fa-car me-1"></i>Vehicles
-                    </a>
-                </li>
-                <li class="nav-item mx-2">
                     <a class="nav-link" href="tours.php">
                         <i class="fas fa-map-marked-alt me-1"></i>Tours
                     </a>
@@ -36,11 +31,6 @@
             <!-- Mobile Navigation Items -->
             <ul class="navbar-nav d-lg-none">
                 <li class="nav-item">
-                    <a class="nav-link" href="vehicles.php">
-                        <i class="fas fa-car me-1"></i>Vehicles
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="tours.php">
                         <i class="fas fa-map-marked-alt me-1"></i>Tours
                     </a>
@@ -57,30 +47,55 @@
                 <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
                     <div class="dropdown">
                         <button class="btn btn-link dropdown-toggle d-flex align-items-center gap-2" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="images/bg/bg-cclex.jpeg" alt="Profile" class="rounded-circle" width="32" height="32">
+                            <img src="<?php echo isset($_SESSION['profile_image']) ? $_SESSION['profile_image'] : 'images/profile/user.png'; ?>" 
+                                 alt="Profile" 
+                                 class="rounded-circle" 
+                                 width="35" 
+                                 height="35">
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
+                            <!-- User Info Header -->
                             <li>
-                                <a href="profile.php" class="dropdown-item px-3 py-2 text-decoration-none">
-                                    <strong><?php echo isset($_SESSION['fname']) ? htmlspecialchars($_SESSION['fname']) : ''; ?> <?php echo isset($_SESSION['lname']) ? htmlspecialchars($_SESSION['lname']) : ''; ?></strong>
-                                    <div class="text-muted small">View profile</div>
-                                </a>
+                                <div class="px-3 py-2">
+                                    <div class="fw-bold"><?php echo htmlspecialchars($_SESSION['fname'] . ' ' . $_SESSION['lname']); ?></div>
+                                    <div class="text-muted small"><?php echo htmlspecialchars($_SESSION['user_email']); ?></div>
+                                </div>
                             </li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">VEHICLE RENTAL</h6></li>
-                            <li><a class="dropdown-item" href="my-bookings.php">My bookings</a></li>
-                           
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">ACCOUNT</h6></li>
-                            <li><a class="dropdown-item" href="dashboard.php">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="settings.php">Settings</a></li>
-                            <li><a class="dropdown-item" href="verifications.php">Verifications</a></li>
+
+                            <!-- Main Actions -->
+                            <li><a class="dropdown-item" href="dashboard.php"><i class="fas fa-columns me-2"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item" href="profile.php"><i class="fas fa-user me-2"></i>My Profile</a></li>
                             
+                            <!-- Rental Section -->
                             <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header">HELP</h6></li>
-                            <li><a class="dropdown-item" href="support.php">Help & Support</a></li>
-                            <li><a class="dropdown-item" href="contact.php">Contact us</a></li>
-                            <li><a class="dropdown-item" href="signout.php">Sign out</a></li>
+                            <li><h6 class="dropdown-header text-uppercase small fw-bold">Rentals</h6></li>
+                            <li><a class="dropdown-item" href="my-bookings.php"><i class="fas fa-calendar-check me-2"></i>Active Rentals</a></li>
+                            <li><a class="dropdown-item" href="my-bookings.php?status=upcoming"><i class="fas fa-clock me-2"></i>Upcoming Bookings</a></li>
+                            <li><a class="dropdown-item" href="my-bookings.php?status=history"><i class="fas fa-history me-2"></i>Rental History</a></li>
+
+                            <!-- Account Settings -->
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header text-uppercase small fw-bold">Account</h6></li>
+                            <li><a class="dropdown-item" href="settings.php"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><a class="dropdown-item" href="verifications.php"><i class="fas fa-shield-alt me-2"></i>Verification Status</a></li>
+                            <?php if ($_SESSION['user_role'] === 'admin'): ?>
+                                <li><a class="dropdown-item" href="admin/dashboard.php"><i class="fas fa-user-shield me-2"></i>Admin Panel</a></li>
+                            <?php endif; ?>
+
+                            <!-- Help & Support -->
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header text-uppercase small fw-bold">Support</h6></li>
+                            <li><a class="dropdown-item" href="support.php"><i class="fas fa-question-circle me-2"></i>Help Center</a></li>
+                            <li><a class="dropdown-item" href="contact.php"><i class="fas fa-envelope me-2"></i>Contact Us</a></li>
+                            
+                            <!-- Sign Out -->
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="signout.php">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 <?php else: ?>

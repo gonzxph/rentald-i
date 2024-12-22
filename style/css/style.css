@@ -368,3 +368,166 @@ body {
 .footer-wrapper {
     margin-top: auto;
 }
+
+/* Date Time Modal Styles */
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #0d6efd, #0043a8);
+}
+
+.modal-header .modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white !important;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+/* Time Selection Styling */
+.time-selection-container {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-top: 1.5rem;
+}
+
+.form-select-lg {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-select-lg:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+
+/* Modal Footer */
+.modal-footer {
+    border-top: none;
+    padding: 1.5rem;
+}
+
+.modal-footer .btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.modal-footer .btn-secondary {
+    background-color: #e9ecef;
+    border: none;
+    color: #495057;
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: #dee2e6;
+    transform: translateY(-1px);
+}
+
+.modal-footer .btn-primary {
+    background: linear-gradient(135deg, #0d6efd, #0043a8);
+    border: none;
+}
+
+.modal-footer .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+}
+
+/* Section Headers */
+.date-selection-container h6,
+.time-selection-container h6 {
+    color: #6c757d;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Form Labels */
+.form-label {
+    color: #495057;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .time-selection-container {
+        padding: 1rem;
+    }
+    
+    .form-select-lg {
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+/* Enhanced Alert Styles */
+.alert {
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    color: #664d03;
+}
+
+.alert i {
+    color: #ffc107;
+}
+
+/* Animation for alerts */
+.alert.fade {
+    transition: opacity 0.2s ease-in-out;
+}
+
+.alert.fade:not(.show) {
+    opacity: 0;
+}
+
+.alert.show {
+    opacity: 1;
+}
+
+.alert-warning.d-none {
+    display: none !important;
+}
+
+/* Add these styles for past dates */
+.vanilla-calendar-day__disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+    background-color: #f0f0f0 !important;
+    pointer-events: none !important;
+}
+
+.vanilla-calendar-day--disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+    background-color: #f0f0f0 !important;
+    pointer-events: none !important;
+}
