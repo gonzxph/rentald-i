@@ -383,7 +383,7 @@ require_once './backend/search_handler.php';
 
                         </div>
                     </div>
-                    <button id="submitButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    <button id="submitButton" type="button" class="btn btn-primary" data-action="<?= $isLoggedIn ? 'book' : 'login' ?>">
                         Book Now
                     </button>
                 </form>
@@ -569,7 +569,7 @@ require_once './backend/search_handler.php';
                 </div>
             </div>
         </div>
-    </from>
+    </form>
 
 
 
@@ -623,6 +623,57 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial display
     updatePaymentDisplay();
+});
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#submitButton').on('click', function() {
+        const action = $(this).data('action');
+        
+        if (action === 'login') {
+            // Store current URL in session storage before redirecting
+            sessionStorage.setItem('redirectAfterLogin', window.location.href);
+            
+            // Show login required message and redirect
+            Swal.fire({
+                title: 'Login Required',
+                text: 'Please login to continue with your booking',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Login',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'signin.php';
+                }
+            });
+        } else {
+            // Check if required fields are filled
+            const pickupInput = $('#pickupInput').val();
+            const dropoffInput = $('#dropoffInput').val();
+            const pickupTime = $('#pickupTimeHiddenInput').val();
+            const dropoffTime = $('#dropoffTimeHiddenInput').val();
+
+            if (!pickupInput || !dropoffInput || !pickupTime || !dropoffTime) {
+                Swal.fire({
+                    title: 'Missing Information',
+                    text: 'Please fill in all required booking details',
+                    icon: 'warning'
+                });
+                return;
+            }
+
+            // User is logged in and all fields are filled, show booking modal
+            $('#staticBackdrop').modal('show');
+        }
+    });
+
+    // Initialize tooltips if you're using them
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 });
 </script>
 

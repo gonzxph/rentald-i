@@ -83,6 +83,17 @@
             }
         });
     </script>
+    <script>
+    $(document).ready(function() {
+        // Check if there's a redirect URL stored
+        const redirectUrl = sessionStorage.getItem('redirectAfterLogin');
+        
+        if (redirectUrl) {
+            // Add the redirect URL as a hidden input to the form
+            $('form').append(`<input type="hidden" name="redirect" value="${redirectUrl}">`);
+        }
+    });
+    </script>
 </body>
 <?php include 'includes/scripts.php' ?>
 </html>

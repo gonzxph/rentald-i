@@ -8,7 +8,7 @@
     <?php include 'includes/nav.php' ?>
 
     <?php if (isset($_GET['logout']) && $_GET['logout'] === 'success'): ?>
-        <div class="alert alert-warning alert-dismissible fade show text-center" role="alert" id="logoutAlert">
+        <div class="alert alert-warning fade show d-flex justify-content-center" role="alert" id="logoutAlert">
             Signed out
         </div>
     <?php endif; ?>
@@ -36,9 +36,6 @@
                                     </div>
                                     <input id="durationDay" name="durationDay" type="hidden" value="">
                                     <input id="durationHour" name="durationHour" type="hidden" value="">
-                                    <div id="warningMessage" class="text-danger m-3" style="display: none;">
-                                        Please fill out all fields before submitting!
-                                    </div>
                                     <button type="submit" class="btn btn-dark mt-3 w-100">Search</button>
                                 </form>
                             </div>
@@ -48,8 +45,8 @@
             </div>
         </div>
 
-    <!-- Pickup date and time modal -->
-    <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
+     <!-- Pickup date and time modal -->
+     <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered"> <!-- Adjusted modal size and centering -->
             <div class="modal-content">
                 <div class="modal-header">
@@ -141,6 +138,7 @@
             </div>
         </div>
     </div>
+             
     </section> <!-- end of booking-section -->
 
     <!-- Footer wrapper -->
@@ -152,16 +150,19 @@
     
     <?php if (isset($_GET['logout']) && $_GET['logout'] === 'success'): ?>
     <script>
-        // Auto dismiss the logout alert after 3 seconds using jQuery
         $(document).ready(function() {
-            setTimeout(function() {
-                $('#logoutAlert').fadeOut('slow');
-            }, 3000);
+            const $logoutAlert = $("#logoutAlert");
+            if ($logoutAlert.length) {
+                setTimeout(function() {
+                    $logoutAlert.fadeOut("slow", function() {
+                        $(this).remove();
+                    });
+                }, 2000);
+            }
         });
     </script>
     <?php endif; ?>
 </body>
 <script src="js/calendar.js"></script>
 <script src="js/main.js"></script>
-
 </html>

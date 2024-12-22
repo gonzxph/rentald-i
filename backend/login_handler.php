@@ -24,8 +24,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['logged_in'] = true;
                 $_SESSION['fname'] = $user['user_fname'];
                 $_SESSION['lname'] = $user['user_lname'];
+                $_SESSION['user_email'] = $user['user_email'];
+                $_SESSION['user_role'] = $user['user_role'];
                 $_SESSION['success_message'] = "Welcome back, " . $user['user_fname'] . "!";
-                header('Location: ../dashboard.php');
+
+                // Update last login timestamp
+                $updateStmt = $db->prepare("UPDATE user SET user_last_login_at = CURRENT_TIMESTAMP WHERE user_id = :user_id");
+                $updateStmt->bindParam(':user_id', $user['user_id'], PDO::PARAM_INT);
+                $updateStmt->execute();
+
+                // Check if there's a redirect URL
+                if (isset($_POST['redirect'])) {
+                    header('Location: ' . $_POST['redirect']);
+                } else {
+                    header('Location: ../dashboard.php');
+                }
                 exit();
             } else {
                 $error = "Invalid email or password.";
