@@ -142,93 +142,110 @@ require_once './backend/search_handler.php';
 
     <!-- Pickup date and time modal -->
     <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered"> <!-- Adjusted modal size and centering -->
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="dateTimeModalLabel">Select Pickup & Drop-off Dates and Times</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="dateTimeModalLabel">
+                        <i class="fas fa-calendar-alt me-2"></i>Select Your Rental Period
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Centered Calendar Container for Pick-up Date -->
-                    <div id="vanillaCalendar" class="vanilla-calendar calendar-center"></div>
+                    <!-- Calendar Container -->
+                    <div class="date-selection-container mb-4">
+                        <h6 class="text-muted mb-3"><i class="fas fa-info-circle me-2"></i>Select your pickup and return dates</h6>
+                        
+                        <!-- Enhanced Error Messages -->
+                        <div class="mb-3">
+                            <div class="alert alert-warning d-none fade show" id="timeEmptyErr" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Almost there!</strong> Please select your preferred pickup and return times to continue.
+                            </div>
+                            <div class="alert alert-warning d-none fade show" id="timeOneFilledErr" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>One more step!</strong> Please make sure to select both pickup and return times.
+                            </div>
+                            <div class="alert alert-warning d-none fade show" id="CalEmptyErr" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Quick reminder:</strong> Please select both your pickup and return dates on the calendar below.
+                            </div>
+                        </div>
+
+                        <div id="vanillaCalendar" class="vanilla-calendar calendar-center"></div>
+                    </div>
                     
-                    <!-- Time Picker -->
-                    <div id="timeEmptyErr" class="text-danger mt-2" style="display: none">
-                        <p>Please select the Pickup Time or Drop-Off Time input below before setting the time.</p>
-                    </div>
-                    <div id="timeOneFilledErr" class="text-danger mt-2" style="display: none">
-                        <p>Please select both pickup and drop-off dates and times.</p>
-                    </div>
-                    <div id="CalEmptyErr" class="text-danger mt-2" style="display: none">
-                        <p>Please select the pickup and drop-off dates from the calendar.</p>
-                    </div>
-                     <!-- Time Picker Dropdowns -->
-                     <div class="row mt-4">
-                        <div class="col">
-                            <label for="pickupTimeInput">Pickup Time:</label>
-                            <select class="form-select" id="pickupTimeInput" name="pickupTimeInput">
-                                <option value="">Select time</option>
-                                <option value="12:00 am">12:00 am</option>
-                                <option value="01:00 am">01:00 am</option>
-                                <option value="02:00 am">02:00 am</option>
-                                <option value="03:00 am">03:00 am</option>
-                                <option value="04:00 am">04:00 am</option>
-                                <option value="05:00 am">05:00 am</option>
-                                <option value="06:00 am">06:00 am</option>
-                                <option value="07:00 am">07:00 am</option>
-                                <option value="08:00 am">08:00 am</option>
-                                <option value="09:00 am">09:00 am</option>
-                                <option value="10:00 am">10:00 am</option>
-                                <option value="11:00 am">11:00 am</option>
-                                <option value="12:00 pm">12:00 pm</option>
-                                <option value="01:00 pm">01:00 pm</option>
-                                <option value="02:00 pm">02:00 pm</option>
-                                <option value="03:00 pm">03:00 pm</option>
-                                <option value="04:00 pm">04:00 pm</option>
-                                <option value="05:00 pm">05:00 pm</option>
-                                <option value="06:00 pm">06:00 pm</option>
-                                <option value="07:00 pm">07:00 pm</option>
-                                <option value="08:00 pm">08:00 pm</option>
-                                <option value="09:00 pm">09:00 pm</option>
-                                <option value="10:00 pm">10:00 pm</option>
-                                <option value="11:00 pm">11:00 pm</option>
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label for="dropOffTimeInput">Dropoff Time:</label>
-                            <select class="form-select mb-3" id="dropOffTimeInput" name="dropOffTimeInput">
-                                <option value="">Select time</option>
-                                <option value="12:00 am">12:00 am</option>
-                                <option value="01:00 am">01:00 am</option>
-                                <option value="02:00 am">02:00 am</option>
-                                <option value="03:00 am">03:00 am</option>
-                                <option value="04:00 am">04:00 am</option>
-                                <option value="05:00 am">05:00 am</option>
-                                <option value="06:00 am">06:00 am</option>
-                                <option value="07:00 am">07:00 am</option>
-                                <option value="08:00 am">08:00 am</option>
-                                <option value="09:00 am">09:00 am</option>
-                                <option value="10:00 am">10:00 am</option>
-                                <option value="11:00 am">11:00 am</option>
-                                <option value="12:00 pm">12:00 pm</option>
-                                <option value="01:00 pm">01:00 pm</option>
-                                <option value="02:00 pm">02:00 pm</option>
-                                <option value="03:00 pm">03:00 pm</option>
-                                <option value="04:00 pm">04:00 pm</option>
-                                <option value="05:00 pm">05:00 pm</option>
-                                <option value="06:00 pm">06:00 pm</option>
-                                <option value="07:00 pm">07:00 pm</option>
-                                <option value="08:00 pm">08:00 pm</option>
-                                <option value="09:00 pm">09:00 pm</option>
-                                <option value="10:00 pm">10:00 pm</option>
-                                <option value="11:00 pm">11:00 pm</option>
-                            </select>
+                    <!-- Time Selection -->
+                    <div class="time-selection-container">
+                        <h6 class="text-muted mb-3"><i class="far fa-clock me-2"></i>Select your pickup and return times</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="pickupTimeInput" class="form-label">Pickup Time</label>
+                                <select class="form-select form-select-lg" id="pickupTimeInput" name="pickupTimeInput">
+                                    <option value="">Select time</option>
+                                    <option value="12:00 am">12:00 am</option>
+                                    <option value="01:00 am">01:00 am</option>
+                                    <option value="02:00 am">02:00 am</option>
+                                    <option value="03:00 am">03:00 am</option>
+                                    <option value="04:00 am">04:00 am</option>
+                                    <option value="05:00 am">05:00 am</option>
+                                    <option value="06:00 am">06:00 am</option>
+                                    <option value="07:00 am">07:00 am</option>
+                                    <option value="08:00 am">08:00 am</option>
+                                    <option value="09:00 am">09:00 am</option>
+                                    <option value="10:00 am">10:00 am</option>
+                                    <option value="11:00 am">11:00 am</option>
+                                    <option value="12:00 pm">12:00 pm</option>
+                                    <option value="01:00 pm">01:00 pm</option>
+                                    <option value="02:00 pm">02:00 pm</option>
+                                    <option value="03:00 pm">03:00 pm</option>
+                                    <option value="04:00 pm">04:00 pm</option>
+                                    <option value="05:00 pm">05:00 pm</option>
+                                    <option value="06:00 pm">06:00 pm</option>
+                                    <option value="07:00 pm">07:00 pm</option>
+                                    <option value="08:00 pm">08:00 pm</option>
+                                    <option value="09:00 pm">09:00 pm</option>
+                                    <option value="10:00 pm">10:00 pm</option>
+                                    <option value="11:00 pm">11:00 pm</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="dropOffTimeInput" class="form-label">Return Time</label>
+                                <select class="form-select form-select-lg" id="dropOffTimeInput" name="dropOffTimeInput">
+                                    <option value="">Select time</option>
+                                    <option value="12:00 am">12:00 am</option>
+                                    <option value="01:00 am">01:00 am</option>
+                                    <option value="02:00 am">02:00 am</option>
+                                    <option value="03:00 am">03:00 am</option>
+                                    <option value="04:00 am">04:00 am</option>
+                                    <option value="05:00 am">05:00 am</option>
+                                    <option value="06:00 am">06:00 am</option>
+                                    <option value="07:00 am">07:00 am</option>
+                                    <option value="08:00 am">08:00 am</option>
+                                    <option value="09:00 am">09:00 am</option>
+                                    <option value="10:00 am">10:00 am</option>
+                                    <option value="11:00 am">11:00 am</option>
+                                    <option value="12:00 pm">12:00 pm</option>
+                                    <option value="01:00 pm">01:00 pm</option>
+                                    <option value="02:00 pm">02:00 pm</option>
+                                    <option value="03:00 pm">03:00 pm</option>
+                                    <option value="04:00 pm">04:00 pm</option>
+                                    <option value="05:00 pm">05:00 pm</option>
+                                    <option value="06:00 pm">06:00 pm</option>
+                                    <option value="07:00 pm">07:00 pm</option>
+                                    <option value="08:00 pm">08:00 pm</option>
+                                    <option value="09:00 pm">09:00 pm</option>
+                                    <option value="10:00 pm">10:00 pm</option>
+                                    <option value="11:00 pm">11:00 pm</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-
-
+                </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="pconfirm">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="pconfirm">
+                        <i class="fas fa-check me-2"></i>Confirm Selection
+                    </button>
                 </div>
             </div>
         </div>
@@ -237,5 +254,139 @@ require_once './backend/search_handler.php';
     <?php include 'includes/scripts.php'; ?>
     <script src="js/main.js"></script>
     <script src="js/calendar.js"></script>
+    <script>
+    $(document).ready(function() {
+        const $calendarElement = $('#vanillaCalendar');
+        let calendar = null;
+
+        // Update time options based on selected date
+        function updateTimeOptions() {
+            const $pickupTimeSelect = $('#pickupTimeInput');
+            const today = new Date();
+            const selectedDate = calendar.selectedDates[0];
+            
+            // Reset all options first
+            $pickupTimeSelect.find('option').prop('disabled', false);
+
+            // If selected date is today, disable past times
+            if (selectedDate === today.toISOString().split('T')[0]) {
+                const currentHour = today.getHours();
+                const currentMinutes = today.getMinutes();
+
+                $pickupTimeSelect.find('option').each(function() {
+                    const timeStr = $(this).val();
+                    if (timeStr) {
+                        const [hours, minutes] = timeStr.split(':');
+                        let hour = parseInt(hours);
+                        
+                        // Convert to 24-hour format
+                        if (timeStr.includes('PM') && hour !== 12) {
+                            hour += 12;
+                        } else if (timeStr.includes('AM') && hour === 12) {
+                            hour = 0;
+                        }
+
+                        // Disable if hour is before current time
+                        if (hour < currentHour || (hour === currentHour && parseInt(minutes) <= currentMinutes)) {
+                            $(this).prop('disabled', true);
+                        }
+                    }
+                });
+            }
+        }
+
+        if ($calendarElement.length) {
+            calendar = new VanillaCalendar('#vanillaCalendar', {
+                settings: {
+                    iso8601: false,
+                    range: {
+                        min: new Date().toISOString().split('T')[0],
+                        max: '2031-12-31'
+                    },
+                    visibility: {
+                        monthShort: true,
+                        theme: 'light'
+                    },
+                    selection: {
+                        day: 'multiple-ranged',
+                    }
+                },
+                actions: {
+                    clickDay(event, self) {
+                        console.log("Selected Dates:", self.selectedDates);
+                        updateTimeOptions();
+                    }
+                }
+            });
+            calendar.init();
+            
+            updateTimeOptions();
+        }
+
+        $('#pconfirm').on('click', function() {
+            // Hide all error messages initially
+            $('.alert').addClass('d-none');
+
+            const pickupTime = $('#pickupTimeInput').val();
+            const dropOffTime = $('#dropOffTimeInput').val();
+
+            // Check if calendar dates are selected
+            if (!calendar || calendar.selectedDates.length < 2) {
+                $('#CalEmptyErr').removeClass('d-none');
+                return;
+            }
+
+            // Check if both times are empty
+            if (!pickupTime && !dropOffTime) {
+                $('#timeEmptyErr').removeClass('d-none');
+                return;
+            }
+
+            // Check if only one time is filled
+            if ((!pickupTime && dropOffTime) || (pickupTime && !dropOffTime)) {
+                $('#timeOneFilledErr').removeClass('d-none');
+                return;
+            }
+
+            // If we get here, all validations passed
+            const pickupDate = calendar.selectedDates[0];
+            const dropOffDate = calendar.selectedDates[calendar.selectedDates.length - 1];
+            
+            const pickupDateTime = new Date(`${pickupDate} ${pickupTime}`);
+            const dropOffDateTime = new Date(`${dropOffDate} ${dropOffTime}`);
+
+            const diffInMillis = dropOffDateTime - pickupDateTime;
+
+            if (diffInMillis > 0) {
+                const options = { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    hour12: true 
+                };
+                const pickupFormatted = pickupDateTime.toLocaleString('en-US', options);
+                const dropOffFormatted = dropOffDateTime.toLocaleString('en-US', options);
+
+                const diffInHours = diffInMillis / (1000 * 60 * 60);
+                const days = Math.floor(diffInHours / 24);
+                const hours = Math.floor(diffInHours % 24);
+
+                // Update the dateTimeInput with formatted dates
+                $('#dateTimeInput').val(`${pickupFormatted} - ${dropOffFormatted}`);
+                
+                // Update the hidden duration inputs
+                $('#durationDay').val(days);
+                $('#durationHour').val(hours);
+                
+                // Update the duration display
+                $('#duration').val(`${days} Day(s) ${hours} Hour(s)`);
+
+                $('#dateTimeModal').modal('hide');
+            }
+        });
+    });
+    </script>
 </body>
 </html>
