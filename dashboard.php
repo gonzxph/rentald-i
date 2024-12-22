@@ -1,9 +1,9 @@
 <?php
-session_start();
+require_once 'includes/session.php';  // New centralized session management
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: signin.php");
     exit();
 
     if (isset($_SESSION['pending_booking'])) {
@@ -20,18 +20,34 @@ if (!isset($_SESSION['user_id'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pseudo SPA</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Dashboard | <?php echo htmlspecialchars($_SESSION['username']); ?></title>
+    <?php include 'includes/head.php'; ?>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></a>
-        <div class="navbar-nav ml-auto">
-            <a class="nav-item nav-link" href="logout.php">Logout</a>
+    <?php include 'includes/nav.php'; ?>
+
+    <!-- Add the success message display -->
+    <?php if (isset($_SESSION['success_message'])): ?>
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            <?php 
+                echo htmlspecialchars($_SESSION['success_message']);
+                unset($_SESSION['success_message']); // Clear the message after displaying
+            ?>
         </div>
-    </nav>
+    <?php endif; ?>
 
     <!-- Rest of your existing index.php content -->
+    
 </body>
+<?php include 'includes/scripts.php' ?>
+<script>
+    // Auto-hide success alerts after 3 seconds using jQuery
+    $(document).ready(function() {
+        setTimeout(function() {
+            $('.alert-success').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 3000);
+    });
+</script>
 </html>

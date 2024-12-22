@@ -7,39 +7,46 @@
 <body>
     <?php include 'includes/nav.php' ?>
 
-    <div class="container-fluid one vh-75">
-        <div class="row p-5">
-            <div class="col-lg-6 mt-4 mb-3">
-                <h1 class="text-center">Your ON-THE-GO road partner</h1>
-                <p class="text-center">Explore Cebu with reliable, affordable, and quality vehicles.</p>
-            </div>
-            <div class="col-lg-6 d-flex justify-content-center">
-                <div class="d-flex justify-content-center align-items-center">
-                    <div class="card text-center shadow-lg p-4" style="width: 25rem;">
-                        <h5 class="card-title mb-3">Find the right car now!</h5>
-                        <div class="card-body">
-                            <form method="POST" action="./search.php" class="m-3" onsubmit="return validateForm()">
-                                <!-- <div class="input-group mb-3">
-                                    <span class="input-group-text bg-white"><i class="fa-solid fa-users"></i></span>
-                                    <input id="pax" name="pax" type="number" class="form-control" placeholder="Number of pax" value="">
-                                </div> -->
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-white"><i class="fas fa-calendar-alt text-secondary"></i></span>
-                                    <input readonly name="dateTimeInput" id="dateTimeInput" type="text" data-bs-toggle="modal" data-bs-target="#dateTimeModal" class="form-control" placeholder="Choose date and time">
-                                </div>
-                                <input id="durationDay" name="durationDay" type="hidden" value="">
-                                <input id="durationHour" name="durationHour" type="hidden" value="">
-                                <div id="warningMessage" class="text-danger m-3" style="display: none;">
-                                    Please fill out all fields before submitting!
-                                </div>
-                                <button type="submit" class="btn btn-dark mt-3 w-100">Search</button>
-                            </form>
+    <?php if (isset($_GET['logout']) && $_GET['logout'] === 'success'): ?>
+        <div class="alert alert-warning alert-dismissible fade show text-center" role="alert" id="logoutAlert">
+            Signed out
+        </div>
+    <?php endif; ?>
+
+    <section class="booking-section">
+        <div class="container-fluid one vh-75">
+            <div class="row p-5">
+                <div class="col-lg-6 mt-4 mb-3">
+                    <h1 class="text-center">Your ON-THE-GO road partner</h1>
+                    <p class="text-center">Explore Cebu with reliable, affordable, and quality vehicles.</p>
+                </div>
+                <div class="col-lg-6 d-flex justify-content-center">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="card text-center shadow-lg p-4" style="width: 25rem;">
+                            <h5 class="card-title mb-3">Find the right car now!</h5>
+                            <div class="card-body">
+                                <form method="POST" action="./search.php" class="m-3" onsubmit="return validateForm()">
+                                    <!-- <div class="input-group mb-3">
+                                        <span class="input-group-text bg-white"><i class="fa-solid fa-users"></i></span>
+                                        <input id="pax" name="pax" type="number" class="form-control" placeholder="Number of pax" value="">
+                                    </div> -->
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-white"><i class="fas fa-calendar-alt text-secondary"></i></span>
+                                        <input readonly name="dateTimeInput" id="dateTimeInput" type="text" data-bs-toggle="modal" data-bs-target="#dateTimeModal" class="form-control" placeholder="Choose date and time">
+                                    </div>
+                                    <input id="durationDay" name="durationDay" type="hidden" value="">
+                                    <input id="durationHour" name="durationHour" type="hidden" value="">
+                                    <div id="warningMessage" class="text-danger m-3" style="display: none;">
+                                        Please fill out all fields before submitting!
+                                    </div>
+                                    <button type="submit" class="btn btn-dark mt-3 w-100">Search</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
     <!-- Pickup date and time modal -->
     <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
@@ -134,12 +141,26 @@
             </div>
         </div>
     </div>
+    </section> <!-- end of booking-section -->
 
-    <?php include 'includes/footer.php' ?>
+    <!-- Footer wrapper -->
+    <div class="footer-wrapper">
+        <?php include 'includes/footer.php' ?>
+    </div>
 
+    <?php include 'includes/scripts.php' ?>
+    
+    <?php if (isset($_GET['logout']) && $_GET['logout'] === 'success'): ?>
+    <script>
+        // Auto dismiss the logout alert after 3 seconds using jQuery
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('#logoutAlert').fadeOut('slow');
+            }, 3000);
+        });
+    </script>
+    <?php endif; ?>
 </body>
-
-<?php include 'includes/scripts.php' ?>
 <script src="js/calendar.js"></script>
 <script src="js/main.js"></script>
 
