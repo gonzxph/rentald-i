@@ -1,76 +1,48 @@
 <footer class="text-center bg-body-tertiary shadow-sm">
-  <!-- Grid container -->
   <div class="container pt-4">
-    <!-- Section: Social media -->
-    <section class="mb-4">
-      <!-- Facebook -->
-      <a
-        data-mdb-ripple-init
-        class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="https://www.facebook.com/profile.php?id=100078937516633"
-        role="button"
-        data-mdb-ripple-color="dark"
-        target="_blank"
-        ><i class="fab fa-facebook-f"></i
-      ></a>
+    <div class="row">
+      <!-- Left Side -->
+      <div class="col-md-6 text-md-start">
+        <!-- Logo -->
+        <div class="mb-4">
+          <a href="#" class="text-decoration-none">
+            <h2 class="text-dark">D & I Car Rental</h2>
+          </a>
+        </div>
 
-      <!-- Twitter -->
-      <a
-        data-mdb-ripple-init
-        class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
-        role="button"
-        data-mdb-ripple-color="dark"
-        ><i class="fab fa-twitter"></i
-      ></a>
+        <!-- Privacy Links -->
+        <div class="mb-4">
+          <a href="#" class="text-decoration-none text-secondary me-3">Privacy</a>
+          <a href="#" class="text-decoration-none text-secondary">Policy</a>
+        </div>
+      </div>
 
-      <!-- Google -->
-      <a
-        data-mdb-ripple-init
-        class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
-        role="button"
-        data-mdb-ripple-color="dark"
-        ><i class="fab fa-google"></i
-      ></a>
+      <!-- Right Side -->
+      <div class="col-md-6 text-md-end">
+        
+        <!-- Main Navigation -->
+        <div class="mb-4">
+          <h2>Like and Follow us!</h2>
+        </div>
+        <!-- Social Media Icons -->
+        <div class="mb-4">
+          <a href="https://www.facebook.com/profile.php?id=100078937516633" class="btn btn-primary rounded-circle mx-2">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" class="btn btn-info rounded-circle mx-2">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="#" class="btn btn-danger rounded-circle mx-2">
+            <i class="fab fa-instagram"></i>
+          </a>
+        </div>
+        
+      </div>
+    </div>
 
-      <!-- Instagram -->
-      <a
-        data-mdb-ripple-init
-        class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
-        role="button"
-        data-mdb-ripple-color="dark"
-        ><i class="fab fa-instagram"></i
-      ></a>
-
-      <!-- Linkedin -->
-      <a
-        data-mdb-ripple-init
-        class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
-        role="button"
-        data-mdb-ripple-color="dark"
-        ><i class="fab fa-linkedin"></i
-      ></a>
-      <!-- Github -->
-      <a
-        data-mdb-ripple-init
-        class="btn btn-link btn-floating btn-lg text-body m-1"
-        href="#!"
-        role="button"
-        data-mdb-ripple-color="dark"
-        ><i class="fab fa-github"></i
-      ></a>
-    </section>
-    <!-- Section: Social media -->
+    <!-- Copyright -->
+    <div class="text-center p-3 text-secondary">
+      Copyright <script>document.write(new Date().getFullYear())</script>. All Rights Reserved.
+    </div>
   </div>
-  <!-- Grid container -->
-
-  <!-- Copyright -->
-  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
-    © 2020 Copyright:
-    <a class="text-body" href="https://mdbootstrap.com/">MDBootstrap.com</a>
-  </div>
-  <!-- Copyright -->
 </footer>

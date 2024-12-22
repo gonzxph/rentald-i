@@ -1,8 +1,5 @@
 /*nav.php*/
-a:hover{
-    background-color: #DDE6ED;
-    border-radius: 5px;
-}
+
 
 .pac-container {
     z-index: 1060 !important;
@@ -368,3 +365,4 @@ body {
 .footer-wrapper {
     margin-top: auto;
 }
+
