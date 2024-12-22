@@ -47,8 +47,8 @@
                 </div>
             </div>
             <hr class="m-3">
-            <div class="row p-5">
-                <div class="container">
+            <div class="container my-5">
+                <div class="row">
                     <?php include 'includes/policies_guidelines.php' ?>
                 </div>
             </div>
