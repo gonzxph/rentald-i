@@ -57,7 +57,7 @@
     </div>
 
     <!-- Footer Section -->
-    <?php include '../footer/footer.php'; ?>
+    <?php include 'admin/CarRental/footer/footer.php'; ?>
 </div>
 
 <!-- JavaScript to handle sidebar toggling and dynamic content loading -->
