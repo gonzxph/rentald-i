@@ -1,55 +1,35 @@
 <?php
 
-
 class CarRepository extends Dbh {
     public function getAllCars() {
-        $sql = "SELECT * FROM dashboard_content"; // Replace 'cars' with your table name
+        $sql = "SELECT * FROM car"; // Replace 'car' with your table name if different
         $stmt = $this->connect()->query($sql);
         
         $cars = [];
         while ($row = $stmt->fetch_assoc()) {
             $cars[] = new Car(
-                $row["id"],
-                $row["model"],
-                $row["brand"],
-                $row["price"],
-                $row["available"],
-                 /*
-                $row['id'],
-                $row['brand'],
-                $row['color'],
-                $row['year'],
-                $row['license_plate'],
-                $row['vin'],
-                $row['seats'],
-                $row['transmission_type'],
-                $row['fuel_type'],
-                $row['availability']
-                */
+                $row["car_id"],
+                $row["car_model"],
+                $row["car_brand"],
+                $row["car_availability"]
             );
         }
 
         return $cars;
     }
 
-    public function getCarById($id) {
-        $sql = "SELECT * FROM dashboard_content WHERE id = ?";
+    public function getCarById($car_id) {
+        $sql = "SELECT * FROM car WHERE car_id = ?";
         $stmt = $this->connect()->prepare($sql);
-        $stmt->execute([$id]);
+        $stmt->execute([$car_id]);
         $row = $stmt->fetch();
 
         if ($row) {
             return new Car(
-                $row['id'],
-                $row['brand'],
-                $row['color'],
-                $row['year'],
-                $row['license_plate'],
-                $row['vin'],
-                $row['seats'],
-                $row['transmission_type'],
-                $row['fuel_type'],
-                $row['availability']
+                $row["car_id"],
+                $row["car_model"],
+                $row["car_brand"],
+                $row["car_availability"]
             );
         }
 
@@ -57,38 +37,56 @@ class CarRepository extends Dbh {
     }
 
     public function addCar(Car $car) {
-        $sql = "INSERT INTO dashboard_content (brand, color, year, license_plate, vin, seats, transmission_type, fuel_type, availability) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO car (car_description, car_brand, car_model, car_year, car_type, car_color, car_seats, 
+                car_transmission_type, car_fuel_type, car_rental_rate, car_excess_per_hour, car_availability) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->connect()->prepare($sql);
         $stmt->execute([
+            $car->getDescription(),
             $car->getBrand(),
-            $car->getColor(),
+            $car->getModel(),
             $car->getYear(),
-            $car->getLicensePlate(),
-            $car->getVin(),
+            $car->getType(),
+            $car->getColor(),
             $car->getSeats(),
             $car->getTransmissionType(),
             $car->getFuelType(),
+            $car->getRentalRate(),
+            $car->getExcessPerHour(),
             $car->getAvailability()
         ]);
     }
 
     public function updateCar(Car $car) {
-        $sql = "UPDATE dashboard_content 
-                SET brand = ?, color = ?, year = ?, license_plate = ?, vin = ?, seats = ?, transmission_type = ?, fuel_type = ?, availability = ? 
-                WHERE id = ?";
+        $sql = "UPDATE car 
+                SET car_description = ?, car_brand = ?, car_model = ?, car_year = ?, car_type = ?, car_color = ?, 
+                    car_seats = ?, car_transmission_type = ?, car_fuel_type = ?, car_rental_rate = ?, 
+                    car_excess_per_hour = ?, car_availability = ? 
+                WHERE car_id = ?";
         $stmt = $this->connect()->prepare($sql);
         $stmt->execute([
+            $car->getDescription(),
             $car->getBrand(),
-            $car->getColor(),
+            $car->getModel(),
             $car->getYear(),
-            $car->getLicensePlate(),
-            $car->getVin(),
+            $car->getType(),
+            $car->getColor(),
             $car->getSeats(),
             $car->getTransmissionType(),
             $car->getFuelType(),
+            $car->getRentalRate(),
+            $car->getExcessPerHour(),
             $car->getAvailability(),
             $car->getId()
         ]);
     }
+
+    public function deleteCar($car_id) {
+        $sql = "DELETE FROM car WHERE car_id = ?";
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->bind_param("i", $car_id);
+        $stmt->execute();
+    }
+    
+
 }

@@ -4,7 +4,7 @@ class Dbh {
     private $host = "localhost";
     private $user = "root";
     private $password = "";  // Add your password if required
-    private $dbname = "dashboard_content_db";
+    private $dbname = "carrental_db";
     private $port = 3308;  // Specifying the port explicitly
 
     protected function connect() {

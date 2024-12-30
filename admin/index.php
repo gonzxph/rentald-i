@@ -10,7 +10,7 @@
 
   
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
 <div class="wrapper d-flex flex-column min-vh-100">
@@ -57,7 +57,7 @@
     </div>
 
     <!-- Footer Section -->
-    <?php include 'admin/CarRental/footer/footer.php'; ?>
+    <?php include 'CarRental/footer/footer.php'; ?>
 </div>
 
 <!-- JavaScript to handle sidebar toggling and dynamic content loading -->

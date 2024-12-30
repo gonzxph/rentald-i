@@ -1,146 +1,106 @@
 <?php
 
-
 class Car {
-    private $id;
-    private $brand;
-    private $model;
-    private $price;
-    private $available;
-    private $color;
-    private $year;
-    private $license_plate;
-    private $vin;
-    private $seats;
-    private $transmission_type;
-    private $fuel_type;
-    private $availability;
-/*
-    public function __construct($id, $brand, $color, $year, $license_plate,
-        $vin, $seats, $transmission_type, $fuel_type, $availability) {
-        $this->id = $id;
-        $this->brand = $brand;
-        $this->color = $color;
-        $this->year = $year;
-        $this->license_plate = $license_plate;
-        $this->vin = $vin;
-        $this->seats = $seats;
-        $this->transmission_type = $transmission_type;
-        $this->fuel_type = $fuel_type;
-        $this->availability = $availability;
-    }
-*/
+    private $car_id;
+    private $car_description;
+    private $car_brand;
+    private $car_model;
+    private $car_year;
+    private $car_type;
+    private $car_color;
+    private $car_seats;
+    private $car_transmission_type;
+    private $car_fuel_type;
+    private $car_rental_rate;
+    private $car_excess_per_hour;
+    private $car_availability;
 
-
-    public function __construct($id, $model, $brand, $price, $available)
-    {
-       $this->id = $id;
-       $this->brand = $brand;
-       $this->price = $price;
-       $this->model = $model;
-       $this->available = $available;
-       
-       
+    public function __construct($car_id, $car_model, $car_brand, $car_availability) {
+        $this->car_id = $car_id;
+        $this->car_brand = $car_brand;
+        $this->car_model = $car_model;
+        $this->car_availability = $car_availability;
     }
+
     // Getters
     public function getId() { 
-        return $this->id;
+        return $this->car_id;
     }
-    public function getModel(){
-        return $this->model;
+    public function getDescription() { 
+        return $this->car_description;
     }
-    public function getPrice(){
-        return $this->price;
-    }
-    public function getAvailable(){
-        return $this->available;
-    }
-
     public function getBrand() {
-        return $this->brand;
+        return $this->car_brand;
     }
-
-    public function getColor() {
-        return $this->color;
+    public function getModel() {
+        return $this->car_model;
     }
-
     public function getYear() {
-        return $this->year;
+        return $this->car_year;
     }
-
-    public function getLicensePlate() {
-        return $this->license_plate;
+    public function getType() {
+        return $this->car_type;
     }
-
-    public function getVin() {
-        return $this->vin;
+    public function getColor() {
+        return $this->car_color;
     }
-
     public function getSeats() {
-        return $this->seats;
+        return $this->car_seats;
     }
-
     public function getTransmissionType() {
-        return $this->transmission_type;
+        return $this->car_transmission_type;
     }
-
     public function getFuelType() {
-        return $this->fuel_type;
+        return $this->car_fuel_type;
     }
-
+    public function getRentalRate() {
+        return $this->car_rental_rate;
+    }
+    public function getExcessPerHour() {
+        return $this->car_excess_per_hour;
+    }
     public function getAvailability() {
-        return $this->availability;
+        return $this->car_availability;
     }
 
     // Setters
-    public function setId($id) {
-        $this->id = $id;
+    public function setId($car_id) {
+        $this->car_id = $car_id;
     }
-
-    public function setBrand($brand) {
-        $this->brand = $brand;
+    public function setDescription($car_description) {
+        $this->car_description = $car_description;
     }
-
-    public function setColor($color) {
-        $this->color = $color;
+    public function setBrand($car_brand) {
+        $this->car_brand = $car_brand;
     }
-
-    public function setYear($year) {
-        $this->year = $year;
+    public function setModel($car_model) {
+        $this->car_model = $car_model;
     }
-
-    public function setLicensePlate($license_plate) {
-        $this->license_plate = $license_plate;
+    public function setYear($car_year) {
+        $this->car_year = $car_year;
     }
-
-    public function setVin($vin) {
-        $this->vin = $vin;
+    public function setType($car_type) {
+        $this->car_type = $car_type;
     }
-
-    public function setSeats($seats) {
-        $this->seats = $seats;
+    public function setColor($car_color) {
+        $this->car_color = $car_color;
     }
-
-    public function setTransmissionType($transmission_type) {
-        $this->transmission_type = $transmission_type;
+    public function setSeats($car_seats) {
+        $this->car_seats = $car_seats;
     }
-
-    public function setFuelType($fuel_type) {
-        $this->fuel_type = $fuel_type;
+    public function setTransmissionType($car_transmission_type) {
+        $this->car_transmission_type = $car_transmission_type;
     }
-
-    public function setAvailability($availability) {
-        $this->availability = $availability;
+    public function setFuelType($car_fuel_type) {
+        $this->car_fuel_type = $car_fuel_type;
     }
-    public function setPrice($price) {
-        $this->price = $price;
+    public function setRentalRate($car_rental_rate) {
+        $this->car_rental_rate = $car_rental_rate;
     }
-    public function setAvailable($available) {
-        $this->available = $available;
-
+    public function setExcessPerHour($car_excess_per_hour) {    
+        $this->car_excess_per_hour = $car_excess_per_hour;
     }
-    public function setModel($model) {
-        $this->model = $model;
-
+    public function setAvailability($car_availability) {
+        $this->car_availability = $car_availability;
     }
 }
