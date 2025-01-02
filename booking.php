@@ -286,7 +286,7 @@ require_once './backend/search_handler.php';
                             <h4>Requirement - Bring 2 Primary IDs</h4>
                             <ul>
                                 <li><strong>Driver's Licence</strong> (the one who will drive)</li>
-                                <li><strong>1 Government ID</strong> (passport is advisable/any)</li>
+                                <li><strong>1 Government ID</strong> (any but passport is advisable)</li>
                             </ul>
                             <h4>Important Rental Guidelines</h4>
                             
