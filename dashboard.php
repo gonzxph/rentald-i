@@ -51,7 +51,7 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle bg-light p-3 me-3">
-                                <i class="fas fa-car"></i>
+                                <i class="fas fa-car text-primary"></i>
                             </div>
                             <div>
                                 <h6 class="card-subtitle text-muted mb-1">Active Rentals</h6>
@@ -67,7 +67,7 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle bg-light p-3 me-3">
-                                <i class="fas fa-calendar"></i>
+                                <i class="fas fa-calendar text-primary"></i>
                             </div>
                             <div>
                                 <h6 class="card-subtitle text-muted mb-1">Upcoming Bookings</h6>
@@ -83,7 +83,7 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle bg-light p-3 me-3">
-                                <i class="fas fa-history"></i>
+                                <i class="fas fa-history text-primary"></i>
                             </div>
                             <div>
                                 <h6 class="card-subtitle text-muted mb-1">Past Rentals</h6>
