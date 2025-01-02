@@ -283,6 +283,11 @@ require_once './backend/search_handler.php';
                     <div class="policy-container mt-4">
     
                         <div class="policy-content">
+                            <h4>Requirement - Bring 2 Primary IDs</h4>
+                            <ul>
+                                <li><strong>Driver's Licence</strong> (the one who will drive)</li>
+                                <li><strong>1 Government ID</strong> (passport is advisable/any)</li>
+                            </ul>
                             <h4>Important Rental Guidelines</h4>
                             
                             <div class="policy-list">
