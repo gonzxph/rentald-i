@@ -112,7 +112,13 @@ require_once './backend/search_handler.php';
                                         <div class="text-end">
                                             <p class="mb-4"><strong>₱<?= number_format($car['car_rental_rate'], 2); ?></strong></p>
                                             <button id="viewDetailBtn" class="btn mb-2 w-100">VIEW DETAILS</button>
-                                            <a href="booking.php?carid=<?= htmlspecialchars($car['car_id']); ?>&pickup=<?= htmlspecialchars($start_datetime); ?>&dropoff=<?= htmlspecialchars($end_datetime); ?>&day=<?= htmlspecialchars(urlencode($durationDay)); ?>&hour=<?= htmlspecialchars(urlencode($durationHour)); ?>"><button id="bookBtn" class="btn w-100">BOOK</button></a>
+                                            <?php if(isset($_SESSION['user_id'])): ?>
+                                                <a href="booking.php?carid=<?= htmlspecialchars($car['car_id']); ?>&pickup=<?= htmlspecialchars($start_datetime); ?>&dropoff=<?= htmlspecialchars($end_datetime); ?>&day=<?= htmlspecialchars(urlencode($durationDay)); ?>&hour=<?= htmlspecialchars(urlencode($durationHour)); ?>">
+                                                    <button id="bookBtn" class="btn w-100">BOOK</button>
+                                                </a>
+                                            <?php else: ?>
+                                                <button id="bookBtn" class="btn w-100" onclick="checkLogin()">BOOK</button>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -247,6 +253,24 @@ require_once './backend/search_handler.php';
                     <button type="button" class="btn btn-primary" id="pconfirm">
                         <i class="fas fa-check me-2"></i>Confirm Selection
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login Required</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please login first to proceed with your booking.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="signin.php" class="btn btn-primary">Login</a>
                 </div>
             </div>
         </div>
@@ -388,6 +412,11 @@ require_once './backend/search_handler.php';
             }
         });
     });
+
+    function checkLogin() {
+        var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+        loginModal.show();
+    }
     </script>
 </body>
 </html>
