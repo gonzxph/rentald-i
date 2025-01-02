@@ -43,18 +43,7 @@ document.addEventListener("DOMContentLoaded", function(){
             });
 
 
-            //Column 2 function
-            function toggleDriverInfo() {
-                if (withDriver.checked) {
-                    driverInfo.classList.remove('d-none');
-                    isCustomDriver.value = "1";
-                    console.log('isCustomDriver value:', isCustomDriver.value);
-                } else {
-                    driverInfo.classList.add('d-none');
-                    isCustomDriver.value = "0";
-                    console.log('isCustomDriver value:', isCustomDriver.value);
-                }
-            }
+
 
             function updatePaymentOptionValue() {
                 if (reservationRadio.checked) {
@@ -68,10 +57,7 @@ document.addEventListener("DOMContentLoaded", function(){
            
             
 
-            // Add event listeners to radio buttons
-            selfDrive.addEventListener('change', toggleDriverInfo);
-            withDriver.addEventListener('change', toggleDriverInfo);
-            toggleDriverInfo();
+           
 
 
             updateArrows();
@@ -171,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     });
                 }
 
-                if(withDriver.checked){
+                if(selfDrive.checked){
                     driverName.value = nameInput.value;
                     driverPhone.value = phoneInput.value;
                     driverLicense.value = licenseInput.value;

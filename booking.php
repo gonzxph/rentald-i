@@ -334,16 +334,16 @@ require_once './backend/search_handler.php';
                             <div class="mb-4">
                                 <h5 class="mb-3">Rental Type</h5>
                                 <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="rentalType" id="selfDrive" checked>
-                                <label class="form-check-label" for="selfDrive">
-                                    Self Drive
-                                </label>
+                                    <input class="form-check-input" type="radio" name="rentalType" id="withDriver" checked>
+                                    <label class="form-check-label" for="withDriver">
+                                        With Driver
+                                    </label>
                                 </div>
                                 <div class="form-check">
-                                <input class="form-check-input" type="radio" name="rentalType" id="withDriver">
-                                <label class="form-check-label" for="withDriver">
-                                    With Driver
-                                </label>
+                                    <input class="form-check-input" type="radio" name="rentalType" id="selfDrive">
+                                    <label class="form-check-label" for="selfDrive">
+                                        Self Driver
+                                    </label>
                                 </div>
                             </div>
 
@@ -638,25 +638,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const driverInfo = document.getElementById('driverInfo');
     const isCustomDriver = document.getElementById('isCustomDriver');
     
-    // Update function
-    function updateDriverInfo() {
-        console.log('Radio changed:', withDriverRadio.checked); // Debug log
-        if (withDriverRadio.checked) {
-            driverInfo.classList.remove('d-none');
-            isCustomDriver.value = "1";
-        } else {
-            driverInfo.classList.add('d-none');
-            isCustomDriver.value = "0";
+    // Only proceed if elements exist
+    if (selfDriveRadio && withDriverRadio && driverInfo && isCustomDriver) {
+        // Update function
+        function updateDriverInfo() {
+            console.log('Radio changed:', selfDriveRadio.checked); // Debug log
+            if (selfDriveRadio.checked) {
+                driverInfo.classList.remove('d-none');
+                isCustomDriver.value = "1";
+            } else {
+                driverInfo.classList.add('d-none');
+                isCustomDriver.value = "0";
+            }
+            console.log('isCustomDriver value:', isCustomDriver.value); // Debug log
         }
-        console.log('isCustomDriver value:', isCustomDriver.value); // Debug log
+
+        // Add event listeners using 'click' instead of 'change'
+        withDriverRadio.addEventListener('click', updateDriverInfo);
+        selfDriveRadio.addEventListener('click', updateDriverInfo);
+
+        // Run initial check
+        updateDriverInfo();
     }
-
-    // Add event listeners using 'click' instead of 'change'
-    withDriverRadio.addEventListener('click', updateDriverInfo);
-    selfDriveRadio.addEventListener('click', updateDriverInfo);
-
-    // Run initial check
-    updateDriverInfo();
 
 });
 </script>
