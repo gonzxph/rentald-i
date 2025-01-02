@@ -8,7 +8,7 @@ $error_message = "";
 $total_cars = 0;
 $total_pages = 0;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$per_page = 10; // Number of cars per page
+$per_page = 4; // Number of cars per page
 
 // Retrieve filter values
 $date = $_POST['dateTimeInput'] ?? $_GET['dateTimeInput'] ?? '';

@@ -51,7 +51,7 @@ session_start();
                                     </div>
                                     <input id="durationDay" name="durationDay" type="hidden" value="">
                                     <input id="durationHour" name="durationHour" type="hidden" value="">
-                                    <button type="submit" class="btn btn-dark mt-3 w-100">Search</button>
+                                    <button type="submit" class="btn btn-primary mt-3 w-100" id="searchCarsBtn">Search Available Cars</button>
                                 </form>
                             </div>
                         </div>
@@ -72,26 +72,25 @@ session_start();
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <!-- Enhanced Error Messages -->
+                    <div class="mb-3">
+                        <div class="alert alert-warning d-none fade show" id="timeEmptyErr" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Almost there!</strong> Please select your preferred pickup and return times to continue.
+                        </div>
+                        <div class="alert alert-warning d-none fade show" id="timeOneFilledErr" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>One more step!</strong> Please make sure to select both pickup and return times.
+                        </div>
+                        <div class="alert alert-warning d-none fade show" id="CalEmptyErr" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Quick reminder:</strong> Please select both your pickup and return dates on the calendar below.
+                        </div>
+                    </div>
+
                     <!-- Calendar Container -->
                     <div class="date-selection-container mb-4">
                         <h6 class="text-muted mb-3"><i class="fas fa-info-circle me-2"></i>Select your pickup and return dates</h6>
-                        
-                        <!-- Enhanced Error Messages -->
-                        <div class="mb-3">
-                            <div class="alert alert-warning d-none fade show" id="timeEmptyErr" role="alert">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Almost there!</strong> Please select your preferred pickup and return times to continue.
-                            </div>
-                            <div class="alert alert-warning d-none fade show" id="timeOneFilledErr" role="alert">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>One more step!</strong> Please make sure to select both pickup and return times.
-                            </div>
-                            <div class="alert alert-warning d-none fade show" id="CalEmptyErr" role="alert">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Quick reminder:</strong> Please select both your pickup and return dates on the calendar below.
-                            </div>
-                        </div>
-
                         <div id="vanillaCalendar" class="vanilla-calendar calendar-center"></div>
                     </div>
                     
@@ -186,6 +185,17 @@ session_start();
     </div>
 
     <?php include 'includes/scripts.php' ?>
+    <script>
+        $(document).ready(function() {
+            $('#searchCarsBtn').on('click', function(event) {
+                const dateTimeInput = $('#dateTimeInput').val();
+                if (!dateTimeInput) {
+                    event.preventDefault(); // Prevent form submission
+                    $('#dateTimeModal').modal('show'); // Open the modal
+                }
+            });
+        });
+    </script>
     
     <?php if (isset($_GET['logout']) && $_GET['logout'] === 'success'): ?>
     <script>

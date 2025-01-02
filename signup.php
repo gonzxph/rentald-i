@@ -66,7 +66,7 @@ if (isset($_SESSION['user_id'])) {
                                 </label>
                             </div>
                             
-                            <button type="submit" class="btn btn-dark w-100 mb-3">Sign Up</button>
+                            <button type="submit" class="btn btn-primary w-100 mb-3">Sign Up</button>
                             <div class="d-flex align-items-center mb-3">
                                 <hr class="flex-grow-1 m-0">
                                 <span class="mx-3 text-muted">OR</span>

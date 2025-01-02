@@ -58,7 +58,7 @@ if (isset($_SESSION['user_id'])) {
                                 </div>
                                 <a href="#" class="text-decoration-none">I forgot my password</a>
                             </div>
-                            <button type="submit" class="btn btn-dark w-100 mb-3">Sign In</button>
+                            <button type="submit" class="btn w-100 mb-3 btn-primary">Sign In</button>
                             <div class="d-flex align-items-center mb-3">
                                 <hr class="flex-grow-1 m-0">
                                 <span class="mx-3 text-muted">OR</span>

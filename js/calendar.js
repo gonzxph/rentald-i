@@ -46,7 +46,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 iso8601: false,
                 range: {
                     min: new Date().toISOString().split('T')[0], // Set the minimum date to today
-                    max: '2031-12-31'
+                    max: '2031-12-31',
+                    disablePast: true
                 },
                 visibility: {
                     monthShort: true,
@@ -81,17 +82,45 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     document.getElementById('pconfirm').addEventListener('click', function () {
-        if (calendar && calendar.selectedDates.length >= 2) {
-            const pickupDate = calendar.selectedDates[0];
-            const dropOffDate = calendar.selectedDates[calendar.selectedDates.length - 1];
+        // Get all error message elements
+        const timeEmptyErr = document.getElementById('timeEmptyErr');
+        const timeOneFilledErr = document.getElementById('timeOneFilledErr');
+        const CalEmptyErr = document.getElementById('CalEmptyErr');
 
-            const pickupTime = document.getElementById('pickupTimeInput').value;
-            const dropOffTime = document.getElementById('dropOffTimeInput').value;
+        // Hide all error messages initially
+        [timeEmptyErr, timeOneFilledErr, CalEmptyErr].forEach(el => {
+            el.classList.add('d-none');
+        });
 
-            if (pickupTime && dropOffTime) {
-                // Combine date and time to create Date objects
-                const pickupDateTime = new Date(`${pickupDate} ${pickupTime}`);
-                const dropOffDateTime = new Date(`${dropOffDate} ${dropOffTime}`);
+        // Get time inputs
+        const pickupTime = document.getElementById('pickupTimeInput').value;
+        const dropOffTime = document.getElementById('dropOffTimeInput').value;
+
+        // Check if calendar dates are selected
+        if (!calendar || !calendar.selectedDates || calendar.selectedDates.length < 2) {
+            CalEmptyErr.classList.remove('d-none');
+            return;
+        }
+
+        // Check if both times are empty
+        if (!pickupTime && !dropOffTime) {
+            timeEmptyErr.classList.remove('d-none');
+            return;
+        }
+
+        // Check if only one time is filled
+        if ((!pickupTime && dropOffTime) || (pickupTime && !dropOffTime)) {
+            timeOneFilledErr.classList.remove('d-none');
+            return;
+        }
+
+        // If all validations pass, proceed with the existing logic
+        const pickupDate = calendar.selectedDates[0];
+        const dropOffDate = calendar.selectedDates[calendar.selectedDates.length - 1];
+
+        // Combine date and time to create Date objects
+        const pickupDateTime = new Date(`${pickupDate} ${pickupTime}`);
+        const dropOffDateTime = new Date(`${dropOffDate} ${dropOffTime}`);
 
                 // Calculate the difference in milliseconds
                 const diffInMillis = dropOffDateTime - pickupDateTime;
@@ -112,10 +141,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('durationDay').value = days;
                     document.getElementById('durationHour').value = hours;
 
-                    // Optionally close the modal
-                    $('#dateTimeModal').modal('hide');
-                }
-            }
+            // Close the modal
+            $('#dateTimeModal').modal('hide');
         }
     });
 });
