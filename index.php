@@ -13,12 +13,26 @@
         </div>
     <?php endif; ?>
 
-    <section class="booking-section">
-        <div class="container-fluid one vh-75">
-            <div class="row p-5">
+    <section class="booking-section min-vh-100 d-flex align-items-center">
+        <div class="container">
+            <div class="row">
                 <div class="col-lg-6 mt-4 mb-3">
-                    <h1 class="text-center">Your ON-THE-GO road partner</h1>
-                    <p class="text-center">Explore Cebu with reliable, affordable, and quality vehicles.</p>
+                    <h1 class="display-4 fw-bold">Your ON-THE-GO road partner</h1>
+                    <p class="lead">Explore Cebu with reliable, affordable, and quality vehicles. Experience hassle-free car rental with our premium service.</p>
+                    <div class="d-flex gap-4 mt-4">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-shield-alt me-2 text-primary"></i>
+                            <span>Fully insured</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-clock me-2 text-primary"></i>
+                            <span>24/7 support</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                            <span>Island-wide service</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-6 d-flex justify-content-center">
                     <div class="d-flex justify-content-center align-items-center">
@@ -26,10 +40,6 @@
                             <h5 class="card-title mb-3">Find the right car now!</h5>
                             <div class="card-body">
                                 <form method="POST" action="./search.php" class="m-3" onsubmit="return validateForm()">
-                                    <!-- <div class="input-group mb-3">
-                                        <span class="input-group-text bg-white"><i class="fa-solid fa-users"></i></span>
-                                        <input id="pax" name="pax" type="number" class="form-control" placeholder="Number of pax" value="">
-                                    </div> -->
                                     <div class="input-group mb-3">
                                         <span class="input-group-text bg-white"><i class="fas fa-calendar-alt text-secondary"></i></span>
                                         <input readonly name="dateTimeInput" id="dateTimeInput" type="text" data-bs-toggle="modal" data-bs-target="#dateTimeModal" class="form-control" placeholder="Choose date and time">
@@ -43,16 +53,12 @@
                     </div>
                 </div>
             </div>
-            <hr class="m-3">
-            <div class="container my-5">
-                <div class="row">
-                    <?php include 'includes/policies_guidelines.php' ?>
-                </div>
-            </div>
         </div>
-   
-        <!-- Pickup date and time modal -->
-        <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
+    </section> 
+
+
+    <!-- Pickup date and time modal -->
+    <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered"> <!-- Adjusted modal size and centering -->
                 <div class="modal-content">
                     <div class="modal-header">
@@ -144,9 +150,13 @@
                 </div>
             </div>
         </div>
-    </section> <!-- end of booking-section -->
-
-  
+        <hr class="m-3">
+        <div class="container my-5">
+            <div class="row">
+                <?php include 'includes/policies_guidelines.php' ?>
+            </div>
+        </div>
+        <hr class="m-3">
     <!-- Footer wrapper -->
     <div class="footer-wrapper">
         <?php include 'includes/footer.php' ?>
