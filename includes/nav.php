@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
         <!-- Logo -->
-        <a class="navbar-brand" href="<?php echo isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true ? 'home.php' : 'index.php'; ?>">
+        <a class="navbar-brand" href="<?php echo isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true ? 'index.php' : 'index.php'; ?>">
             <img src="images/logo/logo1.png" alt="Stratlab Logo" height="40">
         </a>
 
