@@ -111,7 +111,6 @@ require_once './backend/search_handler.php';
                                     <div class="col-lg-3 col-12 mt-5">
                                         <div class="text-end">
                                             <p class="mb-4"><strong>₱<?= number_format($car['car_rental_rate'], 2); ?></strong></p>
-                                            <button id="viewDetailBtn" class="btn mb-2 w-100">VIEW DETAILS</button>
                                             <?php if(isset($_SESSION['user_id'])): ?>
                                                 <a href="booking.php?carid=<?= htmlspecialchars($car['car_id']); ?>&pickup=<?= htmlspecialchars($start_datetime); ?>&dropoff=<?= htmlspecialchars($end_datetime); ?>&day=<?= htmlspecialchars(urlencode($durationDay)); ?>&hour=<?= htmlspecialchars(urlencode($durationHour)); ?>">
                                                     <button id="bookBtn" class="btn w-100">BOOK</button>
