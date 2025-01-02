@@ -70,11 +70,9 @@
                 <div class="col-md-6">
                     <div class="policy-card">
                         <h5><i class="fas fa-gas-pump me-2"></i>Return Fuel Requirements</h5>
-                        <ul class="list-unstyled mb-0">
-                            <li><i class="fas fa-map-marker-alt me-2 text-primary"></i>Cebu City: Full tank (first click)</li>
-                            <li><i class="fas fa-map-marker-alt me-2 text-primary"></i>Mandaue City: Full tank + 1 liter (first click)</li>
-                            <li><i class="fas fa-map-marker-alt me-2 text-primary"></i>Lapu-Lapu/Airport: Full tank + 2 liters (first click)</li>
-                        </ul>
+                        <p>Cebu City: Full tank (first click)<br>
+                        Mandaue City: Full tank + 1 liter (first click)<br>
+                        Lapu-Lapu/Airport: Full tank + 2 liters (first click)</p>
                     </div>
                 </div>
                 <div class="col-md-6">
