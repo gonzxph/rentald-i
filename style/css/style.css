@@ -515,7 +515,6 @@ body {
     display: none !important;
 }
 
-
 .rounded-circle.bg-light {
     width: 50px;
     height: 50px;
@@ -603,9 +602,6 @@ body {
     line-height: 1.5;
 }
 
-
-
-
 .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -638,7 +634,6 @@ body {
     background: linear-gradient(to right, #0043a8, #0d6efd);
     transform: translateY(-2px);
 }
-
 
 .footer-wrapper {
     margin-top: 0;

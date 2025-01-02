@@ -21,8 +21,8 @@ session_start();
     <section class="booking-section min-vh-100 d-flex align-items-center">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6 mt-4 mb-3">
-                    <h1 class="display-4 fw-bold">Your ON-THE-GO road partner</h1>
+                <div class="col-lg-7 mt-4 mb-3">
+                    <h1 class="display-5 fw-bold">Your ON-THE-GO road partner</h1>
                     <p class="lead">Explore Cebu with reliable, affordable, and quality vehicles. Experience hassle-free car rental with our premium service.</p>
                     <div class="d-flex gap-4 mt-4">
                         <div class="d-flex align-items-center">
@@ -39,7 +39,7 @@ session_start();
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 d-flex justify-content-center">
+                <div class="col-lg-5 d-flex justify-content-center">
                     <div class="d-flex justify-content-center align-items-center">
                         <div class="card text-center shadow-lg p-4" style="width: 25rem;">
                             <h5 class="card-title mb-3">Find the right car now!</h5>
@@ -60,7 +60,7 @@ session_start();
             </div>
         </div>
     </section>
-    
+
     <!-- Pickup date and time modal -->
     <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
