@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require_once './backend/search_handler.php';
 
