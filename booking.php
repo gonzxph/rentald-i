@@ -65,7 +65,7 @@ require_once './backend/search_handler.php';
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.7);
+            background: gray;
             border: none;
             border-radius: 50%;
             width: 40px;
@@ -74,12 +74,13 @@ require_once './backend/search_handler.php';
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            color: #0d6efd;
+            color: white;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         .nav-arrow:hover {
-            background: rgba(255, 255, 255, 0.9);
+            background: white;
+            color: black;
         }
         .nav-arrow.prev {
             left: 10px;
@@ -197,39 +198,43 @@ require_once './backend/search_handler.php';
         .booking-details {
         max-width: 600px;
         margin: 0 auto;
-    }
+        }
     
-    .booking-details .detail-row {
-        font-size: 0.95rem;
-    }
-    
-    .booking-details .label {
-        color: #666;
-        font-weight: 500;
-    }
-    
-    .booking-details .value {
-        font-weight: 500;
-        text-align: right;
-    }
-    
-    .modal-body h2 {
-        font-size: 1.75rem;
-        font-weight: 600;
-    }
-    
-    .reservation-fee {
-        background-color: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 0.5rem;
-    }
+        .booking-details .detail-row {
+            font-size: 0.95rem;
+        }
+        
+        .booking-details .label {
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .booking-details .value {
+            font-weight: 500;
+            text-align: right;
+        }
+        
+        .modal-body h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+        
+        .reservation-fee {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
 
-    .full-payment-fee {
-        display: none;
-        background-color: #f8f9fa;
-        padding: 1.5rem;
-        border-radius: 0.5rem;
-    }
+        .full-payment-fee {
+            display: none;
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .car-details, .policy-container{
+            color: #3f3f46;
+        }
             
 
 
@@ -265,7 +270,64 @@ require_once './backend/search_handler.php';
                         <button class="nav-arrow prev"><span class="mdi mdi-arrow-left"></span></button>
                         <button class="nav-arrow next"><span class="mdi mdi-arrow-right"></span></button>
                     </div>
+
+                    <div class="car-details mt-4">
+                        <h4><?= htmlspecialchars($car['car_brand']); ?>  <?= htmlspecialchars($car['car_model']); ?></h4>
+                        <div class="detail-icon d-flex">
+                            <span class="mdi mdi-gas-station me-4"><?= htmlspecialchars($car['car_fuel_type']); ?></span>
+                            <span class="mdi mdi-car me-4"> <?= htmlspecialchars($car['car_type']); ?></span>
+                            <span class="mdi mdi-cog me-4"> <?= htmlspecialchars($car['car_transmission_type']); ?></span>
+                            <span class="mdi mdi-car-seat"> <?= htmlspecialchars($car['car_seats']); ?> Seats</span>
+                        </div>
+                    </div>
+                    <div class="policy-container mt-4">
+    
+                        <div class="policy-content">
+                            <h4>Important Rental Guidelines</h4>
+                            
+                            <div class="policy-list">
+                                <ol>
+                                    <li><strong>Fuel Policy:</strong> Vehicle must be returned with the same fuel level as received.</li>
+                                    
+                                    <li><strong>Security Deposit:</strong> No cash bond required for short-term rentals.</li>
+                                    
+                                    <li><strong>Payment Terms:</strong> Full payment is required upon vehicle handover.</li>
+                                    
+                                    <li><strong>Cancellation Policy:</strong> Reservations are non-refundable but subject to reduced rental fees.</li>
+                                    
+                                    <li><strong>Standard Pick-up/Drop-off:</strong>
+                                        <ul>
+                                            <li>Location: Guadalupe Garage</li>
+                                            <li>Hours: 8:00 AM - 8:00 PM</li>
+                                            <li>Early/Late Handover Fee: ₱150</li>
+                                        </ul>
+                                    </li>
+                                    
+                                    <li><strong>Special Hours Fee:</strong> Additional graveyard fee applies (8:30 PM - 6:30 AM)</li>
+                                    
+                                    <li><strong>Delivery Service:</strong> Location-based delivery/pickup fees apply (Driver service charge)</li>
+                                    
+                                    <li><strong>Return Fuel Requirements:</strong>
+                                        <ul>
+                                            <li>Cebu City: Full tank (first click)</li>
+                                            <li>Mandaue City: Full tank + 1 liter (first click)</li>
+                                            <li>Lapu-Lapu/Airport: Full tank + 2 liters (first click)</li>
+                                        </ul>
+                                    </li>
+                                    
+                                    <li><strong>Travel Restrictions:</strong> Strictly prohibited to take vehicles outside Cebu Island (including Bantayan, Bohol, Dumaguete). Penalties apply for violations.</li>
+                                    
+                                    <li><strong>Rental Duration:</strong> 24-hour rental period; overtime charges apply</li>
+                                    
+                                    <li><strong>Vehicle Usage:</strong> Subletting or allowing others to drive under renter's name is prohibited. Renter assumes full liability for damages.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
+
+                
             </div>
             <div class="col-sm-12 col-md-6">
                 <form action="" method="POST">
@@ -578,7 +640,9 @@ require_once './backend/search_handler.php';
         </div>
     </form>
 
-
+    <div class="footer-wrapper">
+        <?php include 'includes/footer.php' ?>
+    </div>
 
 </body>
 <?php include 'includes/scripts.php' ?>

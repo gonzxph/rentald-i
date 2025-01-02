@@ -97,6 +97,4 @@ try{
     $error_message = $e->getMessage();
 }
 
-/* require_once 'views/booking_view.php'; */
-
 ?>

@@ -15,7 +15,7 @@ require_once './backend/search_handler.php';
 <body>
     <?php include 'includes/nav.php'; ?>
 
-    <div class="container mt-5 vh-100">
+    <div class="container mt-5">
         <!-- Search Form -->
         <div class="row">
             <div class="col-lg-4 col-md-4 mb-3">
@@ -146,6 +146,10 @@ require_once './backend/search_handler.php';
         </div>
     </div>
 
+    <div class="footer-wrapper">
+        <?php include 'includes/footer.php' ?>
+    </div>
+
     <!-- Pickup date and time modal -->
     <div class="modal fade" id="dateTimeModal" tabindex="-1" aria-labelledby="dateTimeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -274,6 +278,8 @@ require_once './backend/search_handler.php';
             </div>
         </div>
     </div>
+
+    
 
     <?php include 'includes/scripts.php'; ?>
     <script src="js/main.js"></script>
