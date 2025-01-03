@@ -73,11 +73,12 @@ $result = $stmt->get_result();
                 <h1>Booking Review</h1>
             </div>
             <div class="header-right">
-                <form method="GET" action="booking_content.php">
-                    <input type="text" class="form-control" name="search" placeholder="Search by First or Last Name" value="<?= isset($_GET['search']) ? $_GET['search'] : '' ?>">
+                <form method="GET" action="booking_content.php" class="d-flex">
+                    <input type="text" class="form-control me-2" name="search" placeholder="Search by First or Last Name" value="<?= isset($_GET['search']) ? $_GET['search'] : '' ?>">
                     <button type="submit" class="btn btn-outline-success">Search</button>
                 </form>
             </div>
+
 
         </div>
         <div class="containert">
@@ -132,18 +133,10 @@ $result = $stmt->get_result();
 
 <script> 
 
-function goToBookingContent() {
-    var searchQuery = document.querySelector('input[name="search"]').value; // Get the search input value
-    var url = 'index.php?content=booking_content.php'; // Default URL
 
-    if (searchQuery) {
-        // If there is a search query, append it to the URL
-        url += '&search=' + encodeURIComponent(searchQuery);
-    }
-
-    window.location.href = url; // Redirect to the URL
-}
 
 </script>
 </body>
 </html>
+
+

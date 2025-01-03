@@ -150,7 +150,7 @@ include 'admin_header/admin_nav.php';
 
             
             <div class="back-btn-container">
-                <button type="button" class="btn btn-danger" onclick="goToAddVehicle()">Back</button>
+            <button type="button" class="btn btn-primary" onclick="goToAddVehicle()" style="font-size: 1rem; margin-top:10px;">Back</button>
             </div>
         </div>
 

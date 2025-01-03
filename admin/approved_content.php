@@ -1,3 +1,7 @@
+<?php
+include 'db_conn.php';  // Include your database connection file
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,28 +15,25 @@
 <body>
 <div class="container-fluid">
     <div class="outer-box">
-<!-- Header Section -->
-<div class="header-container mb-4">
-    <h1 class="text-left mb-3">Approved</h1>
-</div>
+        <!-- Header Section -->
+        <div class="header-container mb-4">
+            <h1 class="text-left mb-3">Approved</h1>
+        </div>
 
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- Rejected Button -->
+            <div class="btn-container">
+                <button id="viewRejectedButton" class="btn btn-outline-danger" onclick="loadContent('rejected_content.php')">View Rejected List</button>
+            </div>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <!-- Rejected Button -->
-    <div class="btn-container">
-    <button id="viewRejectedButton" class="btn btn-outline-danger" onclick="loadContent('rejected_content.php')">Rejected</button>
-    </div>
-
-    <!-- Search Bar Section -->
-    <div class="search-container">
-        <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-    </div>
-</div>
-
-
+            <!-- Search Bar Section -->
+            <div class="search-container">
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
 
         <!-- Table Section -->
         <div class="containert">
@@ -52,52 +53,36 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Sample Data -->
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>FNameA</td>
-                                    <td>LNameA</td>
-                                    <td>2024-12-23</td>
-                                    <td>2024-12-25</td>
-                                    <td>Location</td>
-                                    <td>Location</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>FNameA</td>
-                                    <td>LNameA</td>
-                                    <td>2024-12-23</td>
-                                    <td>2024-12-25</td>
-                                    <td>Location</td>
-                                    <td>Location</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>FNameA</td>
-                                    <td>LNameA</td>
-                                    <td>2024-12-23</td>
-                                    <td>2024-12-25</td>
-                                    <td>Location</td>
-                                    <td>Location</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">4</th>
-                                    <td>FNameA</td>
-                                    <td>LNameA</td>
-                                    <td>2024-12-23</td>
-                                    <td>2024-12-25</td>
-                                    <td>Location</td>
-                                    <td>Location</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">5</th>
-                                    <td>FNameA</td>
-                                    <td>LNameA</td>
-                                    <td>2024-12-23</td>
-                                    <td>2024-12-25</td>
-                                    <td>Location</td>
-                                    <td>Location</td>
-                                </tr>
+                                <?php
+                                // SQL query to fetch data where rental_status is 'APPROVED'
+                                $sql = "SELECT users.user_fname, users.user_lname, rental.rental_pickup_datetime, rental.rental_dropoff_datetime, 
+                                        rental.rental_pickup_location, rental.rental_dropoff_location
+                                        FROM rental
+                                        JOIN users ON rental.user_id = users.user_id
+                                        WHERE rental.rental_status = 'APPROVED'";
+
+                                // Execute the query and check for errors
+                                $result = $conn->query($sql);
+
+                                if ($result->num_rows > 0) {
+                                    $counter = 1; // For numbering the rows
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<tr>";
+                                        echo "<th scope='row'>" . $counter++ . "</th>";
+                                        echo "<td>" . htmlspecialchars($row['user_fname']) . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['user_lname']) . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['rental_pickup_datetime']) . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['rental_dropoff_datetime']) . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['rental_pickup_location']) . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['rental_dropoff_location']) . "</td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='7'>No data found</td></tr>";
+                                }
+
+                                $conn->close();
+                                ?>
                             </tbody>
                         </table>
                     </div>
