@@ -91,38 +91,53 @@ require_once './backend/search_handler.php';
             <div class="col-lg-8 col-md-8">
                 <?php if (!empty($available_cars)): ?>
                     <?php foreach ($available_cars as $car): ?>
-                        <div class="d-flex justify-content-between p-3 border mb-3 rounded">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-lg-3 col-6">
-                                    <img 
-                                        class="img-fluid" 
-                                        src="upload/car/<?= htmlspecialchars($car['img_url'] ?? 'default.png'); ?>" 
-                                        alt="Car Image" 
-                                        width="200px"
-                                    >
+                        <?php 
+                            $bookingUrl = isset($_SESSION['user_id']) 
+                                ? "booking.php?carid=" . htmlspecialchars($car['car_id']) . "&pickup=" . htmlspecialchars($start_datetime) . "&dropoff=" . htmlspecialchars($end_datetime) . "&day=" . htmlspecialchars(urlencode($durationDay)) . "&hour=" . htmlspecialchars(urlencode($durationHour))
+                                : "#";
+                            $clickHandler = isset($_SESSION['user_id']) ? "" : "onclick=\"checkLogin(); return false;\"";
+                        ?>
+                        <a href="<?= $bookingUrl ?>" class="text-decoration-none" <?= $clickHandler ?>>
+                            <div class="card mb-3 hover-shadow transition">
+                                <div class="row g-0">
+                                    <div class="col-lg-4 col-12 p-0">
+                                        <img 
+                                            class="img-fluid w-100 h-100 object-fit-cover" 
+                                            src="upload/car/<?= htmlspecialchars($car['img_url'] ?? 'default.png'); ?>" 
+                                            alt="Car Image"
+                                            style="min-height: 187px;"
+                                        >
                                     </div>
-                                    <div class="col-lg-6 col-6">
-                                        <h5 class="font-weight-medium"><?= htmlspecialchars($car['car_brand']) . " " . htmlspecialchars($car['car_model']); ?></h5>
-                                        <span class="mdi mdi-car"> <?= htmlspecialchars($car['car_type']); ?></span>
-                                        <span class="mdi mdi-cog"> <?= htmlspecialchars($car['car_transmission_type']); ?></span>
-                                        <span class="mdi mdi-car-seat"> <?= htmlspecialchars($car['car_seats']); ?> Seats</span>
-                                    </div>
-                                    <div class="col-lg-3 col-12 mt-5">
-                                        <div class="text-end">
-                                            <p class="mb-4"><strong>₱<?= number_format($car['car_rental_rate'], 2); ?></strong></p>
-                                            <?php if(isset($_SESSION['user_id'])): ?>
-                                                <a href="booking.php?carid=<?= htmlspecialchars($car['car_id']); ?>&pickup=<?= htmlspecialchars($start_datetime); ?>&dropoff=<?= htmlspecialchars($end_datetime); ?>&day=<?= htmlspecialchars(urlencode($durationDay)); ?>&hour=<?= htmlspecialchars(urlencode($durationHour)); ?>">
-                                                    <button id="bookBtn" class="btn w-100">BOOK</button>
-                                                </a>
-                                            <?php else: ?>
-                                                <button id="bookBtn" class="btn w-100" onclick="checkLogin()">BOOK</button>
-                                            <?php endif; ?>
+
+                                    <div class="col-lg-5 col-6">
+                                        <div class="car-details p-3">
+                                            <h5 class="font-weight-medium mb-3"><?= htmlspecialchars($car['car_brand']) . " " . htmlspecialchars($car['car_model']); ?></h5>
+                                            <div class="car-specs d-flex gap-3 align-items-center gap-3">
+                                                <span class="mdi mdi-car text-secondary"> <?= htmlspecialchars($car['car_type']); ?></span>
+                                                <span class="mdi mdi-cog text-secondary"> <?= htmlspecialchars($car['car_transmission_type']); ?></span>
+                                                <span class="mdi mdi-car-seat text-secondary"> <?= htmlspecialchars($car['car_seats']); ?> Seats</span>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <div class="col-lg-3 col-12 mt-lg-0 mt-3">
+                                        <div class="d-flex flex-column h-100 p-3">
+                                            <div class="pricing-details text-end mt-auto">
+                                                <span class="text-muted fs-6 d-block mb-1">₱<?= number_format($car['car_rental_rate'], 0); ?> / day</span>
+                                                <?php 
+                                                    $days = (int)$durationDay;
+                                                    $hours = (int)$durationHour;
+                                                    $extraDay = ($hours > 6) ? 1 : 0;
+                                                    $total = $car['car_rental_rate'] * ($days + $extraDay);
+                                                ?>
+                                                <h4 class="mb-0">Total: ₱<?= number_format($total, 0); ?></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     <?php endforeach; ?>
 
                     <!-- Pagination -->
