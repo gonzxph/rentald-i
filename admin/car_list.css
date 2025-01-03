@@ -1,0 +1,199 @@
+
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+
+#addCarButton {
+    font-size: 16px; 
+    padding: 10px 20px; 
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff; 
+    color: white; 
+    cursor: pointer;
+    transition: all 0.3s ease; 
+}
+
+#addCarButton:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 300px;
+    margin-right: 10px;
+}
+
+.btn-outline-success {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-outline-success:hover {
+    background-color: #0056b3;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container {
+    max-height: 270px; 
+    overflow-y: auto; 
+}
+
+.table th, .table td {
+    text-align: center;
+    padding: 8px;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table td {
+    text-align: center; 
+    vertical-align: middle; 
+}
+
+.table td .d-flex {
+    justify-content: center;
+    align-items: center; 
+}
+
+.btn-primary, .btn-success, .btn-danger {
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+
+.modal-body .table {
+    width: 100%; 
+    table-layout: auto; 
+}
+
+.modal-body .table th,
+.modal-body .table td {
+    word-wrap: break-word; 
+    text-align: left; 
+}
+
+@media (max-width: 768px) {
+    .modal-body .table {
+        font-size: 12px; 
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-body .table {
+        font-size: 10px; 
+    }
+}
+
+
+@media (max-width: 768px) {
+    .table th, .table td {
+        padding: 6px;
+        font-size: 10px;
+    }
+
+    .btn-primary, .btn-success, .btn-danger {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+
+    .form-control {
+        width: 200px;
+        font-size: 12px;
+    }
+
+    .btn-outline-success {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .table th, .table td {
+        padding: 3px;
+        font-size: 9px;
+    }
+
+    .btn-primary, .btn-success, .btn-danger {
+        font-size: 9px;
+        padding: 2px 5px;
+    }
+
+    .form-control {
+        width: 150px;
+        font-size: 10px;
+    }
+
+    .btn-outline-success {
+        font-size: 10px;
+        padding: 5px 8px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .search-container .form-control {
+        font-size: 14px;
+        width: 100%; 
+        padding: 6px; 
+    }
+
+    .search-container .btn-outline-success {
+        font-size: 14px;
+        padding: 8px 12px; 
+    }
+}
+
+@media (max-width: 480px) {
+    .search-container .form-control {
+        font-size: 12px; 
+        padding: 4px; 
+    }
+
+    .search-container .btn-outline-success {
+        font-size: 12px; 
+        padding: 6px 10px; 
+    }
+}
+
+
+
+@media (max-width: 768px) {
+    #addCarButton {
+        font-size: 12px; 
+        padding: 6px 10px;
+        width: 20%; 
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    #addCarButton {
+        font-size: 9px;
+        padding: 6px 10px; 
+        width: 20%; 
+        text-align: center; 
+    }
+}
+
