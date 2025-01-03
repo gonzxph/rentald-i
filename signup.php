@@ -34,17 +34,17 @@ if (isset($_SESSION['user_id'])) {
                             <div id="alertMessages"></div>
                             
                             <div class="mb-3">
-                                <input type="text" id="firstname" name="firstname" class="form-control form-control-lg" placeholder="First name *">
+                                <input type="text" id="firstname" name="firstname" class="form-control form-control-lg" placeholder="First name *" autocomplete="given-name">
                             </div>
                             <div class="mb-3">
-                                <input type="text" id="lastname" name="lastname" class="form-control form-control-lg" placeholder="Last name *">
+                                <input type="text" id="lastname" name="lastname" class="form-control form-control-lg" placeholder="Last name *" autocomplete="family-name">
                             </div>
                             <div class="mb-3">
-                                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email *">
+                                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email *" autocomplete="email">
                             </div>
                             <div class="mb-3">
                                 <div class="input-group">
-                                    <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Password *">
+                                    <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Password *" autocomplete="new-password">
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="far fa-eye"></i>
                                     </button>
@@ -52,7 +52,7 @@ if (isset($_SESSION['user_id'])) {
                             </div>
                             <div class="mb-4">
                                     <div class="input-group">
-                                    <input type="password" id="confirm_pass" name="confirm_pass" class="form-control form-control-lg" placeholder="Confirm Password *">
+                                    <input type="password" id="confirm_pass" name="confirm_pass" class="form-control form-control-lg" placeholder="Confirm Password *" autocomplete="new-password">
                                     <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
                                         <i class="far fa-eye"></i>
                                     </button>
