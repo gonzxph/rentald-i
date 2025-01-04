@@ -489,7 +489,7 @@ require_once './backend/search_handler.php';
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted mb-4">Please double check your trip details below and click Book Now to proceed.</p>
+                        <p class="text-muted mb-4">Please double check your trip details below and click Pay Now to proceed.</p>
                         
                         <div class="booking-details">
                             <input type="hidden" id="paymentOption" name="paymentOption" value="">
@@ -528,21 +528,19 @@ require_once './backend/search_handler.php';
                                 <span class="value"><?= isset($bookingDurationDay) ? htmlspecialchars($bookingDurationDay) : ''; ?> Day(s) <?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
                             </div>
                             <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                                <span class="label">Excess Hour</span>
-                                <span class="value text-danger"><?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
-                                <input type="hidden" id="excessHour" name="excessHour" value="<?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?>">
-                            </div>
-                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                                <span class="label">
-                                    Excess Fee
+                                <span class="label">Excess Hour 
                                     <i 
                                     class="fas fa-info-circle text-muted" 
                                     data-bs-toggle="tooltip" 
                                     data-bs-placement="top" 
                                     title="6 hours limit for excess per hour, beyond that considered as 1 day rate."
                                     style="cursor: pointer;">
-                                    </i>
-                                </span>
+                                    </i></span>
+                                <span class="value text-danger"><?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
+                                <input type="hidden" id="excessHour" name="excessHour" value="<?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?>">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Excess Fee</span>
                                 <span class="value text-danger">PHP <?= htmlspecialchars($carExcessPay) ?></span>
                                 <input type="hidden" id="excessPay" name="excessPay" value="<?= htmlspecialchars($carExcessPay) ?>">
                             </div>

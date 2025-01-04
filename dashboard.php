@@ -4,15 +4,18 @@ require_once 'includes/session.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: signin.php");
     exit();
+}
 
-    if (isset($_SESSION['pending_booking'])) {
-        error_log('Session data stored successfully:');
-        error_log(print_r($_SESSION['pending_booking'], true));
-    } else {
-        error_log('Failed to store session data');
-    }
+// Add email as username if username isn't set
+if (!isset($_SESSION['username'])) {
+    $_SESSION['username'] = $_SESSION['user_email'];
+}
 
-
+if (isset($_SESSION['pending_booking'])) {
+    error_log('Session data stored successfully:');
+    error_log(print_r($_SESSION['pending_booking'], true));
+} else {
+    error_log('Failed to store session data');
 }
 ?>
 
@@ -35,9 +38,9 @@ if (!isset($_SESSION['user_id'])) {
         </div>
     <?php endif; ?>
 
-    <div class="container py-5">
+    <div class="container py-5" style="min-height: calc(100vh - 56px);">
         <!-- Welcome Section -->
-        <div class="row mb-4">
+        <div class="row mb-5">
             <div class="col-12">
                 <h2 class="mb-1">Welcome back, <?php echo htmlspecialchars($_SESSION['fname']); ?>!</h2>
                 <p class="text-muted mb-0">Here's an overview of your rental activities</p>
@@ -45,7 +48,7 @@ if (!isset($_SESSION['user_id'])) {
         </div>
 
         <!-- Quick Stats Cards - Updated Design -->
-        <div class="row mb-4 g-4">
+        <div class="row mb-5 g-4">
             <div class="col-md-4">
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
@@ -97,14 +100,14 @@ if (!isset($_SESSION['user_id'])) {
         </div>
 
         <!-- Quick Actions - Updated Design -->
-        <div class="row mb-4">
+        <div class="row mb-5">
             <div class="col-12">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
                         <h4 class="mb-3">Quick Actions</h4>
                         <p class="text-muted small mb-4">Get started with your rental journey</p>
                         <div class="d-flex gap-3">
-                            <a href="vehicles.php" class="btn btn-dark px-4">
+                            <a href="index.php" class="btn btn-dark px-4">
                                 <i class="fas fa-car me-2"></i>Rent a Car
                             </a>
                             <a href="tours.php" class="btn btn-outline-dark px-4">

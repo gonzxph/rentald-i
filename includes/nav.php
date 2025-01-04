@@ -8,6 +8,13 @@
         <!-- Desktop Navigation Items -->
         <div class="d-none d-lg-flex ms-4">
             <ul class="navbar-nav me-auto mb-0">
+                <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link" href="dashboard.php">
+                            <i class="fas fa-map-marked-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li class="nav-item mx-2">
                     <a class="nav-link" href="tours.php">
                         <i class="fas fa-map-marked-alt me-1"></i>Tours
@@ -47,11 +54,15 @@
                 <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
                     <div class="dropdown">
                         <button class="btn btn-link dropdown-toggle d-flex align-items-center gap-2" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="<?php echo isset($_SESSION['profile_image']) ? $_SESSION['profile_image'] : 'images/profile/user.png'; ?>" 
+                            <img src="<?php 
+                                echo isset($_SESSION['profile_image']) && $_SESSION['profile_image'] 
+                                    ? htmlspecialchars($_SESSION['profile_image']) 
+                                    : 'images/profile/user.png'; ?>" 
                                  alt="Profile" 
                                  class="rounded-circle" 
                                  width="35" 
-                                 height="35">
+                                 height="35"
+                                 onerror="this.src='images/profile/user.png';">
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="profileDropdown">
                             <!-- User Info Header -->
@@ -65,7 +76,6 @@
 
                             <!-- Main Actions -->
                             <li><a class="dropdown-item" href="dashboard.php"><i class="fas fa-columns me-2"></i>Dashboard</a></li>
-                            <li><a class="dropdown-item" href="profile.php"><i class="fas fa-user me-2"></i>My Profile</a></li>
                             
                             <!-- Rental Section -->
                             <li><hr class="dropdown-divider"></li>
