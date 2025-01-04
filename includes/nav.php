@@ -78,15 +78,15 @@
                             <li><a class="dropdown-item" href="dashboard.php"><i class="fas fa-columns me-2"></i>Dashboard</a></li>
                             
                             <!-- Rental Section -->
-                            <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header text-uppercase small fw-bold">Rentals</h6></li>
+                            <!-- <li><hr class="dropdown-divider"></li> -->
+                            <!-- <li><h6 class="dropdown-header text-uppercase small fw-bold">Rentals</h6></li> -->
                             <li><a class="dropdown-item" href="my-bookings.php"><i class="fas fa-calendar-check me-2"></i>Active Rentals</a></li>
                             <li><a class="dropdown-item" href="my-bookings.php?status=upcoming"><i class="fas fa-clock me-2"></i>Upcoming Bookings</a></li>
                             <li><a class="dropdown-item" href="my-bookings.php?status=history"><i class="fas fa-history me-2"></i>Rental History</a></li>
 
                             <!-- Account Settings -->
                             <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header text-uppercase small fw-bold">Account</h6></li>
+                            <!-- <li><h6 class="dropdown-header text-uppercase small fw-bold">Account</h6></li> -->
                             <li><a class="dropdown-item" href="settings.php"><i class="fas fa-cog me-2"></i>Settings</a></li>
                             <li><a class="dropdown-item" href="verifications.php"><i class="fas fa-shield-alt me-2"></i>Verification Status</a></li>
                             <?php if ($_SESSION['user_role'] === 'admin'): ?>
@@ -95,7 +95,7 @@
 
                             <!-- Help & Support -->
                             <li><hr class="dropdown-divider"></li>
-                            <li><h6 class="dropdown-header text-uppercase small fw-bold">Support</h6></li>
+                            <!-- <li><h6 class="dropdown-header text-uppercase small fw-bold">Support</h6></li> -->
                             <li><a class="dropdown-item" href="support.php"><i class="fas fa-question-circle me-2"></i>Help Center</a></li>
                             <li><a class="dropdown-item" href="contact.php"><i class="fas fa-envelope me-2"></i>Contact Us</a></li>
                             
