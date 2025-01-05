@@ -13,34 +13,33 @@ if (empty($rental_id)) {
 // Fetch the rental details as before
 $sql = "
     SELECT 
-        r.rental_status,
-        r.rental_pickup_datetime,
-        r.rental_pickup_location,
-        r.rental_dropoff_datetime,
-        r.rental_dropoff_location,
+        r.rent_status,
+        r.rent_pickup_datetime,
+        r.rent_pickup_location,
+        r.rent_dropoff_datetime,
+        r.rent_dropoff_location,
         r.is_custom_driver,
-        p.payment_type,
-        p.payment_rental_charge,
-        p.payment_pickup_charge,
-        p.payment_dropoff_charge,
-        p.payment_reservation_fee,
-        p.payment_total_due,
-        p.payment_amount_paid,
-        p.payment_balance_due,
+        p.pay_type,
+        p.pay_rental_charge,
+        p.pay_pickup_charge,
+        p.pay_dropoff_charge,
+        p.pay_reservation_fee,
+        p.pay_total_due,
+        p.pay_amount_paid,
+        p.pay_balance_due,
         c.car_brand,
         c.car_model,
         c.car_year,
         ci.img_url,
         d.driver_name,
         d.driver_phone,
-        d.driver_license_number,
-        di.dimg_path
+        d.driver_license_number
+        
     FROM rental r
     LEFT JOIN payment p ON r.rental_id = p.rental_id
     LEFT JOIN car c ON r.car_id = c.car_id
     LEFT JOIN car_image ci ON c.car_id = ci.car_id AND ci.is_primary = 1
     LEFT JOIN driver d ON r.assigned_driver_id = d.driver_id
-    LEFT JOIN driver_id_image di ON d.driver_id = d.driver_id
     WHERE r.rental_id = ?
 ";
 
@@ -80,6 +79,10 @@ $data = $result->fetch_assoc();
                 <?php unset($_SESSION['error']); ?>
             <?php endif; ?>
 
+
+
+
+
             <!-- Booking Status Section -->
             <section class="booking-status" style="margin-top: 20px;">
                 <h2>Booking Status</h2>
@@ -90,20 +93,20 @@ $data = $result->fetch_assoc();
             <section class="pickup-dropoff">
                 <div class="pickup">
                     <h2>Pick-up Details</h2>
-                    <p>Date & Time: <span><?= $data['rental_pickup_datetime'] ?? 'N/A'; ?></span></p>
-                    <p>Address: <span><?= $data['rental_pickup_location'] ?? 'N/A'; ?></span></p>
+                    <p>Date & Time: <span><?= $data['rent_pickup_datetime'] ?? 'N/A'; ?></span></p>
+                    <p>Address: <span><?= $data['rent_pickup_location'] ?? 'N/A'; ?></span></p>
                 </div>
                 <div class="dropoff">
                     <h2>Drop-off Details</h2>
-                    <p>Date & Time: <span><?= $data['rental_dropoff_datetime'] ?? 'N/A'; ?></span></p>
-                    <p>Address: <span><?= $data['rental_dropoff_location'] ?? 'N/A'; ?></span></p>
+                    <p>Date & Time: <span><?= $data['rent_dropoff_datetime'] ?? 'N/A'; ?></span></p>
+                    <p>Address: <span><?= $data['rent_dropoff_location'] ?? 'N/A'; ?></span></p>
                 </div>
             </section>
 
             <!-- Payment Option -->
             <section class="payment-option">
                 <h2>Payment Option</h2>
-                <p>Method: <span><?= $data['payment_type'] ?? 'N/A'; ?></span></p>
+                <p>Method: <span><?= $data['pay_type'] ?? 'N/A'; ?></span></p>
             </section>
 
             <!-- Rental Type -->
@@ -112,14 +115,7 @@ $data = $result->fetch_assoc();
                 <p>Type: <span><?= $data['is_custom_driver'] ? 'With Driver' : 'Self Drive'; ?></span></p>
             </section>
 
-            <!-- Car Information -->
-            <section class="car-information">
-                <img src="<?= $data['img_url'] ?? 'default-car.jpg'; ?>" alt="Car Image" class="car-image">
-                <div class="car-details">
-                    <p>Model: <span><?= $data['car_brand'] . ' ' . $data['car_model']; ?></span></p>
-                    <p>Year: <span><?= $data['car_year'] ?? 'N/A'; ?></span></p>
-                </div>
-            </section>
+    
 
             <!-- Driver Information -->
             <section class="driver-information">
@@ -127,19 +123,18 @@ $data = $result->fetch_assoc();
                 <p>Full Name: <span><?= $data['driver_name'] ?? 'N/A'; ?></span></p>
                 <p>Contact Number: <span><?= $data['driver_phone'] ?? 'N/A'; ?></span></p>
                 <p>Driver's License Number: <span><?= $data['driver_license_number'] ?? 'N/A'; ?></span></p>
-                <img src="<?= $data['dimg_path'] ?? 'default-driver.jpg'; ?>" alt="Driver's License" class="drivers-license">
             </section>
 
             <!-- Price Breakdown -->
             <section class="price-breakdown">
                 <h2>Price Breakdown</h2>
-                <p>Rental Charge: <span>PHP <?= number_format($data['payment_rental_charge'], 2) ?? '0.00'; ?></span></p>
-                <p>Pickup Charge: <span>PHP <?= number_format($data['payment_pickup_charge'], 2) ?? '0.00'; ?></span></p>
-                <p>Dropoff Charge: <span>PHP <?= number_format($data['payment_dropoff_charge'], 2) ?? '0.00'; ?></span></p>
-                <p>Reservation Fee: <span>PHP <?= number_format($data['payment_reservation_fee'], 2) ?? '0.00'; ?></span></p>
-                <p>Total Amount Due: <span>PHP <?= number_format($data['payment_total_due'], 2) ?? '0.00'; ?></span></p>
-                <p>Amount Paid: <span>PHP <?= number_format($data['payment_amount_paid'], 2) ?? '0.00'; ?></span></p>
-                <p>Balance Due: <span>PHP <?= number_format($data['payment_balance_due'], 2) ?? '0.00'; ?></span></p>
+                <p>Rental Charge: <span>PHP <?= number_format($data['pay_rental_charge'], 2) ?? '0.00'; ?></span></p>
+                <p>Pickup Charge: <span>PHP <?= number_format($data['pay_pickup_charge'], 2) ?? '0.00'; ?></span></p>
+                <p>Dropoff Charge: <span>PHP <?= number_format($data['pay_dropoff_charge'], 2) ?? '0.00'; ?></span></p>
+                <p>Reservation Fee: <span>PHP <?= number_format($data['pay_reservation_fee'], 2) ?? '0.00'; ?></span></p>
+                <p>Total Amount Due: <span>PHP <?= number_format($data['pay_total_due'], 2) ?? '0.00'; ?></span></p>
+                <p>Amount Paid: <span>PHP <?= number_format($data['pay_amount_paid'], 2) ?? '0.00'; ?></span></p>
+                <p>Balance Due: <span>PHP <?= number_format($data['pay_balance_due'], 2) ?? '0.00'; ?></span></p>
             </section>
 
             <section class="action-buttons">

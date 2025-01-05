@@ -1,80 +1,82 @@
 <?php
-session_start(); 
-include "db_conn.php"; 
+session_start();
+include "db_conn.php";
 
+if (isset($_POST['addVehicle'])) {
+    $car_description = $_POST['description'];
+    $car_brand = $_POST['brand'];
+    $car_model = $_POST['model'];
+    $car_year = $_POST['year'];
+    $car_type = $_POST['type'];
+    $car_color = $_POST['color'];
+    $car_seats = $_POST['seats'];
+    $car_transmission_type = $_POST['transmission'];
+    $car_fuel_type = $_POST['fuel_type'];
+    $car_rental_rate = $_POST['rental_rate'];
+    $car_excess_per_hour = $_POST['excess_hour'];
+    $car_availability = $_POST['availability'];
 
-if (isset($_POST["addVehicle"])) {
-  
-    $car_description = $_POST["description"];
-    $car_brand = $_POST["brand"];
-    $car_model = $_POST["model"];
-    $car_year = $_POST["year"];
-    $car_type = $_POST["type"];  
-    $car_color = $_POST["color"];
-    $car_seats = $_POST["seats"];
-    $car_transmission_type = $_POST["transmission"]; 
-    $car_fuel_type = $_POST["fuel_type"];  
-    $car_rental_rate = $_POST["rental_rate"];
-    $car_excess_per_hour = $_POST["excess_hour"];
-    $car_availability = $_POST["availability"];  
+    // Insert vehicle details into the database
+    $q_add_car = "INSERT INTO `car` 
+                  (`car_description`, `car_brand`, `car_model`, `car_year`, `car_type`, 
+                   `car_color`, `car_seats`, `car_transmission_type`, `car_fuel_type`, 
+                   `car_rental_rate`, `car_excess_per_hour`, `car_availability`) 
+                  VALUES 
+                  ('$car_description', '$car_brand', '$car_model', '$car_year', '$car_type', 
+                   '$car_color', '$car_seats', '$car_transmission_type', '$car_fuel_type', 
+                   '$car_rental_rate', '$car_excess_per_hour', '$car_availability')";
 
-    if (empty($car_description) || empty($car_brand) || empty($car_model) || empty($car_year) || empty($car_type) || 
-        empty($car_color) || empty($car_seats) || empty($car_transmission_type) || empty($car_fuel_type) || 
-        empty($car_rental_rate) || empty($car_excess_per_hour) || empty($car_availability)) {
-        $_SESSION['error'] = "All fields are required. Please fill in the missing information.";
-        header("Location: index.php?content=add_vehicle_content.php");
-        exit();
-    }
+    if (mysqli_query($conn, $q_add_car)) {
+        $car_id = mysqli_insert_id($conn); // Get the newly added car ID
 
-   
-    $q_car = "INSERT INTO car 
-              (car_description, car_brand, car_model, car_year, car_type, car_color, car_seats, 
-               car_transmission_type, car_fuel_type, car_rental_rate, car_excess_per_hour, car_availability) 
-              VALUES 
-              ('$car_description', '$car_brand', '$car_model', '$car_year', '$car_type', '$car_color', '$car_seats', 
-               '$car_transmission_type', '$car_fuel_type', '$car_rental_rate', '$car_excess_per_hour', '$car_availability')";
-
-    if (mysqli_query($conn, $q_car)) {
-        $car_id = mysqli_insert_id($conn); 
-
-        // Handle file upload for the image
-        if (isset($_FILES['image_upload']) && $_FILES['image_upload']['error'] === UPLOAD_ERR_OK) {
-            $img_description = $car_description;
-            $img_position = 1; 
-            $is_primary = 1;   
+        $uploaded_files = [];
+        if (isset($_FILES['image_upload']) && !empty($_FILES['image_upload']['name'][0])) {
             $img_uploaded_at = date('Y-m-d H:i:s');
+            $img_folder = "upload/car/";
 
-            // Process the uploaded file
-            $img_name = $_FILES['image_upload']['name'];
-            $img_tmp_name = $_FILES['image_upload']['tmp_name'];
-            $img_folder = "uploads/";
-            $img_path = $img_folder . basename($img_name);
+            foreach ($_FILES['image_upload']['name'] as $index => $img_name) {
+                $img_tmp_name = $_FILES['image_upload']['tmp_name'][$index];
+                $img_path = $img_folder . basename($img_name);
 
-            // Move uploaded file to the target folder
-            if (move_uploaded_file($img_tmp_name, $img_path)) {
-                // Insert image data into car_image table
-                $q_image = "INSERT INTO car_image 
-                            (car_id, img_url, img_description, img_position, is_primary, img_uploaded_at) 
-                            VALUES 
-                            ('$car_id', '$img_path', '$img_description', '$img_position', '$is_primary', '$img_uploaded_at')";
-                if (!mysqli_query($conn, $q_image)) {
-                    $_SESSION['error'] = "Error inserting image: " . mysqli_error($conn);
+                // Validate file type and move to the server
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+                $file_type = mime_content_type($img_tmp_name);
+
+                if (in_array($file_type, $allowed_types)) {
+                    if (move_uploaded_file($img_tmp_name, $img_path)) {
+                        $uploaded_files[] = $img_name;
+
+                        $q_image_insert = "INSERT INTO `car_image` 
+                                           (`car_id`, `img_url`, `img_description`, `img_position`, `is_primary`, `img_uploaded_at`) 
+                                           VALUES 
+                                           ('$car_id', '$img_path', '$car_description', 0, 0, '$img_uploaded_at')";
+
+                        if (!mysqli_query($conn, $q_image_insert)) {
+                            $_SESSION['error'] = "Error saving image details to the database: " . mysqli_error($conn);
+                            header("Location: index.php?content=add_vehicle_content.php");
+                            exit();
+                        }
+                    } else {
+                        $_SESSION['error'] = "Failed to upload image: $img_name";
+                        header("Location: index.php?content=add_vehicle_content.php");
+                        exit();
+                    }
+                } else {
+                    $_SESSION['error'] = "Invalid file type: $img_name";
                     header("Location: index.php?content=add_vehicle_content.php");
                     exit();
                 }
-            } else {
-                $_SESSION['error'] = "Failed to upload image.";
-                header("Location: index.php?content=add_vehicle_content.php");
-                exit();
             }
         }
 
-        // Set session variable to show the success modal
         $_SESSION['success'] = "Vehicle added successfully!";
+        if (!empty($uploaded_files)) {
+            $_SESSION['success'] .= " Uploaded files: " . implode(", ", $uploaded_files);
+        }
         header("Location: index.php?content=add_vehicle_content.php");
         exit();
     } else {
-        $_SESSION['error'] = "Error inserting car: " . mysqli_error($conn);
+        $_SESSION['error'] = "Error adding vehicle: " . mysqli_error($conn);
         header("Location: index.php?content=add_vehicle_content.php");
         exit();
     }
@@ -117,7 +119,7 @@ if (isset($_POST["addVehicle"])) {
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="text-left">Add Vehicle</h1>
-        <a href="car_list.php" class="btn btn-primary">View Vehicle List</a>
+        <a href="car_list.php" class="btn btn-primary" style="font-size: 1rem;">View Vehicle List</a>
     </div>
 
 
@@ -213,23 +215,34 @@ if (isset($_POST["addVehicle"])) {
                     </select>
                 </div>
 
-                <!-- Image Upload -->
-                <div class="col-md-5">
-                    <label for="image_upload" class="form-label">Upload Image</label>
-                    <input type="file" class="form-control" id="image_upload" name="image_upload" required>
-                </div>
-
                 <!-- Description -->
                 <div class="col-md-5">
                     <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter description" required></textarea>
+                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter a brief description of the vehicle" required></textarea>
                 </div>
+
+                 <!-- Image Upload -->
+                <div class="col-md-4">
+                    <label for="image_upload" class="form-label">Upload Images</label>
+                    <input type="file" name="image_upload[]" id="image_upload" class="form-control" multiple required>
+                    <small class="text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple files.</small>
+                </div>
+
+                
             </div>
 
-            <!-- Form buttons -->
-            <div class="modal-footer" style="margin-top:20px; margin-bottom:30px;">
-                <button type="submit" class="btn btn-primary" name="addVehicle" style="margin-right:10px;">Add Vehicle</button>
-            </div>
+                <!-- Form Buttons -->
+                <div class="modal-footer" style="margin-top:20px; margin-bottom:30px;">
+                    <div class="d-flex justify-content-between w-100">
+                        <button type="reset" class="btn btn-secondary" style="font-size: 1rem;">Reset</button>
+                        <button type="submit" class="btn btn-primary" name="addVehicle" style="font-size: 1rem;">Add Vehicle</button>
+                      
+                    </div>
+                </div>
+
+
+
+
         </form>
         </div>
     </div>

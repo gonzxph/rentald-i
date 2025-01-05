@@ -1,3 +1,20 @@
+<?php
+// Include database connection
+include 'db_conn.php';
+
+// Query to count total active clients (users with user_role 'USER' and user_status 'ACTIVE')
+$clientQuery = "SELECT COUNT(*) AS total_clients FROM user WHERE user_role = 'USER' AND user_status = 'ACTIVE'";
+$clientResult = $conn->query($clientQuery);
+$clientData = $clientResult->fetch_assoc();
+$totalClients = $clientData['total_clients'];
+
+// Query to count total bookings (rentals with rental_status 'APPROVED')
+$bookingQuery = "SELECT COUNT(*) AS total_bookings FROM rental WHERE rent_status = 'APPROVED'";
+$bookingResult = $conn->query($bookingQuery);
+$bookingData = $bookingResult->fetch_assoc();
+$totalBookings = $bookingData['total_bookings'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,21 +35,14 @@
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="client-box">
                     <h2>Total Clients</h2>
-                    <p>0</p>    
+                    <p><?php echo $totalClients; ?></p>    
                 </div>
             </div>
             <!-- Total Bookings -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="client-box">
                     <h2>Total Bookings</h2>
-                    <p>0</p>    
-                </div>
-            </div>
-            <!-- Total Revenue -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="client-box">
-                    <h2>Total Revenue</h2>
-                    <p>$0</p>    
+                    <p><?php echo $totalBookings; ?></p>    
                 </div>
             </div>
         </div>

@@ -2,13 +2,11 @@
 <html lang="en">
 <head>
     <?php
-
         include 'admin_header/admin_header.php';
         include 'admin_header/admin_nav.php';  
     ?>
     <title>D&I CEBU CAR RENTAL</title>
 
-  
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
 </head>
@@ -29,17 +27,25 @@
                         <img src="admin_dashboard_pics/add_vehicle.png" alt="Car Icon" class="sidebar-icon">
                         Add Vehicle
                     </li>
-                    <li onclick="loadContent('sales_trend_content.php')" id="sales" class="sidebar-item" aria-label="Sales/Sales Trend">
-                        <img src="admin_dashboard_pics/sales.png" alt="Bar Chart Icon" class="sidebar-icon">
-                        Sales/Sales Trend
-                    </li>
                     <li onclick="loadContent('booking_content.php')" id="booking-review" class="sidebar-item" aria-label="Booking Review">
                         <img src="admin_dashboard_pics/booking_review.png" alt="Checklist Icon" class="sidebar-icon">
                         Booking Review
                     </li>
                     <li onclick="loadContent('approved_content.php')" id="approved" class="sidebar-item" aria-label="Approved">
                         <img src="admin_dashboard_pics/approved.png" alt="Checkmark Icon" class="sidebar-icon">
-                        Approval Status
+                        Approved List
+                    </li>
+                    <li onclick="loadContent('rejected_content.php')" id="rejected" class="sidebar-item" aria-label="Rejected">
+                        <img src="admin_dashboard_pics/reject.png" alt="Cross Icon" class="sidebar-icon">
+                        Rejected List
+                    </li>
+                    <li onclick="loadContent('penalty_content.php')" id="rejected" class="sidebar-item" aria-label="Rejected">
+                        <img src="admin_dashboard_pics/penalty.png" alt="Cross Icon" class="sidebar-icon">
+                        Penalty List
+                    </li>
+                    <li onclick="loadContent('sales_trend_content.php')" id="sales" class="sidebar-item" aria-label="Sales/Sales Trend">
+                        <img src="admin_dashboard_pics/sales.png" alt="Bar Chart Icon" class="sidebar-icon">
+                        Sales/Sales Trend
                     </li>
                 </ul>
             </aside>
@@ -62,7 +68,6 @@
 
 <!-- JavaScript to handle sidebar toggling and dynamic content loading -->
 <script>
-    
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
     const closeButton = document.getElementById('closeSidebarButton');
@@ -90,14 +95,33 @@ function loadContent(page) {
 
             // Highlight the selected sidebar item
             const sidebarItems = document.querySelectorAll('.sidebar-item');
-            sidebarItems.forEach(item => {
-                item.classList.remove('selected');
-            });
-            const clickedItem = Array.from(sidebarItems).find(item => 
+            sidebarItems.forEach(item => item.classList.remove('selected'));
+
+            const clickedItem = Array.from(sidebarItems).find(item =>
                 item.getAttribute('onclick') && item.getAttribute('onclick').includes(page)
             );
-            if (clickedItem) {
-                clickedItem.classList.add('selected');
+            if (clickedItem) clickedItem.classList.add('selected');
+
+            // Add dynamic search functionality for the search bar in approved_content.php if it exists
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const filter = searchInput.value.toLowerCase();
+                    const table = document.getElementById('approvedTable');
+                    const rows = table.getElementsByTagName('tr');
+
+                    for (let i = 1; i < rows.length; i++) {
+                        const cells = rows[i].getElementsByTagName('td');
+                        const firstName = cells[1]?.textContent.toLowerCase() || '';
+                        const lastName = cells[2]?.textContent.toLowerCase() || '';
+
+                        if (firstName.includes(filter) || lastName.includes(filter)) {
+                            rows[i].style.display = '';
+                        } else {
+                            rows[i].style.display = 'none';
+                        }
+                    }
+                });
             }
         } else {
             console.error("Failed to load content:", xhr.status, xhr.statusText);
@@ -109,7 +133,7 @@ function loadContent(page) {
     xhr.send();
 }
 
-// For redirecting to Add vehicle content of back button in view car info
+// For redirecting to Add vehicle content or approved content of back button
 document.addEventListener("DOMContentLoaded", function() {
     const urlParams = new URLSearchParams(window.location.search);
     const content = urlParams.get('content'); // Get the 'content' parameter
