@@ -5,38 +5,28 @@ include 'db_conn.php';
 // Get the search query from the URL, if any
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
-// Query to fetch data for payments where payment_type is 'Cash' and rental_status is 'PENDING'
+// Query to fetch data for payments where payment_type is 'Reservation' and rent_status is 'PENDING'
 $sql = "SELECT 
             u.user_fname, 
             u.user_lname, 
-            p.payment_status, 
+            p.pay_status, 
             c.car_brand, 
             c.car_model,
-            r.rental_id
+            r.rental_id,
+            r.rental_pax
         FROM payment p
         JOIN rental r ON p.rental_id = r.rental_id
-        JOIN users u ON r.user_id = u.user_id
+        JOIN user u ON r.user_id = u.user_id
         JOIN car c ON r.car_id = c.car_id
-        WHERE p.payment_type = 'Cash' 
-        AND r.rental_status = 'PENDING'";
+        WHERE r.rent_status ='PENDING'";
 
-// Modify the query to include search functionality
-if ($search) {
-    $sql .= " AND (u.user_fname LIKE ? OR u.user_lname LIKE ?)";
+// Modify the query if there's a search term
+if (!empty($search)) {
+    $sql .= " AND (u.user_fname LIKE '%$search%' OR u.user_lname LIKE '%$search%')";
 }
 
-$stmt = $conn->prepare($sql);
-
-// Bind the parameters for the search
-if ($search) {
-    $searchTerm = '%' . $search . '%';
-    $stmt->bind_param('ss', $searchTerm, $searchTerm);
-}
-
-$stmt->execute();
-$result = $stmt->get_result();
+$result = $conn->query($sql);
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -49,7 +39,7 @@ $result = $stmt->get_result();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome -->
     <style>
         .table-container {
-            max-height: 300px; 
+            max-height: 300px;
             overflow-y: auto;
         }
         table {
@@ -68,24 +58,22 @@ $result = $stmt->get_result();
 <body>
 <div class="container-fluid">
     <div class="outer-box">
+        <!-- Header Section -->
         <div class="header-container">
             <div class="header-left">
                 <h1>Booking Review</h1>
             </div>
             <div class="header-right">
-                <form method="GET" action="booking_content.php" class="d-flex">
-                    <input type="text" class="form-control me-2" name="search" placeholder="Search by First or Last Name" value="<?= isset($_GET['search']) ? $_GET['search'] : '' ?>">
-                    <button type="submit" class="btn btn-outline-success">Search</button>
-                </form>
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by Last Name" value="<?= htmlspecialchars($search) ?>">
             </div>
-
-
         </div>
+
+        <!-- Table Section -->
         <div class="containert">
             <div class="row">
                 <div class="col-12">
                     <div class="table-container">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered" id="bookingTable">
                             <thead>
                                 <tr>
                                     <th scope="col">No.</th>
@@ -93,33 +81,32 @@ $result = $stmt->get_result();
                                     <th scope="col">Last Name</th>
                                     <th scope="col">Payment Status</th>
                                     <th scope="col">Selected Car</th>
+                                    <th scope="col">Pax</th>
                                     <th scope="col">View</th>
-                                   
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                if ($result->num_rows > 0) {
+                                if ($result && $result->num_rows > 0) {
                                     $counter = 1;
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
                                         echo "<th scope='row'>{$counter}</th>";
                                         echo "<td>{$row['user_fname']}</td>";
                                         echo "<td>{$row['user_lname']}</td>";
-                                        echo "<td>{$row['payment_status']}</td>";
+                                        echo "<td>{$row['pay_status']}</td>";
                                         echo "<td>{$row['car_brand']} {$row['car_model']}</td>";
+                                        echo "<td>{$row['rental_pax']}</td>";
                                         echo "<td>
-                                                <div class='d-flex flex-column flex-sm-row gap-1'>
                                                     <a href='view_booking_details.php?rental_id={$row['rental_id']}' class='btn btn-primary'>
                                                         <i class='far fa-eye'></i>
                                                     </a>
-                                                </div>
-                                            </td>";
+                                                </td>";
                                         echo "</tr>";
                                         $counter++;
                                     }
                                 } else {
-                                    echo "<tr><td colspan='8'>No data available</td></tr>";
+                                    echo "<tr><td colspan='7'>No data available</td></tr>";
                                 }
                                 ?>
                             </tbody>
@@ -131,12 +118,30 @@ $result = $stmt->get_result();
     </div>
 </div>
 
-<script> 
+<script>
+// Function to filter the table dynamically as the user types
+function filterTable() {
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById("bookingTable");
+    const rows = table.getElementsByTagName("tr");
 
+    for (let i = 1; i < rows.length; i++) { // Skip the header row
+        const cells = rows[i].getElementsByTagName("td");
+        const lastName = cells[2]?.textContent.toLowerCase() || ""; // Only check last name column
 
+        // Match the filter with the last name
+        if (lastName.includes(filter)) {
+            rows[i].style.display = ""; // Show row
+        } else {
+            rows[i].style.display = "none"; // Hide row
+        }
+    }
+}
 
+// Attach filterTable function to the search input's input event
+document.getElementById("searchInput").addEventListener("input", filterTable);
 </script>
+
 </body>
 </html>
-
-

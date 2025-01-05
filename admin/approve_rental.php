@@ -7,7 +7,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 $rental_id = $data['rental_id'];
 
 // Update the rental status to "APPROVED"
-$sql = "UPDATE rental SET rental_status = 'APPROVED' WHERE rental_id = ?";
+$sql = "UPDATE rental SET rent_status = 'APPROVED' WHERE rental_id = ?";
 
 // Prepare the statement
 $stmt = $conn->prepare($sql);

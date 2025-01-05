@@ -9,7 +9,7 @@ $rental_id = $data['rental_id'];
 // Check if the rental ID is valid
 if (!empty($rental_id)) {
     // Update the rental status to REJECTED
-    $sql = "UPDATE rental SET rental_status = 'REJECTED' WHERE rental_id = ?";
+    $sql = "UPDATE rental SET rent_status = 'REJECTED' WHERE rental_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $rental_id);
 
