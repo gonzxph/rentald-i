@@ -1,4 +1,10 @@
+<?php
+session_start();
 
+require_once './backend/booking_handler.php';
+require_once './backend/search_handler.php';
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
