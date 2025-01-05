@@ -114,12 +114,12 @@ require_once './backend/search_handler.php';
             max-width: 600px;
         }
 
-        h6 {
+        /* h6 {
             text-align: center;
             margin-bottom: 1.5rem;
             font-size: 1.5rem;
             color: #333;
-        }
+        } */
 
         .upload-button {
             display: flex;
@@ -245,216 +245,166 @@ require_once './backend/search_handler.php';
     <?php include 'includes/nav.php' ?>
 
     <div class="container mt-3">
-        <div class="row">
-            <div class="col-sm-12 col-md-6">
-                <div class="gallery-container">
-                    <div class="main-image-container">
+        <div class="row mb-4 mt-2">
+            <div class="col-sm-12 col-md-7">
+
+                <!-- Car Image and Details section -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
                         <?php if(!empty($carImages)):?>
                             <img id="mainImage" src="upload/car/<?= htmlspecialchars($carImages[0]);?>" alt="Main car view" class="main-image">
                         <?php else :?>
                             <img id="mainImage" src="upload/car/default.png" alt="No image available" class="main-image">
                         <?php endif;?>
-                    </div>
-                    
-                    <div class="thumbnail-container">
-                        <div class="thumbnail-wrapper">
-                            <?php if(!empty($carImages)) : ?>
-                                <?php foreach($carImages as $index => $image) : ?>
-                                    <div class="thumbnail-item <?= $index === 0 ? 'active' : ''; ?>" data-image="upload/car/<?= htmlspecialchars($image); ?>">
-                                        <img src="upload/car/<?= htmlspecialchars($image); ?>" alt="Car view <?= $index + 1; ?>" class="thumbnail">
-                                    </div>
-                                <?php endforeach;?>
-
-                            <?php endif;?>
+                        
+                        <div class="thumbnail-container">
+                            <div class="thumbnail-wrapper">
+                                <?php if(!empty($carImages)) : ?>
+                                    <?php foreach($carImages as $index => $image) : ?>
+                                        <div class="thumbnail-item <?= $index === 0 ? 'active' : ''; ?>" data-image="upload/car/<?= htmlspecialchars($image); ?>">
+                                            <img src="upload/car/<?= htmlspecialchars($image); ?>" alt="Car view <?= $index + 1; ?>" class="thumbnail">
+                                        </div>
+                                    <?php endforeach;?>
+                                <?php endif;?>
+                            </div>
+                            <button class="nav-arrow prev"><span class="mdi mdi-arrow-left"></span></button>
+                            <button class="nav-arrow next"><span class="mdi mdi-arrow-right"></span></button>
                         </div>
-                        <button class="nav-arrow prev"><span class="mdi mdi-arrow-left"></span></button>
-                        <button class="nav-arrow next"><span class="mdi mdi-arrow-right"></span></button>
-                    </div>
 
-                    <div class="car-details mt-4">
-                        <h4><?= htmlspecialchars($car['car_brand']); ?>  <?= htmlspecialchars($car['car_model']); ?></h4>
-                        <div class="detail-icon d-flex">
-                            <span class="mdi mdi-gas-station me-4"><?= htmlspecialchars($car['car_fuel_type']); ?></span>
-                            <span class="mdi mdi-car me-4"> <?= htmlspecialchars($car['car_type']); ?></span>
-                            <span class="mdi mdi-cog me-4"> <?= htmlspecialchars($car['car_transmission_type']); ?></span>
-                            <span class="mdi mdi-car-seat"> <?= htmlspecialchars($car['car_seats']); ?> Seats</span>
-                        </div>
-                    </div>
-                    <div class="policy-container mt-4">
-    
-                        <div class="policy-content">
-                            <h4>Requirement - Bring 2 Primary IDs</h4>
-                            <ul>
-                                <li><strong>Driver's Licence</strong> (the one who will drive)</li>
-                                <li><strong>1 Government ID</strong> (any but passport is advisable)</li>
-                            </ul>
-                            <h4>Important Rental Guidelines</h4>
-                            
-                            <div class="policy-list">
-                                <ol>
-                                    <li><strong>Fuel Policy:</strong> Vehicle must be returned with the same fuel level as received.</li>
-                                    
-                                    <li><strong>Security Deposit:</strong> No cash bond required for short-term rentals.</li>
-                                    
-                                    <li><strong>Payment Terms:</strong> Full payment is required upon vehicle handover.</li>
-                                    
-                                    <li><strong>Cancellation Policy:</strong> Reservations are non-refundable but subject to reduced rental fees.</li>
-                                    
-                                    <li><strong>Standard Pick-up/Drop-off:</strong>
-                                        <ul>
-                                            <li>Location: Guadalupe Garage</li>
-                                            <li>Hours: 8:00 AM - 8:00 PM</li>
-                                            <li>Early/Late Handover Fee: ₱150</li>
-                                        </ul>
-                                    </li>
-                                    
-                                    <li><strong>Special Hours Fee:</strong> Additional graveyard fee applies (8:30 PM - 6:30 AM)</li>
-                                    
-                                    <li><strong>Delivery Service:</strong> Location-based delivery/pickup fees apply (Driver service charge)</li>
-                                    
-                                    <li><strong>Return Fuel Requirements:</strong>
-                                        <ul>
-                                            <li>Cebu City: Full tank (first click)</li>
-                                            <li>Mandaue City: Full tank + 1 liter (first click)</li>
-                                            <li>Lapu-Lapu/Airport: Full tank + 2 liters (first click)</li>
-                                        </ul>
-                                    </li>
-                                    
-                                    <li><strong>Travel Restrictions:</strong> Strictly prohibited to take vehicles outside Cebu Island (including Bantayan, Bohol, Dumaguete). Penalties apply for violations.</li>
-                                    
-                                    <li><strong>Rental Duration:</strong> 24-hour rental period; overtime charges apply</li>
-                                    
-                                    <li><strong>Vehicle Usage:</strong> Subletting or allowing others to drive under renter's name is prohibited. Renter assumes full liability for damages.</li>
-                                </ol>
+                        <div class="car-details my-4">
+                            <h4><?= htmlspecialchars($car['car_brand']); ?>  <?= htmlspecialchars($car['car_model']); ?></h4>
+                            <div class="detail-icon d-flex">
+                                <span class="mdi mdi-gas-station me-4"> <?= htmlspecialchars($car['car_fuel_type']); ?></span>
+                                <span class="mdi mdi-car me-4"> <?= htmlspecialchars($car['car_type']); ?></span>
+                                <span class="mdi mdi-cog me-4"> <?= htmlspecialchars($car['car_transmission_type']); ?></span>
+                                <span class="mdi mdi-car-seat"> <?= htmlspecialchars($car['car_seats']); ?> Seats</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                
 
-                
+                <!-- Policy and Guidelines section -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <?php include 'includes/policies_guidelines.php' ?>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-12 col-md-6">
-                <form action="" method="POST">
-                    <div class="booking mt-1">
-                        <h5>Booking Details</h5>
-                        <div class="details">
-                            <div class="mb-4">
-                                <!-- Toggle Switch -->
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="sameLocationToggle" checked>
-                                    <label class="form-check-label" for="sameLocationToggle">Return car to another location</label>
-                                </div>
+            
 
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text bg-white"><i class="fas fa-map-marker-alt text-warning"></i></span>
-                                    <input readonly id="pickupInput" name="pickupinput" type="text" data-bs-toggle="modal" data-bs-target="#pickupModal" class="form-control" placeholder="Choose pick up location" value="">
-                                </div>
-                                <div class="input-group mb-3" id="dropoffGroup">
-                                    <span class="input-group-text bg-white"><i class="fas fa-map-marker-alt text-danger"></i></span>
-                                    <input readonly id="dropoffInput" name="dropoffinput" type="text" data-bs-toggle="modal" data-bs-target="#pickupModal" class="form-control" placeholder="Choose drop off location" value="">
-                                </div>
+            <div class="col-sm-12 col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            <div class="booking">
+                                <h5 class="card-title mb-4">Booking Details</h5>
+                                <div class="details">
+                                    <div class="mb-4">
+                                        <!-- Toggle Switch -->
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" id="sameLocationToggle" checked>
+                                            <label class="form-check-label" for="sameLocationToggle">Return car to another location</label>
+                                        </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-4">
-                                        <label class="fw-medium">Pick Up Date</label>
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text bg-white"><i class="fas fa-map-marker-alt text-warning"></i></span>
+                                            <input readonly id="pickupInput" name="pickupinput" type="text" data-bs-toggle="modal" data-bs-target="#pickupModal" class="form-control" placeholder="Choose pick up location" value="">
+                                        </div>
+                                        <div class="input-group mb-3" id="dropoffGroup">
+                                            <span class="input-group-text bg-white"><i class="fas fa-map-marker-alt text-danger"></i></span>
+                                            <input readonly id="dropoffInput" name="dropoffinput" type="text" data-bs-toggle="modal" data-bs-target="#pickupModal" class="form-control" placeholder="Choose return location" value="">
+                                        </div>
+
+                                        <!-- Date sections -->
+                                        <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <span class="fw-medium">Pick Up Date</span>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="text-muted"><?= htmlspecialchars($pickup_datetime_formatted ?? 'Not set') ?></div>
+                                                <input type="hidden" id="pickupTimeHiddenInput" name="pickupTimeHiddenInput" value="<?= htmlspecialchars($pickup_time) ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <span class="fw-medium">Return Date</span>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="text-muted"><?= htmlspecialchars($dropoff_datetime_formatted ?? 'Not set') ?></div>
+                                                <input type="hidden" id="dropoffTimeHiddenInput" name="dropoffTimeHiddenInput" value="<?= htmlspecialchars($dropoff_time) ?>">
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-md-8">
-                                        <div class="text-muted"><?= htmlspecialchars($pickup_datetime_formatted ?? 'Not set') ?></div>
-                                        <input type="hidden" id="pickupTimeHiddenInput" name="pickupTimeHiddenInput" value="<?= htmlspecialchars($pickup_time) ?>">
+
+                                    <!-- Payment Options -->
+                                    <div class="mb-4">
+                                        <h5 class="mb-3">Payment Options</h5>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio" name="paymentOption" id="reservation" value="reservation" checked>
+                                            <label class="form-check-label" for="reservation">
+                                                Reservation
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="paymentOption" id="fullPayment" value="fullPayment">
+                                            <label class="form-check-label" for="fullPayment">
+                                                Full payment
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Drop off Details -->
-                                <div class="row mb-3">
-                                    <div class="col-md-4">
-                                        <label class="fw-medium">Return Date</label>
+                                    <!-- Rental Type -->
+                                    <div class="mb-4">
+                                        <h5 class="mb-3">Rental Type</h5>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio" name="rentalType" id="withDriver" checked>
+                                            <label class="form-check-label" for="withDriver">
+                                                With Driver
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="rentalType" id="selfDrive">
+                                            <label class="form-check-label" for="selfDrive">
+                                                Self Driver
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="col-md-8">
-                                        <div class="text-muted"><?= htmlspecialchars($dropoff_datetime_formatted ?? 'Not set') ?></div>
-                                        <input type="hidden" id="dropoffTimeHiddenInput" name="dropoffTimeHiddenInput" value="<?= htmlspecialchars($dropoff_time) ?>">
-                                    </div>
-                                </div>
-                                
-                                
-
-                            </div>
-
-                            <!-- Payment Options -->
-                            <div class="mb-4">
-                                <h5 class="mb-3">Payment Options</h5>
-                                <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="paymentOption" id="reservation" value="reservation" checked>
-                                <label class="form-check-label" for="reservation">
-                                    Reservation
-                                </label>
-                                </div>
-                                <div class="form-check">
-                                <input class="form-check-input" type="radio" name="paymentOption" id="fullPayment" value="fullPayment">
-                                <label class="form-check-label" for="fullPayment">
-                                    Full payment
-                                </label>
-                                </div>
-                            </div>
-
-                            <!-- Rental Type -->
-                            <div class="mb-4">
-                                <h5 class="mb-3">Rental Type</h5>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="rentalType" id="withDriver" checked>
-                                    <label class="form-check-label" for="withDriver">
-                                        With Driver
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="rentalType" id="selfDrive">
-                                    <label class="form-check-label" for="selfDrive">
-                                        Self Driver
-                                    </label>
-                                </div>
-                            </div>
 
                             <!-- Driver's Information (Initially Hidden) -->
-                            <div id="driverInfo" class="d-none mb-5">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Driver's Information</h5>
+                            <div id="driverInfo" class="d-none mb-3">
+                                
+                                
+                                    <h5 class="mb-4">Driver's Information</h5>
+                                
+                                    <div class="mb-3">
+                                        <input type="text" id="nameInput" class="form-control" placeholder="Name">
                                     </div>
-                                    <div class="card-body">
-                                        <div class="mb-3">
-                                            <input type="text" id="nameInput" class="form-control" placeholder="Name">
-                                        </div>
-                                        <div class="mb-3">
-                                            <input type="tel" id="phoneInput" class="form-control" placeholder="Mobile number">
-                                        </div>
-                                        <div class="mb-3">
-                                            <input type="text" id="licenseInput" class="form-control" placeholder="Driver's License Number">
-                                        </div>
-                                        <div class="mb-3">
-                                            <h6 class="mb-2">Upload Driver's License and 2 valid ID</h6>
-                                            <div class="upload-button">
-                                                <label for="file-input" class="btn btn-primary btn-sm">
-                                                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                                                    </svg>
-                                                    Choose A Photo
-                                                </label>
-                                                <input type="file" id="file-input" multiple accept="image/*" class="d-none">
-                                            </div>
-                                            <div class="file-count mt-2 text-muted"></div>
-                                            <div class="preview-container mt-3"></div>
-                                        </div>
+                                    <div class="mb-3">
+                                        <input type="tel" id="phoneInput" class="form-control" placeholder="Mobile number">
                                     </div>
-                                </div>
+                                    <div class="mb-4">
+                                        <input type="text" id="licenseInput" class="form-control" placeholder="Driver's License Number">
+                                    </div>
+                                    <div class="mb-3">
+                                        <h6 class="mb-4">Upload Driver's License and 2 valid ID</h6>
+                                        <div class="upload-button">
+                                            <label for="file-input" class="btn btn-primary btn-sm">
+                                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                                </svg>
+                                                Upload Photo
+                                            </label>
+                                            <input type="file" id="file-input" multiple accept="image/*" class="d-none">
+                                        </div>
+                                        <div class="file-count mt-2 text-muted"></div>
+                                        <div class="preview-container mt-3"></div>
+                                    </div>
                             </div>
-
-
-                        </div>
+                            <button id="submitButton" type="button" class="btn btn-primary w-100" data-action="<?= $isLoggedIn ? 'book' : 'login' ?>"> Book Now</button>
+                        </form>
                     </div>
-                    <button id="submitButton" type="button" class="btn btn-primary" data-action="<?= $isLoggedIn ? 'book' : 'login' ?>">
-                        Book Now
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -485,7 +435,7 @@ require_once './backend/search_handler.php';
                         <div id="pickupGarage">
                             <button  class="btn d-flex align-items-center" onclick="pickupGarage()">
                                 <i class="fa-solid fa-warehouse me-2"></i>
-                                <span>Pickup in garage</span>
+                                <span id="garageButtonText">Pickup in garage</span>
                             </button>
                         </div>
                     </div>
@@ -539,7 +489,7 @@ require_once './backend/search_handler.php';
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted mb-4">Please double check your trip details below and click Book Now to proceed.</p>
+                        <p class="text-muted mb-4">Please double check your trip details below and click Pay Now to proceed.</p>
                         
                         <div class="booking-details">
                             <input type="hidden" id="paymentOption" name="paymentOption" value="">
@@ -578,21 +528,19 @@ require_once './backend/search_handler.php';
                                 <span class="value"><?= isset($bookingDurationDay) ? htmlspecialchars($bookingDurationDay) : ''; ?> Day(s) <?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
                             </div>
                             <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                                <span class="label">Excess Hour</span>
-                                <span class="value text-danger"><?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
-                                <input type="hidden" id="excessHour" name="excessHour" value="<?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?>">
-                            </div>
-                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                                <span class="label">
-                                    Excess Fee
+                                <span class="label">Excess Hour 
                                     <i 
                                     class="fas fa-info-circle text-muted" 
                                     data-bs-toggle="tooltip" 
                                     data-bs-placement="top" 
                                     title="6 hours limit for excess per hour, beyond that considered as 1 day rate."
                                     style="cursor: pointer;">
-                                    </i>
-                                </span>
+                                    </i></span>
+                                <span class="value text-danger"><?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
+                                <input type="hidden" id="excessHour" name="excessHour" value="<?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?>">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Excess Fee</span>
                                 <span class="value text-danger">PHP <?= htmlspecialchars($carExcessPay) ?></span>
                                 <input type="hidden" id="excessPay" name="excessPay" value="<?= htmlspecialchars($carExcessPay) ?>">
                             </div>
@@ -644,7 +592,9 @@ require_once './backend/search_handler.php';
             </div>
         </div>
     </form>
-
+    </div>
+    </div>
+    <!-- Footer wrapper should be outside the main container -->
     <div class="footer-wrapper">
         <?php include 'includes/footer.php' ?>
     </div>
@@ -729,6 +679,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Run initial check
         updateDriverInfo();
     }
+
+    // Get the input elements
+    const pickupInput = document.getElementById('pickupInput');
+    const dropoffInput = document.getElementById('dropoffInput');
+    const garageButtonText = document.getElementById('garageButtonText');
+
+    // Add click event listeners to both inputs
+    pickupInput.addEventListener('click', function() {
+        garageButtonText.textContent = 'Pickup in garage';
+    });
+
+    dropoffInput.addEventListener('click', function() {
+        garageButtonText.textContent = 'Return in garage';
+    });
 
 });
 </script>

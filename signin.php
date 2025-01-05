@@ -19,8 +19,8 @@ if (isset($_SESSION['user_id'])) {
 <body>
     <?php include 'includes/nav.php' ?>
 
-    <div class="container">
-        <div class="row py-5 d-flex align-items-center justify-content-center">
+    <div class="container min-vh-100">
+        <div class="row py-5 d-flex align-items-center justify-content-center flex-grow-1">
             <div class="col-md-5">
                 <div class="card border-0 shadow-lg login-card">
                     <div class="card-body p-4">
@@ -41,11 +41,11 @@ if (isset($_SESSION['user_id'])) {
                             <?php endif; ?>
                             
                             <div class="mb-3">
-                                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email"/>
+                                <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email" autocomplete="email"/>
                             </div>
                             <div class="mb-3">
                                 <div class="input-group">
-                                    <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Password" />
+                                    <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Password" autocomplete="current-password"/>
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="far fa-eye"></i>
                                     </button>
@@ -77,7 +77,8 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </div>
     </div>
-
+    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/scripts.php' ?>
     <!-- Add this before closing body tag -->
     <script>
         document.getElementById('togglePassword').addEventListener('click', function() {
@@ -107,5 +108,4 @@ if (isset($_SESSION['user_id'])) {
     });
     </script>
 </body>
-<?php include 'includes/scripts.php' ?>
 </html>

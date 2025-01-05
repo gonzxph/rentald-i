@@ -20,65 +20,86 @@ require_once './backend/search_handler.php';
         <div class="row">
             <div class="col-lg-4 col-md-4 mb-3">
                 <div class="card">
-                    <div class="card-titlesf">
-                        <h5 class="card-title-text p-3 pb-2">Search and Filter</h5>
+                    <div class="card-header p-3 text-white" style="background: linear-gradient(135deg, #0d6efd, #0043a8);">
+                        <h5 class="search-title mb-0">
+                            <i class="fas fa-search me-2"></i>Search and Filter
+                        </h5>
                     </div>
                     <div class="card-body">
                         <form id="bookingForm" action="./search.php" method="POST">
-                            <div class="input-group mb-3 flex-column">
-                                <h6 class="mb-1">Pickup Date and Time</h6>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white">
-                                            <i class="fas fa-calendar-alt text-secondary"></i>
-                                        </span>
-                                        <input readonly id="dateTimeInput" name="dateTimeInput" type="text" 
-                                            data-bs-toggle="modal" data-bs-target="#dateTimeModal" 
-                                            class="form-control" value="<?= htmlspecialchars($date) ?>" 
-                                            placeholder="Choose date and time" required>
-                                    </div>
+                            <!-- Date Time Selection -->
+                            <div class="date-selection-container mb-4">
+                                <h6 class="text-muted mb-3">
+                                    <i class="fas fa-calendar-alt me-2"></i>Rental Period
+                                </h6>
+                                
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fas fa-calendar-alt text-secondary"></i>
+                                    </span>
+                                    <input readonly id="dateTimeInput" name="dateTimeInput" type="text" 
+                                        data-bs-toggle="modal" data-bs-target="#dateTimeModal" 
+                                        class="form-control" value="<?= htmlspecialchars($date) ?>" 
+                                        placeholder="Choose date and time" required>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fas fa-clock text-secondary"></i>
+                                    </span>
+                                    <input readonly id="duration" name="duration" type="text" 
+                                        class="form-control" 
+                                        value="<?= isset($durationDay) ? htmlspecialchars($durationDay) : ''; ?> Day(s) <?= isset($durationHour) ? htmlspecialchars($durationHour) : ''; ?> Hour(s)" 
+                                        placeholder="Duration" required>
+                                    <input id="durationDay" name="durationDay" type="hidden" 
+                                        value="<?= isset($durationDay) ? htmlspecialchars($durationDay) : ''; ?>">
+                                    <input id="durationHour" name="durationHour" type="hidden" 
+                                        value="<?= isset($durationHour) ? htmlspecialchars($durationHour) : ''; ?>">
+                                </div>
                             </div>
-                            <div class="input-group mb-3 flex-column">
-                                <h6 class="mb-1">Duration</h6>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white">
-                                            <i class="fas fa-calendar-alt text-secondary"></i>
-                                        </span>
-                                        <input readonly id="duration" name="duration" type="text" class="form-control" value="<?= isset($durationDay) ? htmlspecialchars($durationDay) : ''; ?> Day(s) <?= isset($durationHour) ? htmlspecialchars($durationHour) : ''; ?> Hour(s)" placeholder="Duration" required>
-                                        <input id="durationDay" name="durationDay" type="hidden" value="<?= isset($durationDay) ? htmlspecialchars($durationDay) : ''; ?>">
-                                        <input id="durationHour" name="durationHour" type="hidden" value="<?= isset($durationHour) ? htmlspecialchars($durationHour) : ''; ?>">
-                                    </div>
-                            </div>
-                            <h5 class="card-title pb-2">Filter</h5>
-                            <div class="mb-3">
-                                <h6 class="mb-2">VEHICLE:</h6>
+
+                            <!-- Vehicle Filter -->
+                            <div class="filter-section mb-4">
+                                <h6 class="text-muted mb-3">
+                                    <i class="fas fa-car me-2"></i>Vehicle Type
+                                </h6>
                                 <?php
                                 $vehicle_options = ['Sedan', 'SUV', 'MPV', 'Pickup', 'Van', 'Hatchback', 'L300'];
                                 foreach ($vehicle_options as $option) {
                                     $checked = in_array($option, $vehicle_types) ? 'checked' : '';
-                                    echo "<div class='form-check'>
+                                    echo "<div class='form-check mb-2'>
                                             <input class='form-check-input' type='checkbox' id='" . strtolower($option) . "' name='vehicle[]' value='$option' $checked>
                                             <label class='form-check-label' for='" . strtolower($option) . "'>$option</label>
                                         </div>";
                                 }
                                 ?>
                             </div>
-                            <div class="mb-3">
-                                <h6 class="mb-2">TRANSMISSION:</h6>
+
+                            <!-- Transmission Filter -->
+                            <div class="filter-section mb-4">
+                                <h6 class="text-muted mb-3">
+                                    <i class="fas fa-cog me-2"></i>Transmission Type
+                                </h6>
                                 <?php
                                 $transmission_options = ['Manual', 'Automatic'];
                                 foreach ($transmission_options as $option) {
                                     $checked = in_array($option, $transmission_types) ? 'checked' : '';
-                                    echo "<div class='form-check'>
+                                    echo "<div class='form-check mb-2'>
                                             <input class='form-check-input' type='checkbox' id='" . strtolower($option) . "' name='transmission[]' value='$option' $checked>
                                             <label class='form-check-label' for='" . strtolower($option) . "'>$option</label>
                                         </div>";
                                 }
                                 ?>
                             </div>
-                            <button type="submit" class="btn btn-dark mt-3 w-100">Search</button>
+
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
                         </form>
+
                         <?php if ($error_message): ?>
                             <div class="alert alert-danger mt-3">
+                                <i class="fas fa-exclamation-circle me-2"></i>
                                 <?= htmlspecialchars($error_message); ?>
                             </div>
                         <?php endif; ?>
@@ -91,38 +112,53 @@ require_once './backend/search_handler.php';
             <div class="col-lg-8 col-md-8">
                 <?php if (!empty($available_cars)): ?>
                     <?php foreach ($available_cars as $car): ?>
-                        <div class="d-flex justify-content-between p-3 border mb-3 rounded">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-lg-3 col-6">
-                                    <img 
-                                        class="img-fluid" 
-                                        src="upload/car/<?= htmlspecialchars($car['img_url'] ?? 'default.png'); ?>" 
-                                        alt="Car Image" 
-                                        width="200px"
-                                    >
+                        <?php 
+                            $bookingUrl = isset($_SESSION['user_id']) 
+                                ? "booking.php?carid=" . htmlspecialchars($car['car_id']) . "&pickup=" . htmlspecialchars($start_datetime) . "&dropoff=" . htmlspecialchars($end_datetime) . "&day=" . htmlspecialchars(urlencode($durationDay)) . "&hour=" . htmlspecialchars(urlencode($durationHour))
+                                : "#";
+                            $clickHandler = isset($_SESSION['user_id']) ? "" : "onclick=\"checkLogin(); return false;\"";
+                        ?>
+                        <a href="<?= $bookingUrl ?>" class="text-decoration-none" <?= $clickHandler ?>>
+                            <div class="card mb-3 hover-shadow transition">
+                                <div class="row g-0">
+                                    <div class="col-lg-4 col-12 p-0">
+                                        <img 
+                                            class="img-fluid w-100 h-100 object-fit-cover" 
+                                            src="upload/car/<?= htmlspecialchars($car['img_url'] ?? 'default.png'); ?>" 
+                                            alt="Car Image"
+                                            style="min-height: 187px;"
+                                        >
                                     </div>
-                                    <div class="col-lg-6 col-6">
-                                        <h5 class="font-weight-medium"><?= htmlspecialchars($car['car_brand']) . " " . htmlspecialchars($car['car_model']); ?></h5>
-                                        <span class="mdi mdi-car"> <?= htmlspecialchars($car['car_type']); ?></span>
-                                        <span class="mdi mdi-cog"> <?= htmlspecialchars($car['car_transmission_type']); ?></span>
-                                        <span class="mdi mdi-car-seat"> <?= htmlspecialchars($car['car_seats']); ?> Seats</span>
-                                    </div>
-                                    <div class="col-lg-3 col-12 mt-5">
-                                        <div class="text-end">
-                                            <p class="mb-4"><strong>₱<?= number_format($car['car_rental_rate'], 2); ?></strong></p>
-                                            <?php if(isset($_SESSION['user_id'])): ?>
-                                                <a href="booking.php?carid=<?= htmlspecialchars($car['car_id']); ?>&pickup=<?= htmlspecialchars($start_datetime); ?>&dropoff=<?= htmlspecialchars($end_datetime); ?>&day=<?= htmlspecialchars(urlencode($durationDay)); ?>&hour=<?= htmlspecialchars(urlencode($durationHour)); ?>">
-                                                    <button id="bookBtn" class="btn w-100">BOOK</button>
-                                                </a>
-                                            <?php else: ?>
-                                                <button id="bookBtn" class="btn w-100" onclick="checkLogin()">BOOK</button>
-                                            <?php endif; ?>
+
+                                    <div class="col-lg-5 col-6">
+                                        <div class="car-details p-3">
+                                            <h5 class="font-weight-medium mb-3"><?= htmlspecialchars($car['car_brand']) . " " . htmlspecialchars($car['car_model']); ?></h5>
+                                            <div class="car-specs d-flex gap-3 align-items-center gap-3">
+                                                <span class="mdi mdi-car text-secondary"> <?= htmlspecialchars($car['car_type']); ?></span>
+                                                <span class="mdi mdi-cog text-secondary"> <?= htmlspecialchars($car['car_transmission_type']); ?></span>
+                                                <span class="mdi mdi-car-seat text-secondary"> <?= htmlspecialchars($car['car_seats']); ?> Seats</span>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <div class="col-lg-3 col-12 mt-lg-0 mt-3">
+                                        <div class="d-flex flex-column h-100 p-3">
+                                            <div class="pricing-details text-end mt-auto">
+                                                <span class="text-muted fs-6 d-block mb-1">₱<?= number_format($car['car_rental_rate'], 0); ?> / day</span>
+                                                <?php 
+                                                    $days = (int)$durationDay;
+                                                    $hours = (int)$durationHour;
+                                                    $extraDay = ($hours > 6) ? 1 : 0;
+                                                    $total = $car['car_rental_rate'] * ($days + $extraDay);
+                                                ?>
+                                                <h4 class="mb-0">Total: ₱<?= number_format($total, 0); ?></h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     <?php endforeach; ?>
 
                     <!-- Pagination -->

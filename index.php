@@ -171,13 +171,11 @@ session_start();
         </div>
     </div>
      <!-- end of booking-section -->
-    <hr class="m-3">
-    <div class="container my-5">
+    <div class="container my-4">
         <div class="row">
             <?php include 'includes/policies_guidelines.php' ?>
         </div>
     </div>
-    <hr class="m-3">
   
     <!-- Footer wrapper -->
     <div class="footer-wrapper">
