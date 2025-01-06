@@ -39,10 +39,6 @@
                         <img src="admin_dashboard_pics/reject.png" alt="Cross Icon" class="sidebar-icon">
                         Rejected List
                     </li>
-                    <li onclick="loadContent('penalty_content.php')" id="rejected" class="sidebar-item" aria-label="Rejected">
-                        <img src="admin_dashboard_pics/penalty.png" alt="Cross Icon" class="sidebar-icon">
-                        Penalty List
-                    </li>
                     <li onclick="loadContent('sales_trend_content.php')" id="sales" class="sidebar-item" aria-label="Sales/Sales Trend">
                         <img src="admin_dashboard_pics/sales.png" alt="Bar Chart Icon" class="sidebar-icon">
                         Sales/Sales Trend

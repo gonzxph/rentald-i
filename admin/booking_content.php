@@ -1,31 +1,5 @@
 <?php
-// Include database connection
-include 'db_conn.php';
-
-// Get the search query from the URL, if any
-$search = isset($_GET['search']) ? $_GET['search'] : '';
-
-// Query to fetch data for payments where payment_type is 'Reservation' and rent_status is 'PENDING'
-$sql = "SELECT 
-            u.user_fname, 
-            u.user_lname, 
-            p.pay_status, 
-            c.car_brand, 
-            c.car_model,
-            r.rental_id,
-            r.rental_pax
-        FROM payment p
-        JOIN rental r ON p.rental_id = r.rental_id
-        JOIN user u ON r.user_id = u.user_id
-        JOIN car c ON r.car_id = c.car_id
-        WHERE r.rent_status ='PENDING'";
-
-// Modify the query if there's a search term
-if (!empty($search)) {
-    $sql .= " AND (u.user_fname LIKE '%$search%' OR u.user_lname LIKE '%$search%')";
-}
-
-$result = $conn->query($sql);
+include 'db_conn.php';  // Include your database connection file
 ?>
 
 <!DOCTYPE html>
@@ -34,8 +8,8 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Review</title>
-    <link rel="stylesheet" href="booking_content.css">
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="booking_content.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome -->
     <style>
         .table-container {
@@ -49,34 +23,44 @@ $result = $conn->query($sql);
         th, td {
             text-align: left;
             padding: 8px;
+            border: 1px solid #ddd;
         }
         th {
             background-color: #f4f4f4;
+        }
+        .view-icon {
+            color: blue;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .add-penalty-icon {
+            color: red;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 <div class="container-fluid">
     <div class="outer-box">
-        <!-- Header Section -->
-        <div class="header-container">
-            <div class="header-left">
-                <h1>Booking Review</h1>
-            </div>
-            <div class="header-right">
-                <input type="text" id="searchInput" class="form-control" placeholder="Search by Last Name" value="<?= htmlspecialchars($search) ?>">
+        <div class="header-container mb-4">
+            <h1 class="text-left mb-3">Booking Review</h1>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by Last Name" onkeyup="filterTable()">
             </div>
         </div>
 
-        <!-- Table Section -->
         <div class="containert">
             <div class="row">
                 <div class="col-12">
                     <div class="table-container">
-                        <table class="table table-bordered" id="bookingTable">
+                        <table class="table table-bordered" id="approvedTable">
                             <thead>
                                 <tr>
-                                    <th scope="col">No.</th>
+                                <th scope="col">No.</th>
                                     <th scope="col">First Name</th>
                                     <th scope="col">Last Name</th>
                                     <th scope="col">Payment Status</th>
@@ -87,6 +71,22 @@ $result = $conn->query($sql);
                             </thead>
                             <tbody>
                                 <?php
+                                $sql = "SELECT 
+                                u.user_fname, 
+                                u.user_lname, 
+                                p.pay_status, 
+                                c.car_brand, 
+                                c.car_model,
+                                r.rental_id,
+                                r.rental_pax
+                                FROM payment p
+                                JOIN rental r ON p.rental_id = r.rental_id
+                                JOIN user u ON r.user_id = u.user_id
+                                JOIN car c ON r.car_id = c.car_id
+                                WHERE r.rent_status = 'PENDING'";
+
+                                $result = $conn->query($sql);
+
                                 if ($result && $result->num_rows > 0) {
                                     $counter = 1;
                                     while ($row = $result->fetch_assoc()) {
@@ -103,11 +103,13 @@ $result = $conn->query($sql);
                                                     </a>
                                                 </td>";
                                         echo "</tr>";
-                                        $counter++;
+                              
                                     }
                                 } else {
-                                    echo "<tr><td colspan='7'>No data available</td></tr>";
+                                    echo "<tr><td colspan='9' style='text-align:center;'>No approved rentals found</td></tr>";
                                 }
+
+                                $conn->close();
                                 ?>
                             </tbody>
                         </table>
@@ -119,29 +121,36 @@ $result = $conn->query($sql);
 </div>
 
 <script>
-// Function to filter the table dynamically as the user types
 function filterTable() {
-    const input = document.getElementById("searchInput");
+    const input = document.getElementById('searchInput');
     const filter = input.value.toLowerCase();
-    const table = document.getElementById("bookingTable");
-    const rows = table.getElementsByTagName("tr");
+    const table = document.getElementById('approvedTable');
+    const rows = table.getElementsByTagName('tr');
+    
+    for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        if (cells.length === 0) {
+            continue;
+        }
 
-    for (let i = 1; i < rows.length; i++) { // Skip the header row
-        const cells = rows[i].getElementsByTagName("td");
-        const lastName = cells[2]?.textContent.toLowerCase() || ""; // Only check last name column
+        const lastName = cells[1]?.textContent.toLowerCase() || "";
 
-        // Match the filter with the last name
         if (lastName.includes(filter)) {
-            rows[i].style.display = ""; // Show row
+            rows[i].style.display = '';
         } else {
-            rows[i].style.display = "none"; // Hide row
+            rows[i].style.display = 'none';
         }
     }
 }
-
-// Attach filterTable function to the search input's input event
-document.getElementById("searchInput").addEventListener("input", filterTable);
 </script>
-
 </body>
 </html>
+
+
+
+
+
+
+
+
+
