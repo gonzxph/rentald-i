@@ -25,7 +25,7 @@ try {
     $stmt1->execute();
 
     // Update the pay_type to "Full Payment"
-    $sql2 = "UPDATE payment SET pay_type = 'Full Payment' WHERE rental_id = ?";
+    $sql2 = "UPDATE payment SET pay_type = 'fullPayment' WHERE rental_id = ?";
     $stmt2 = $conn->prepare($sql2);
     if (!$stmt2) {
         throw new Exception("Error preparing payment update query: " . $conn->error);
