@@ -83,7 +83,7 @@ include 'db_conn.php';  // Include your database connection file
                                 JOIN rental r ON p.rental_id = r.rental_id
                                 JOIN user u ON r.user_id = u.user_id
                                 JOIN car c ON r.car_id = c.car_id
-                                WHERE r.rent_status = 'PENDING'";
+                                WHERE p.pay_type = 'Reservation' AND r.rent_status = 'Pending'";
 
                                 $result = $conn->query($sql);
 
@@ -91,7 +91,7 @@ include 'db_conn.php';  // Include your database connection file
                                     $counter = 1;
                                     while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<th scope='row'>{$counter}</th>";
+                                        echo "<th scope='row'>" . $counter++ . "</th>";
                                         echo "<td>{$row['user_fname']}</td>";
                                         echo "<td>{$row['user_lname']}</td>";
                                         echo "<td>{$row['pay_status']}</td>";

@@ -72,18 +72,20 @@ include 'db_conn.php';  // Include your database connection file
                             </thead>
                             <tbody>
                                 <?php
-                                $sql = "SELECT 
-                                            r.rental_id, 
-                                            u.user_fname, 
-                                            u.user_lname, 
-                                            r.rent_pickup_datetime, 
-                                            r.rent_dropoff_datetime, 
-                                            r.rent_pickup_location, 
-                                            r.rent_dropoff_location
-                                        FROM payment p
-                                        JOIN rental r ON p.rental_id = r.rental_id
-                                        JOIN user u ON r.user_id = u.user_id
-                                        WHERE r.rent_status = 'REJECTED'";
+                           $sql = "SELECT 
+                                r.rental_id, 
+                                u.user_fname, 
+                                u.user_lname, 
+                                r.rent_pickup_datetime, 
+                                r.rent_dropoff_datetime, 
+                                r.rent_pickup_location, 
+                                r.rent_dropoff_location
+                            FROM payment p
+                            JOIN rental r ON p.rental_id = r.rental_id
+                            JOIN user u ON r.user_id = u.user_id
+                            WHERE r.rent_status = 'REJECTED'
+                            ORDER BY r.rent_rejected_datetime DESC";
+               
 
                                 $result = $conn->query($sql);
 
