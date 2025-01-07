@@ -19,6 +19,9 @@ $sql = "
         r.rent_dropoff_datetime,
         r.rent_dropoff_location,
         r.is_custom_driver,
+        r.custom_driver_name,
+        r.custom_driver_phone,
+        r.custom_driver_license_number,
         p.pay_type,
         p.pay_rental_charge,
         p.pay_pickup_charge,
@@ -30,16 +33,12 @@ $sql = "
         c.car_brand,
         c.car_model,
         c.car_year,
-        ci.img_url,
-        d.driver_name,
-        d.driver_phone,
-        d.driver_license_number
+        ci.img_url
         
     FROM rental r
     LEFT JOIN payment p ON r.rental_id = p.rental_id
     LEFT JOIN car c ON r.car_id = c.car_id
     LEFT JOIN car_image ci ON c.car_id = ci.car_id AND ci.is_primary = 1
-    LEFT JOIN driver d ON r.assigned_driver_id = d.driver_id
     WHERE r.rental_id = ?
 ";
 
@@ -120,9 +119,9 @@ $data = $result->fetch_assoc();
             <!-- Driver Information -->
             <section class="driver-information">
                 <h2>Driver Information</h2>
-                <p>Full Name: <span><?= $data['driver_name'] ?? 'N/A'; ?></span></p>
-                <p>Contact Number: <span><?= $data['driver_phone'] ?? 'N/A'; ?></span></p>
-                <p>Driver's License Number: <span><?= $data['driver_license_number'] ?? 'N/A'; ?></span></p>
+                <p>Full Name: <span><?= $data['custom_driver_name'] ?? 'N/A'; ?></span></p>
+                <p>Contact Number: <span><?= $data['custom_driver_phone'] ?? 'N/A'; ?></span></p>
+                <p>Driver's License Number: <span><?= $data['custom_driver_license_number'] ?? 'N/A'; ?></span></p>
             </section>
 
             <!-- Price Breakdown -->

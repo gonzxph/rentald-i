@@ -5,6 +5,7 @@ header('Content-Type: application/json');
 
 if (!isset($_POST['payment_reference'])) {
     echo json_encode(['error' => 'No payment reference provided']);
+    error_log(json_encode(['error' => 'No payment reference provided']));
     exit();
 }
 
@@ -16,9 +17,10 @@ $stmt = $db->prepare($query);
 $stmt->execute([$reference]);
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
 if ($result) {
     // Payment found in main payment table
-    echo json_encode(['status' => $result['pay_status']]);
+    echo json_encode(['status' => 'completed']);
 } else {
     // Check if it still exists in pending_payments
     $query = "SELECT 1 FROM pending_payments WHERE payment_reference = ?";
