@@ -36,9 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['logged_in'] = true;
                 $_SESSION['fname'] = $user['user_fname'];
+                $_SESSION['mname'] = $user['user_mname'];
                 $_SESSION['lname'] = $user['user_lname'];
+                $_SESSION['phone'] = $user['user_phone'];
                 $_SESSION['user_email'] = $user['user_email'];
                 $_SESSION['user_role'] = $user['user_role'];
+                $_SESSION['profile_image'] = $user['profile_image'] ?: 'images/profile/user.png';
+                $_SESSION['username'] = $user['user_fname'] . ' ' . $user['user_lname'];
                 $_SESSION['success_message'] = "Welcome back, " . $user['user_fname'] . "!";
 
                 // Update last login timestamp

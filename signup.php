@@ -20,8 +20,8 @@ if (isset($_SESSION['user_id'])) {
 
     <?php include 'includes/nav.php' ?>
     
-    <div class="container">
-        <div class="row py-5 d-flex align-items-center justify-content-center">
+    <div class="container min-vh-100">
+        <div class="row py-5 d-flex align-items-center justify-content-center flex-grow-1">
             <div class="col-md-5">
                 <div class="card border-0 shadow-lg signup-card">
                     <div class="card-body p-4">
@@ -111,7 +111,8 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </div>
     </div>
-
+    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/scripts.php' ?>
     <script>
         // Toggle password visibility
         document.getElementById('togglePassword').addEventListener('click', function() {
@@ -176,5 +177,4 @@ if (isset($_SESSION['user_id'])) {
         });
     </script>
 </body>
-<?php include 'includes/scripts.php' ?>
 </html>

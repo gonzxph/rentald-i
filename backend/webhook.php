@@ -3,7 +3,7 @@
 require_once '../config/db.php';
 session_start();
 // PayMongo webhook secret key
-$webhookSecret = 'whsk_Kbweng8s6hi7guoM8S4jhxPw';
+$webhookSecret = 'whsk_tbYZTf1gBrqMBa1PaWBYiYzT';
 
 // Add these validation functions at the top
 function computeHmacSignature($payload, $webhookSecret, $timestamp) {
@@ -157,9 +157,10 @@ try {
 
             // Get temporary image filenames from pending_payment record instead of session
             $tempImages = json_decode($pendingPayment['temp_driver_images'] ?? '[]', true);
+            error_log("Temporary images: " . print_r($tempImages, true));
             
             if (!empty($tempImages)) {
-                $imageQuery = "INSERT INTO driver_id_images (rental_id, dimg_path) VALUES (?, ?)";
+                $imageQuery = "INSERT INTO driver_id_image (rental_id, dimg_path) VALUES (?, ?)";
                 $stmt = $db->prepare($imageQuery);
                 
                 foreach ($tempImages as $tempFileName) {
