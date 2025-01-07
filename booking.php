@@ -114,12 +114,12 @@ require_once './backend/search_handler.php';
             max-width: 600px;
         }
 
-        h6 {
+        /* h6 {
             text-align: center;
             margin-bottom: 1.5rem;
             font-size: 1.5rem;
             color: #333;
-        }
+        } */
 
         .upload-button {
             display: flex;
@@ -312,7 +312,7 @@ require_once './backend/search_handler.php';
                                         </div>
                                         <div class="input-group mb-3" id="dropoffGroup">
                                             <span class="input-group-text bg-white"><i class="fas fa-map-marker-alt text-danger"></i></span>
-                                            <input readonly id="dropoffInput" name="dropoffinput" type="text" data-bs-toggle="modal" data-bs-target="#pickupModal" class="form-control" placeholder="Choose drop off location" value="">
+                                            <input readonly id="dropoffInput" name="dropoffinput" type="text" data-bs-toggle="modal" data-bs-target="#pickupModal" class="form-control" placeholder="Choose return location" value="">
                                         </div>
 
                                         <!-- Date sections -->
@@ -435,7 +435,7 @@ require_once './backend/search_handler.php';
                         <div id="pickupGarage">
                             <button  class="btn d-flex align-items-center" onclick="pickupGarage()">
                                 <i class="fa-solid fa-warehouse me-2"></i>
-                                <span>Pickup in garage</span>
+                                <span id="garageButtonText">Pickup in garage</span>
                             </button>
                         </div>
                     </div>
@@ -489,7 +489,7 @@ require_once './backend/search_handler.php';
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="text-muted mb-4">Please double check your trip details below and click Book Now to proceed.</p>
+                        <p class="text-muted mb-4">Please double check your trip details below and click Pay Now to proceed.</p>
                         
                         <div class="booking-details">
                             <input type="hidden" id="paymentOption" name="paymentOption" value="">
@@ -528,21 +528,19 @@ require_once './backend/search_handler.php';
                                 <span class="value"><?= isset($bookingDurationDay) ? htmlspecialchars($bookingDurationDay) : ''; ?> Day(s) <?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
                             </div>
                             <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                                <span class="label">Excess Hour</span>
-                                <span class="value text-danger"><?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
-                                <input type="hidden" id="excessHour" name="excessHour" value="<?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?>">
-                            </div>
-                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
-                                <span class="label">
-                                    Excess Fee
+                                <span class="label">Excess Hour 
                                     <i 
                                     class="fas fa-info-circle text-muted" 
                                     data-bs-toggle="tooltip" 
                                     data-bs-placement="top" 
                                     title="6 hours limit for excess per hour, beyond that considered as 1 day rate."
                                     style="cursor: pointer;">
-                                    </i>
-                                </span>
+                                    </i></span>
+                                <span class="value text-danger"><?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?> Hour(s)</span>
+                                <input type="hidden" id="excessHour" name="excessHour" value="<?= isset($bookingDurationHour) ? htmlspecialchars($bookingDurationHour) : ''; ?>">
+                            </div>
+                            <div class="detail-row d-flex justify-content-between border-bottom py-2">
+                                <span class="label">Excess Fee</span>
                                 <span class="value text-danger">PHP <?= htmlspecialchars($carExcessPay) ?></span>
                                 <input type="hidden" id="excessPay" name="excessPay" value="<?= htmlspecialchars($carExcessPay) ?>">
                             </div>
@@ -681,6 +679,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Run initial check
         updateDriverInfo();
     }
+
+    // Get the input elements
+    const pickupInput = document.getElementById('pickupInput');
+    const dropoffInput = document.getElementById('dropoffInput');
+    const garageButtonText = document.getElementById('garageButtonText');
+
+    // Add click event listeners to both inputs
+    pickupInput.addEventListener('click', function() {
+        garageButtonText.textContent = 'Pickup in garage';
+    });
+
+    dropoffInput.addEventListener('click', function() {
+        garageButtonText.textContent = 'Return in garage';
+    });
 
 });
 </script>

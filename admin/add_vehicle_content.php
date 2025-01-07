@@ -228,7 +228,7 @@ if (isset($_POST['addVehicle'])) {
                     <small class="text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple files.</small>
                 </div>
 
-                
+                    
             </div>
 
                 <!-- Form Buttons -->
@@ -258,18 +258,3 @@ if (isset($_POST['addVehicle'])) {
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
