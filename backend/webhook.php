@@ -3,7 +3,7 @@
 require_once '../config/db.php';
 session_start();
 // PayMongo webhook secret key
-$webhookSecret = 'whsk_tbYZTf1gBrqMBa1PaWBYiYzT';
+$webhookSecret = 'whsk_AbrVXT81d8LSFHnh2CMKZ63J';
 
 // Add these validation functions at the top
 function computeHmacSignature($payload, $webhookSecret, $timestamp) {
@@ -204,7 +204,7 @@ try {
             $pendingPayment['total_amount'],
             $pendingPayment['amount_paid'],
             ($pendingPayment['total_amount'] - $pendingPayment['amount_paid']),
-            'completed',
+            ($pendingPayment['payment_option'] === 'fullPayment' ? 'completed' : 'incomplete'),
             $pendingPayment['payment_reference']
         ]);
 

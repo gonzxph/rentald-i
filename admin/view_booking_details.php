@@ -112,7 +112,7 @@ $data = $result->fetch_assoc();
             <!-- Rental Type -->
             <section class="rental-type">
                 <h2>Rental Type</h2>
-                <p>Type: <span><?= $data['is_custom_driver'] ? 'With Driver' : 'Self Drive'; ?></span></p>
+                <p>Type: <span><?= $data['is_custom_driver'] ? 'Self Drive' : 'With Driver'; ?></span></p>
             </section>
 
     

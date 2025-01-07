@@ -79,10 +79,18 @@ include 'db_conn.php';  // Include your database connection file
                                 c.car_model,
                                 r.rental_id,
                                 r.rental_pax
-                                FROM payment p
-                                JOIN rental r ON p.rental_id = r.rental_id
+                                FROM rental r
                                 JOIN user u ON r.user_id = u.user_id
                                 JOIN car c ON r.car_id = c.car_id
+                                LEFT JOIN (
+                                    SELECT rental_id, pay_status
+                                    FROM payment
+                                    WHERE pay_id IN (
+                                        SELECT MAX(pay_id)
+                                        FROM payment
+                                        GROUP BY rental_id
+                                    )
+                                ) p ON r.rental_id = p.rental_id
                                 WHERE r.rent_status = 'PENDING'";
 
                                 $result = $conn->query($sql);
