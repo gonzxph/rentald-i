@@ -65,7 +65,8 @@ include 'db_conn.php';  // Include your database connection file
                                     <th scope="col">Last Name</th>
                                     <th scope="col">Payment Status</th>
                                     <th scope="col">Selected Car</th>
-                                    <th scope="col">Pax</th>
+                                    <th scope="col">Pick-up Date & time</th>
+                                    <th scope="col">Drop-off Date & time</th>
                                     <th scope="col">View</th>
                                 </tr>
                             </thead>
@@ -78,7 +79,8 @@ include 'db_conn.php';  // Include your database connection file
                                 c.car_brand, 
                                 c.car_model,
                                 r.rental_id,
-                                r.rental_pax
+                                r.rent_pickup_datetime, 
+                                r.rent_dropoff_datetime
                                 FROM rental r
                                 JOIN user u ON r.user_id = u.user_id
                                 JOIN car c ON r.car_id = c.car_id
@@ -104,7 +106,8 @@ include 'db_conn.php';  // Include your database connection file
                                         echo "<td>{$row['user_lname']}</td>";
                                         echo "<td>{$row['pay_status']}</td>";
                                         echo "<td>{$row['car_brand']} {$row['car_model']}</td>";
-                                        echo "<td>{$row['rental_pax']}</td>";
+                                        echo "<td>{$row['rent_pickup_datetime']}</td>";
+                                        echo "<td>{$row['rent_dropoff_datetime']}</td>";
                                         echo "<td>
                                                     <a href='view_booking_details.php?rental_id={$row['rental_id']}' class='btn btn-primary'>
                                                         <i class='far fa-eye'></i>

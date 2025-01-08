@@ -10,7 +10,7 @@ if (empty($rental_id)) {
     exit();
 }
 
-// Fetch the rental details as before
+// Fetch the rental details as before, including the driver's image for self-drive bookings
 $sql = "
     SELECT 
         r.rent_status,
@@ -33,14 +33,16 @@ $sql = "
         c.car_brand,
         c.car_model,
         c.car_year,
-        ci.img_url
-        
+        di.dimg_path  
     FROM rental r
     LEFT JOIN payment p ON r.rental_id = p.rental_id
     LEFT JOIN car c ON r.car_id = c.car_id
     LEFT JOIN car_image ci ON c.car_id = ci.car_id AND ci.is_primary = 1
+    LEFT JOIN driver_id_image di ON r.rental_id = di.rental_id  
     WHERE r.rental_id = ?
 ";
+
+
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $rental_id);
@@ -78,14 +80,10 @@ $data = $result->fetch_assoc();
                 <?php unset($_SESSION['error']); ?>
             <?php endif; ?>
 
-
-
-
-
             <!-- Booking Status Section -->
             <section class="booking-status" style="margin-top: 20px;">
                 <h2>Booking Status</h2>
-                <p class="status-text"><?= $data['rental_status'] ?? 'N/A'; ?></p>
+                <p class="status-text"><?= $data['rent_status'] ?? 'N/A'; ?></p>
             </section>
             
             <!-- Pickup and Dropoff Details -->
@@ -114,23 +112,50 @@ $data = $result->fetch_assoc();
                 <p>Type: <span><?= $data['is_custom_driver'] ? 'Self Drive' : 'With Driver'; ?></span></p>
             </section>
 
-    
-
-            <!-- Driver Information -->
+                <!-- Driver Information -->
             <section class="driver-information">
                 <h2>Driver Information</h2>
                 <p>Full Name: <span><?= $data['custom_driver_name'] ?? 'N/A'; ?></span></p>
                 <p>Contact Number: <span><?= $data['custom_driver_phone'] ?? 'N/A'; ?></span></p>
                 <p>Driver's License Number: <span><?= $data['custom_driver_license_number'] ?? 'N/A'; ?></span></p>
+
+                <?php if (!empty($data['dimg_path'])): ?>
+                    <!-- Small fixed size image with modal functionality -->
+                    <p>Driver's License Image: 
+                        <img src="../upload/driver_ids/<?= htmlspecialchars($data['dimg_path']); ?>" 
+                            alt="Driver Image" 
+                            width="100" 
+                            height="100" 
+                            style="cursor: pointer;" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#driverImageModal">
+                    </p>
+
+                    <!-- Modal for larger image view -->
+                    <div class="modal fade" id="driverImageModal" tabindex="-1" aria-labelledby="driverImageModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="driverImageModalLabel">Driver's License Image</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img src="../upload/driver_ids/<?= htmlspecialchars($data['dimg_path']); ?>" 
+                                        alt="Driver Image" 
+                                        class="img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </section>
+
+
 
             <!-- Price Breakdown -->
             <section class="price-breakdown">
                 <h2>Price Breakdown</h2>
                 <p>Rental Charge: <span>PHP <?= number_format($data['pay_rental_charge'], 2) ?? '0.00'; ?></span></p>
-                <p>Pickup Charge: <span>PHP <?= number_format($data['pay_pickup_charge'], 2) ?? '0.00'; ?></span></p>
-                <p>Dropoff Charge: <span>PHP <?= number_format($data['pay_dropoff_charge'], 2) ?? '0.00'; ?></span></p>
-                <p>Reservation Fee: <span>PHP <?= number_format($data['pay_reservation_fee'], 2) ?? '0.00'; ?></span></p>
                 <p>Total Amount Due: <span>PHP <?= number_format($data['pay_total_due'], 2) ?? '0.00'; ?></span></p>
                 <p>Amount Paid: <span>PHP <?= number_format($data['pay_amount_paid'], 2) ?? '0.00'; ?></span></p>
                 <p>Balance Due: <span>PHP <?= number_format($data['pay_balance_due'], 2) ?? '0.00'; ?></span></p>
@@ -141,9 +166,8 @@ $data = $result->fetch_assoc();
                 <button class="btn btn-secondary back-button" onclick="goToBookingContent()">Back</button>
 
                 <!-- Decline and Approve Buttons -->
-<button class="btn btn-danger decline-button" onclick="rejectRental(<?= $rental_id; ?>)">Reject</button>
-<button class="btn btn-primary approve-button" onclick="approveRental(<?= $rental_id; ?>)">Approve</button>
-
+                <button class="btn btn-danger decline-button" onclick="rejectRental(<?= $rental_id; ?>)">Reject</button>
+                <button class="btn btn-primary approve-button" onclick="approveRental(<?= $rental_id; ?>)">Approve</button>
             </section>
         </div>
     </div>
@@ -188,14 +212,13 @@ $data = $result->fetch_assoc();
             })
             .catch(error => console.error('Error:', error));
         }
-
-
     </script>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
-
-
-
-
-
-

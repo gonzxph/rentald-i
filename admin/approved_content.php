@@ -83,7 +83,7 @@ include 'db_conn.php';  // Include your database connection file
                                 FROM payment p
                                 JOIN rental r ON p.rental_id = r.rental_id
                                 JOIN user u ON r.user_id = u.user_id
-                                WHERE p.pay_type = 'Full Payment' AND r.rent_status = 'APPROVED'
+                                WHERE p.pay_type = 'fullPayment' AND r.rent_status = 'APPROVED'
                                 ORDER BY r.rent_approved_datetime DESC";
 
                                 $result = $conn->query($sql);

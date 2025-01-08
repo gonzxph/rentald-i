@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<lang="en">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -7,13 +7,13 @@
     <title>Sales Trend Dashboard</title>
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="sales_trend_content.css">
-    
-    
+    <?php include 'admin_header/admin_header.php'; include 'admin_header/admin_nav.php'; ?>
 </head>
 
-<div class="container-fluid">
+<body>
+<div class="container-fluid" style="margin-top:30px;">
     <div class="outer-box">
-    <h1 class="text-left mb-4">Sales Trend</h1>
+        <h1 class="text-left mb-4">Sales Trend</h1>
         <div class="card" id="revenueCard">
             <h2>Total Revenue</h2>
             <select id="revenueYear">
@@ -38,9 +38,23 @@
             </select>
             <div class="chart-placeholder"></div>
         </div>
+`
+        <div class="back-btn-container">
+                <button type="button" class="btn btn-primary" onclick="goToDashboard()" style="font-size: 1rem; margin-top:10px;">Back</button>
+        </div>
     </div>
-
+  
 </div>
+
+
+<script>
+    // Test if JavaScript is working
+    console.log("JavaScript is working!");
+
+    function goToDashboard() {
+            window.location.href = 'index.php';
+        }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

@@ -39,10 +39,24 @@
                         <img src="admin_dashboard_pics/reject.png" alt="Cross Icon" class="sidebar-icon">
                         Rejected List
                     </li>
-                    <li onclick="loadContent('sales_trend_content.php')" id="sales" class="sidebar-item" aria-label="Sales/Sales Trend">
-                        <img src="admin_dashboard_pics/sales.png" alt="Bar Chart Icon" class="sidebar-icon">
-                        Sales/Sales Trend
+                    <li id="sales" class="sidebar-item" aria-label="Sales/Sales Trend">
+                        <a href="sales_trend_content.php" class="sidebar-link">
+                            <img src="admin_dashboard_pics/sales.png" alt="Bar Chart Icon" class="sidebar-icon">
+                            Sales/Sales Trend
+                        </a>
                     </li>
+                    <style>.sidebar-link {
+                            text-decoration: none; 
+                            color: inherit; 
+                        }
+
+                        .sidebar-link:hover {
+                            color: inherit; 
+                            text-decoration: none; 
+                        }
+                        </style>
+
+
                 </ul>
             </aside>
 
