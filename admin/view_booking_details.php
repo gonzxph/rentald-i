@@ -22,6 +22,11 @@ $sql = "
         r.custom_driver_name,
         r.custom_driver_phone,
         r.custom_driver_license_number,
+        u.user_fname,
+        u.user_mname,
+        u.user_lname,
+        u.user_email,
+        u.user_phone,
         p.pay_type,
         p.pay_rental_charge,
         p.pay_pickup_charge,
@@ -33,14 +38,24 @@ $sql = "
         c.car_brand,
         c.car_model,
         c.car_year,
+        c.car_type,
+        c.car_color,
+        c.car_seats,
+        c.car_transmission_type,
+        c.car_fuel_type,
         di.dimg_path  
     FROM rental r
     LEFT JOIN payment p ON r.rental_id = p.rental_id
     LEFT JOIN car c ON r.car_id = c.car_id
     LEFT JOIN car_image ci ON c.car_id = ci.car_id AND ci.is_primary = 1
-    LEFT JOIN driver_id_image di ON r.rental_id = di.rental_id  
+    LEFT JOIN driver_id_image di ON r.rental_id = di.rental_id
+    LEFT JOIN user u ON r.user_id = u.user_id
     WHERE r.rental_id = ?
 ";
+
+
+
+
 
 
 
@@ -80,8 +95,59 @@ $data = $result->fetch_assoc();
                 <?php unset($_SESSION['error']); ?>
             <?php endif; ?>
 
+
+             <!-- Renter -->
+            <section class="renter-info" style="margin-top: 20px;">
+                <h2>Renter</h2>
+                <p>Full Name: <span>
+                    <?php
+                    // Check if the first, middle, and last names are available
+                    $full_name = '';
+                    
+                    if (!empty($data['user_fname'])) {
+                        $full_name .= $data['user_fname'];
+                    }
+                    
+                    if (!empty($data['user_mname'])) {
+                        if (!empty($full_name)) {
+                            $full_name .= ' ';
+                        }
+                        $full_name .= $data['user_mname'];
+                    }
+                    
+                    if (!empty($data['user_lname'])) {
+                        if (!empty($full_name)) {
+                            $full_name .= ' ';
+                        }
+                        $full_name .= $data['user_lname'];
+                    }
+                    
+                    // If the full name is empty, set it to 'N/A'
+                    echo $full_name ?: 'N/A';
+                    ?>
+                </span></p>
+                <p>Email: <span><?= $data['user_email'] ?? 'N/A'; ?></span></p>
+                <p>Phone Number: <span><?= $data['user_phone'] ?? 'N/A'; ?></span></p>
+            </section>
+
+            <!-- Choosen Car-->
+            <section class="choosen-car">
+                <h2>Choosen Car</h2>
+                <p>Vehicle: <span><?= isset($data['car_brand'], $data['car_model']) ? $data['car_brand'] . ' ' . $data['car_model'] : 'N/A'; ?></span></p>
+                <p>Year: <span><?= $data['car_year'] ?? 'N/A'; ?></span></p>
+                <p>Type: <span><?= $data['car_type'] ?? 'N/A'; ?></span></p>
+                <p>Color: <span><?= $data['car_color'] ?? 'N/A'; ?></span></p>
+                <p>Seats: <span><?= $data['car_seats'] ?? 'N/A'; ?></span></p>
+                <p>Transmission Type: <span><?= $data['car_transmission_type'] ?? 'N/A'; ?></span></p>
+                <p>Fuel Type: <span><?= $data['car_fuel_type'] ?? 'N/A'; ?></span></p>
+            </section>
+
+
+
+
+
             <!-- Booking Status Section -->
-            <section class="booking-status" style="margin-top: 20px;">
+            <section class="booking-status">
                 <h2>Booking Status</h2>
                 <p class="status-text"><?= $data['rent_status'] ?? 'N/A'; ?></p>
             </section>
