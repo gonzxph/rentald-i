@@ -1,4 +1,3 @@
-
 .card {
     background: white;
     border-radius: 10px;
@@ -30,7 +29,6 @@ select:focus {
 
 .chart-placeholder {
     border: 2px dashed #007bff;
-    height: 200px; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -43,4 +41,21 @@ select:focus {
 
 .chart-placeholder:hover {
     background-color: #e3f2fd;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%; /* Change width to 100% for full responsiveness */
+    height: 500px; /* Set chart height */
+    margin: 0 auto; /* Center the chart */
+}
+
+.back-btn-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    font-size: 1.2rem;
 }
