@@ -133,6 +133,85 @@ if (isset($_POST['saveChanges'])) {
     <link rel="stylesheet" href="view_car.css">
     <link rel="stylesheet" href="index.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        .upload-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .upload-button {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .upload-button label {
+            background: #0066ff;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .upload-button label:hover {
+            background: #0052cc;
+        }
+
+        .file-count {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .preview-item {
+            position: relative;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .preview-item p {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .preview-item .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid">
@@ -159,7 +238,7 @@ if (isset($_POST['saveChanges'])) {
                     <?php if (!empty($car_images)): ?>
                         <?php foreach ($car_images as $image): ?>
                             <img src="../upload/car/<?php echo htmlspecialchars($image['img_url']); ?>" 
-                                 alt="Car Image" class="img-fluid m-2" style="max-height: 200px;">
+                                 alt="Car Image" class="img-fluid m-2" style="max-height: 200px; max-width: 300px; object-fit: contain;">
                         <?php endforeach; ?>
                     <?php else: ?>
                         <p>No images available for this vehicle.</p>
@@ -235,11 +314,41 @@ if (isset($_POST['saveChanges'])) {
                                 <option value="0" <?php echo ($car['car_availability'] == 0 ? 'selected' : ''); ?>>No</option>
                             </select>
                         </div>
+                        <div class="col-md-5">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" disabled><?php echo $car['car_description']; ?></textarea>
+                        </div>
+                       
 
                         <!-- Image Upload Section -->
-                        <div class="col-md-5" id="imageUploadDiv" style="display: none;">
-                            <label for="image_upload" class="form-label">Upload Images</label>
-                            <input type="file" class="form-control" id="image_upload" name="image_upload[]" multiple>
+                        <!-- Add this in the form section where you want the image upload -->
+                        <div class="col-md-5" id="imageUploadSection" style="display: none;">
+                            <h6 class="mb-4">Upload Vehicle Images</h6>
+                            <div class="upload-container">
+                                <div class="upload-button">
+                                    <label for="image_upload" class="btn btn-primary btn-sm">
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                        </svg>
+                                        Upload Photos
+                                    </label>
+                                    <input type="file" name="image_upload[]" id="image_upload" multiple accept="image/*" class="d-none">
+                                </div>
+                                <div class="file-count mt-2 text-muted"></div>
+                                <div class="preview-container mt-3">
+                                    <!-- Existing images will be shown here -->
+                                    <?php if (!empty($car_images)): ?>
+                                        <?php foreach ($car_images as $image): ?>
+                                            <div class="preview-item">
+                                                <img src="../upload/car/<?php echo htmlspecialchars($image['img_url']); ?>" 
+                                                    alt="Car Image">
+                                                <p><?php echo htmlspecialchars($image['img_url']); ?></p>
+                                                <button type="button" class="remove-btn" data-name="<?php echo htmlspecialchars($image['img_url']); ?>">×</button>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -256,16 +365,115 @@ if (isset($_POST['saveChanges'])) {
     </div>
 
     <script>
-        const editButton = document.getElementById('editButton');
+         const editButton = document.getElementById('editButton');
         const saveButton = document.getElementById('saveButton');
         const inputs = document.querySelectorAll('#viewVehicleForm input, #viewVehicleForm textarea, #viewVehicleForm select');
-        const imageUploadDiv = document.getElementById('imageUploadDiv');
+        const imageUploadSection = document.getElementById('imageUploadSection');
 
         editButton.addEventListener('click', () => {
             inputs.forEach(input => input.disabled = false);
-            imageUploadDiv.style.display = 'block';
             editButton.classList.add('d-none');
             saveButton.classList.remove('d-none');
+            imageUploadSection.style.display = 'block'; // Show the image upload section
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('image_upload');
+            const previewContainer = document.querySelector('.preview-container');
+            const fileCount = document.querySelector('.file-count');
+            let fileList = new DataTransfer();
+
+            if (fileInput && previewContainer && fileCount) {
+                // Initialize the file count with existing images
+                updateFileCount();
+
+                // Handle existing images
+                const existingPreviews = document.querySelectorAll('.preview-item');
+                existingPreviews.forEach(preview => {
+                    const removeBtn = preview.querySelector('.remove-btn');
+                    if (removeBtn) {
+                        removeBtn.addEventListener('click', function() {
+                            const imageName = this.getAttribute('data-name');
+                            if (confirm('Are you sure you want to remove this image?')) {
+                                // Add AJAX call to delete image from server
+                                fetch('delete_car_image.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded',
+                                    },
+                                    body: `car_id=<?php echo $car_id; ?>&image_name=${imageName}`
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        preview.remove();
+                                        updateFileCount();
+                                    } else {
+                                        alert('Error removing image: ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert('Error removing image');
+                                });
+                            }
+                        });
+                    }
+                });
+
+                // Handle new file uploads
+                fileInput.addEventListener('change', function(e) {
+                    const files = Array.from(e.target.files);
+                    
+                    files.forEach(file => {
+                        fileList.items.add(file);
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewItem = document.createElement('div');
+                            previewItem.className = 'preview-item';
+                            
+                            previewItem.innerHTML = `
+                                <img src="${e.target.result}" alt="${file.name}">
+                                <p>${file.name}</p>
+                                <button type="button" class="remove-btn" data-name="${file.name}">×</button>
+                            `;
+                            
+                            previewContainer.appendChild(previewItem);
+
+                            // Add click handler for the new remove button
+                            const removeBtn = previewItem.querySelector('.remove-btn');
+                            removeBtn.addEventListener('click', function() {
+                                previewItem.remove();
+                                
+                                // Update fileList
+                                const newFileList = new DataTransfer();
+                                const currentFiles = fileList.files;
+                                for (let i = 0; i < currentFiles.length; i++) {
+                                    if (currentFiles[i].name !== file.name) {
+                                        newFileList.items.add(currentFiles[i]);
+                                    }
+                                }
+                                fileList = newFileList;
+                                fileInput.files = fileList.files;
+                                updateFileCount();
+                            });
+                        }
+                        
+                        reader.readAsDataURL(file);
+                    });
+
+                    fileInput.files = fileList.files;
+                    updateFileCount();
+                });
+            }
+
+            function updateFileCount() {
+                if (fileCount) {
+                    const existingImageCount = document.querySelectorAll('.preview-item').length;
+                    fileCount.textContent = `${existingImageCount} Files Selected`;
+                }
+            }
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

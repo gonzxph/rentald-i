@@ -52,8 +52,13 @@ if (isset($_POST['addVehicle'])) {
                 mkdir($img_folder, 0777, true);
             }
 
-            foreach ($_FILES['image_upload']['name'] as $index => $img_name) {
-                $img_tmp_name = $_FILES['image_upload']['tmp_name'][$index];
+            // Debug: Print number of files
+            error_log("Number of files: " . count($_FILES['image_upload']['name']));
+
+            // Loop through each uploaded file
+            foreach ($_FILES['image_upload']['name'] as $i => $name) {
+                $img_name = $_FILES['image_upload']['name'][$i];
+                $img_tmp_name = $_FILES['image_upload']['tmp_name'][$i];
                 $file_extension = pathinfo($img_name, PATHINFO_EXTENSION);
                 
                 // Generate unique filename
@@ -74,13 +79,13 @@ if (isset($_POST['addVehicle'])) {
 
                 $uploaded_files[] = $fileName;
 
-                // Insert image details
-                $q_image_insert = "INSERT INTO `car_image` 
-                                   (`car_id`, `img_url`, `img_description`, `img_position`, `is_primary`, `img_uploaded_at`) 
-                                   VALUES (?, ?, ?, 0, 0, ?)";
-                                   
+                // Insert image details - simplified query
+                $q_image_insert = "INSERT INTO `car_image` (`car_id`, `img_url`, `img_description`) VALUES (?, ?, ?)";
                 $stmt = mysqli_prepare($conn, $q_image_insert);
-                mysqli_stmt_bind_param($stmt, 'isss', $car_id, $fileName, $car_description, $img_uploaded_at);
+                mysqli_stmt_bind_param($stmt, 'iss', $car_id, $fileName, $car_description);
+                
+                // Debug: Print query details
+                error_log("Inserting image: " . $fileName . " for car_id: " . $car_id);
                 
                 if (!mysqli_stmt_execute($stmt)) {
                     throw new Exception("Error saving image details to database: " . mysqli_error($conn));
@@ -128,6 +133,85 @@ if (isset($_POST['addVehicle'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="add_vehicle_content.css">
     <link rel="stylesheet" href="index.css">
+    <style>
+        .upload-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .upload-button {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .upload-button label {
+            background: #0066ff;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .upload-button label:hover {
+            background: #0052cc;
+        }
+
+        .file-count {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #666;
+        }
+
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .preview-item {
+            position: relative;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .preview-item p {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .preview-item .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -254,10 +338,22 @@ if (isset($_POST['addVehicle'])) {
                 </div>
 
                  <!-- Image Upload -->
-                <div class="col-md-4">
-                    <label for="image_upload" class="form-label">Upload Images</label>
-                    <input type="file" name="image_upload[]" id="image_upload" class="form-control" multiple required>
-                    <small class="text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple files.</small>
+                <div class="col-md-5">
+                    <h6 class="mb-4">Upload Vehicle Images</h6>
+                    <div class="upload-container">
+                        <div class="upload-button">
+                            <label for="image_upload" class="btn btn-primary btn-sm">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                </svg>
+                                Upload Photos
+                            </label>
+                            <input type="file" name="image_upload[]" id="image_upload" multiple accept="image/*" class="d-none" required>
+                        </div>
+                        <div class="file-count mt-2 text-muted"></div>
+                        <div class="preview-container mt-3"></div>
+
+                    </div>
                 </div>
 
                     
@@ -287,6 +383,13 @@ if (isset($_POST['addVehicle'])) {
 
     </div>
 </div>
+
+<script>
+// Test if JavaScript is running
+document.addEventListener('DOMContentLoaded', function() {
+    alert('JavaScript is running in add_vehicle_content.php');
+});
+</script>
 
 </body>
 </html>
