@@ -19,6 +19,7 @@ if (isset($_POST['addVehicle'])) {
         $car_rental_rate = $_POST['rental_rate'];
         $car_excess_per_hour = $_POST['excess_hour'];
         $car_availability = $_POST['availability'];
+        error_log($car_availability);
 
         // Insert vehicle details into the database
         $q_add_car = "INSERT INTO `car` 
@@ -241,8 +242,8 @@ if (isset($_POST['addVehicle'])) {
                     <label for="availability" class="form-label">Availability</label>
                     <select class="form-select" id="availability" name="availability" required>
                         <option value="" disabled selected>Select availability</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
                     </select>
                 </div>
 

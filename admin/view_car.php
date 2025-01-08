@@ -227,13 +227,12 @@ if (isset($_POST['saveChanges'])) {
                             <label for="excess_hour" class="form-label">Excess Per Hour</label>
                             <input type="number" class="form-control" id="excess_hour" name="excess_hour" value="<?php echo $car['car_excess_per_hour']; ?>" disabled>
                         </div>
-
                         <!-- Availability -->
                         <div class="col-md-5">
                             <label for="availability" class="form-label">Availability</label>
                             <select class="form-control" id="availability" name="availability" disabled>
-                                <option value="Yes" <?php echo ($car['car_availability'] == 'Yes' ? 'selected' : ''); ?>>Yes</option>
-                                <option value="No" <?php echo ($car['car_availability'] == 'No' ? 'selected' : ''); ?>>No</option>
+                                <option value="1" <?php echo ($car['car_availability'] == 1 ? 'selected' : ''); ?>>Yes</option>
+                                <option value="0" <?php echo ($car['car_availability'] == 0 ? 'selected' : ''); ?>>No</option>
                             </select>
                         </div>
 
