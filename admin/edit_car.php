@@ -28,61 +28,116 @@ if (isset($_GET['car_id'])) {
 
 // Handle form submission for updating the car details
 if (isset($_POST['saveChanges'])) {
-    $car_description = $_POST['description'];
-    $car_brand = $_POST['brand'];
-    $car_model = $_POST['model'];
-    $car_year = $_POST['year'];
-    $car_type = $_POST['type'];
-    $car_color = $_POST['color'];
-    $car_seats = $_POST['seats'];
-    $car_transmission_type = $_POST['transmission'];
-    $car_fuel_type = $_POST['fuel_type'];
-    $car_rental_rate = $_POST['rental_rate'];
-    $car_excess_per_hour = $_POST['excess_hour'];
-    $car_availability = $_POST['availability'];
+    // Start transaction
+    mysqli_begin_transaction($conn);
+    echo 'AASASASAS';
+    
+    try {
+        $car_description = $_POST['description'];
+        $car_brand = $_POST['brand'];
+        $car_model = $_POST['model'];
+        $car_year = $_POST['year'];
+        $car_type = $_POST['type'];
+        $car_color = $_POST['color'];
+        $car_seats = $_POST['seats'];
+        $car_transmission_type = $_POST['transmission'];
+        $car_fuel_type = $_POST['fuel_type'];
+        $car_rental_rate = $_POST['rental_rate'];
+        $car_excess_per_hour = $_POST['excess_hour'];
+        $car_availability = $_POST['availability'];
 
-    $q_update = "UPDATE `car` SET 
-                 `car_description` = '$car_description', `car_brand` = '$car_brand', 
-                 `car_model` = '$car_model', `car_year` = '$car_year', `car_type` = '$car_type',
-                 `car_color` = '$car_color', `car_seats` = '$car_seats', 
-                 `car_transmission_type` = '$car_transmission_type', `car_fuel_type` = '$car_fuel_type', 
-                 `car_rental_rate` = '$car_rental_rate', `car_excess_per_hour` = '$car_excess_per_hour', 
-                 `car_availability` = '$car_availability' WHERE `car_id` = '$car_id'";
+        // Update car details using prepared statement
+        $q_update = "UPDATE `car` SET 
+                     `car_description` = ?, `car_brand` = ?, 
+                     `car_model` = ?, `car_year` = ?, `car_type` = ?,
+                     `car_color` = ?, `car_seats` = ?, 
+                     `car_transmission_type` = ?, `car_fuel_type` = ?, 
+                     `car_rental_rate` = ?, `car_excess_per_hour` = ?, 
+                     `car_availability` = ? WHERE `car_id` = ?";
 
-    if (mysqli_query($conn, $q_update)) {
+        $stmt = mysqli_prepare($conn, $q_update);
+        mysqli_stmt_bind_param($stmt, 'sssississsssi', 
+            $car_description, $car_brand, $car_model, $car_year, $car_type,
+            $car_color, $car_seats, $car_transmission_type, $car_fuel_type,
+            $car_rental_rate, $car_excess_per_hour, $car_availability, $car_id
+        );
+
+        if (!mysqli_stmt_execute($stmt)) {
+            throw new Exception("Error updating car: " . mysqli_error($conn));
+        }
+
         // Handle image update if a new image is uploaded
         if (isset($_FILES['image_upload']) && $_FILES['image_upload']['error'] === UPLOAD_ERR_OK) {
-            $img_name = $_FILES['image_upload']['name'];
             $img_tmp_name = $_FILES['image_upload']['tmp_name'];
-            $img_folder = "uploads/";
-            $img_path = $img_folder . basename($img_name);
+            $img_folder = "../upload/car/";
+            
+            // Create directory if it doesn't exist
+            if (!file_exists($img_folder)) {
+                mkdir($img_folder, 0777, true);
+            }
 
-            if (move_uploaded_file($img_tmp_name, $img_path)) {
-                $img_uploaded_at = date('Y-m-d H:i:s');
+            // Get old image details to delete later
+            $q_old_image = "SELECT img_url FROM car_image WHERE car_id = ? AND is_primary = 1";
+            $stmt = mysqli_prepare($conn, $q_old_image);
+            mysqli_stmt_bind_param($stmt, 'i', $car_id);
+            mysqli_stmt_execute($stmt);
+            $old_image = mysqli_stmt_get_result($stmt)->fetch_assoc();
 
-                $q_image_update = "UPDATE `car_image` SET `img_url` = '$img_path', `img_uploaded_at` = '$img_uploaded_at' 
-                                  WHERE `car_id` = '$car_id' AND `is_primary` = 1";
+            // Generate unique filename - ensure consistent format
+            $file_extension = strtolower(pathinfo($_FILES['image_upload']['name'], PATHINFO_EXTENSION));
+            $new_filename = 'car_' . rand(1000, 9999) . '_' . uniqid() . '.' . $file_extension;
 
-                if (!mysqli_query($conn, $q_image_update)) {
-                    $_SESSION['error'] = "Error updating image: " . mysqli_error($conn);
-                    header("Location: view_car.php?car_id=$car_id");
-                    exit();
+            $img_path = $img_folder . $new_filename;
+ 
+
+            // Validate file type
+            $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+            $file_type = mime_content_type($img_tmp_name);
+
+            if (!in_array($file_type, $allowed_types)) {
+                throw new Exception("Invalid file type: " . $_FILES['image_upload']['name']);
+            }
+
+            if (!move_uploaded_file($img_tmp_name, $img_path)) {
+                throw new Exception("Failed to upload image");
+            }
+
+            $img_uploaded_at = date('Y-m-d H:i:s');
+
+            // Update image details in database - store ONLY the filename
+            $q_image_update = "UPDATE `car_image` SET 
+                              `img_url` = ?, 
+                              `img_uploaded_at` = ? 
+                              WHERE `car_id` = ? AND `is_primary` = 1";
+
+            $stmt = mysqli_prepare($conn, $q_image_update);
+            mysqli_stmt_bind_param($stmt, 'ssi', $new_filename, $img_uploaded_at, $car_id);
+            
+            if (!mysqli_stmt_execute($stmt)) {
+                throw new Exception("Error updating image in database: " . mysqli_error($conn));
+            }
+
+            // Delete old image file if it exists
+            if ($old_image && $old_image['img_url']) {
+                $old_file_path = $img_folder . $old_image['img_url'];
+                if (file_exists($old_file_path)) {
+                    unlink($old_file_path);
                 }
-            } else {
-                $_SESSION['error'] = "Failed to upload image.";
-                header("Location: view_car.php?car_id=$car_id");
-                exit();
             }
         }
 
+        // If everything is successful, commit the transaction
+        mysqli_commit($conn);
         $_SESSION['success'] = "Vehicle updated successfully!";
-        header("Location: view_car.php?car_id=$car_id");
-        exit();
-    } else {
-        $_SESSION['error'] = "Error updating car: " . mysqli_error($conn);
-        header("Location: view_car.php?car_id=$car_id");
-        exit();
+        
+    } catch (Exception $e) {
+        // If there's an error, rollback the transaction
+        mysqli_rollback($conn);
+        $_SESSION['error'] = $e->getMessage();
     }
+
+    header("Location: view_car.php?car_id=$car_id");
+    exit();
 }
 ?>
 

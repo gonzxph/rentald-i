@@ -3,83 +3,117 @@ session_start();
 include "db_conn.php";
 
 if (isset($_POST['addVehicle'])) {
-    $car_description = $_POST['description'];
-    $car_brand = $_POST['brand'];
-    $car_model = $_POST['model'];
-    $car_year = $_POST['year'];
-    $car_type = $_POST['type'];
-    $car_color = $_POST['color'];
-    $car_seats = $_POST['seats'];
-    $car_transmission_type = $_POST['transmission'];
-    $car_fuel_type = $_POST['fuel_type'];
-    $car_rental_rate = $_POST['rental_rate'];
-    $car_excess_per_hour = $_POST['excess_hour'];
-    $car_availability = $_POST['availability'];
+    // Start transaction
+    mysqli_begin_transaction($conn);
+    
+    try {
+        $car_description = $_POST['description'];
+        $car_brand = $_POST['brand'];
+        $car_model = $_POST['model'];
+        $car_year = $_POST['year'];
+        $car_type = $_POST['type'];
+        $car_color = $_POST['color'];
+        $car_seats = $_POST['seats'];
+        $car_transmission_type = $_POST['transmission'];
+        $car_fuel_type = $_POST['fuel_type'];
+        $car_rental_rate = $_POST['rental_rate'];
+        $car_excess_per_hour = $_POST['excess_hour'];
+        $car_availability = $_POST['availability'];
 
-    // Insert vehicle details into the database
-    $q_add_car = "INSERT INTO `car` 
-                  (`car_description`, `car_brand`, `car_model`, `car_year`, `car_type`, 
-                   `car_color`, `car_seats`, `car_transmission_type`, `car_fuel_type`, 
-                   `car_rental_rate`, `car_excess_per_hour`, `car_availability`) 
-                  VALUES 
-                  ('$car_description', '$car_brand', '$car_model', '$car_year', '$car_type', 
-                   '$car_color', '$car_seats', '$car_transmission_type', '$car_fuel_type', 
-                   '$car_rental_rate', '$car_excess_per_hour', '$car_availability')";
+        // Insert vehicle details into the database
+        $q_add_car = "INSERT INTO `car` 
+                      (`car_description`, `car_brand`, `car_model`, `car_year`, `car_type`, 
+                       `car_color`, `car_seats`, `car_transmission_type`, `car_fuel_type`, 
+                       `car_rental_rate`, `car_excess_per_hour`, `car_availability`) 
+                      VALUES 
+                      (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                      
+        $stmt = mysqli_prepare($conn, $q_add_car);
+        mysqli_stmt_bind_param($stmt, 'sssississsss', 
+            $car_description, $car_brand, $car_model, $car_year, $car_type,
+            $car_color, $car_seats, $car_transmission_type, $car_fuel_type,
+            $car_rental_rate, $car_excess_per_hour, $car_availability
+        );
+        
+        if (!mysqli_stmt_execute($stmt)) {
+            throw new Exception("Error adding vehicle: " . mysqli_error($conn));
+        }
 
-    if (mysqli_query($conn, $q_add_car)) {
-        $car_id = mysqli_insert_id($conn); // Get the newly added car ID
-
+        $car_id = mysqli_insert_id($conn);
         $uploaded_files = [];
+
         if (isset($_FILES['image_upload']) && !empty($_FILES['image_upload']['name'][0])) {
             $img_uploaded_at = date('Y-m-d H:i:s');
-            $img_folder = "upload/car/";
+            $img_folder = "../upload/car/";
+
+            // Create directory if it doesn't exist
+            if (!file_exists($img_folder)) {
+                mkdir($img_folder, 0777, true);
+            }
 
             foreach ($_FILES['image_upload']['name'] as $index => $img_name) {
                 $img_tmp_name = $_FILES['image_upload']['tmp_name'][$index];
-                $img_path = $img_folder . basename($img_name);
+                $file_extension = pathinfo($img_name, PATHINFO_EXTENSION);
+                
+                // Generate unique filename
+                $fileName = uniqid('car_' . rand(1000, 9999) . '_') . '.' . $file_extension;
+                $img_path = $img_folder . $fileName;
 
-                // Validate file type and move to the server
+                // Validate file type
                 $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
                 $file_type = mime_content_type($img_tmp_name);
 
-                if (in_array($file_type, $allowed_types)) {
-                    if (move_uploaded_file($img_tmp_name, $img_path)) {
-                        $uploaded_files[] = $img_name;
+                if (!in_array($file_type, $allowed_types)) {
+                    throw new Exception("Invalid file type: " . $img_name);
+                }
 
-                        $q_image_insert = "INSERT INTO `car_image` 
-                                           (`car_id`, `img_url`, `img_description`, `img_position`, `is_primary`, `img_uploaded_at`) 
-                                           VALUES 
-                                           ('$car_id', '$img_path', '$car_description', 0, 0, '$img_uploaded_at')";
+                if (!move_uploaded_file($img_tmp_name, $img_path)) {
+                    throw new Exception("Failed to upload image: " . $img_name);
+                }
 
-                        if (!mysqli_query($conn, $q_image_insert)) {
-                            $_SESSION['error'] = "Error saving image details to the database: " . mysqli_error($conn);
-                            header("Location: index.php?content=add_vehicle_content.php");
-                            exit();
-                        }
-                    } else {
-                        $_SESSION['error'] = "Failed to upload image: $img_name";
-                        header("Location: index.php?content=add_vehicle_content.php");
-                        exit();
-                    }
-                } else {
-                    $_SESSION['error'] = "Invalid file type: $img_name";
-                    header("Location: index.php?content=add_vehicle_content.php");
-                    exit();
+                $uploaded_files[] = $fileName;
+
+                // Insert image details
+                $q_image_insert = "INSERT INTO `car_image` 
+                                   (`car_id`, `img_url`, `img_description`, `img_position`, `is_primary`, `img_uploaded_at`) 
+                                   VALUES (?, ?, ?, 0, 0, ?)";
+                                   
+                $stmt = mysqli_prepare($conn, $q_image_insert);
+                mysqli_stmt_bind_param($stmt, 'isss', $car_id, $fileName, $car_description, $img_uploaded_at);
+                
+                if (!mysqli_stmt_execute($stmt)) {
+                    throw new Exception("Error saving image details to database: " . mysqli_error($conn));
                 }
             }
         }
 
+        // If everything is successful, commit the transaction
+        mysqli_commit($conn);
+        
         $_SESSION['success'] = "Vehicle added successfully!";
         if (!empty($uploaded_files)) {
             $_SESSION['success'] .= " Uploaded files: " . implode(", ", $uploaded_files);
         }
-        header("Location: index.php?content=add_vehicle_content.php");
-        exit();
-    } else {
-        $_SESSION['error'] = "Error adding vehicle: " . mysqli_error($conn);
-        header("Location: index.php?content=add_vehicle_content.php");
-        exit();
+        
+    } catch (Exception $e) {
+        // If there's an error, rollback the transaction
+        mysqli_rollback($conn);
+        
+        // Delete any uploaded files if they exist
+        if (!empty($uploaded_files)) {
+            foreach ($uploaded_files as $file) {
+                $file_path = $img_folder . $file;
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+            }
+        }
+        
+        $_SESSION['error'] = $e->getMessage();
     }
+
+    header("Location: index.php?content=add_vehicle_content.php");
+    exit();
 }
 ?>
 
