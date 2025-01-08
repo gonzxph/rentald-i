@@ -123,10 +123,16 @@ require_once './backend/search_handler.php';
                                 <div class="row g-0">
                                     <div class="col-lg-4 col-12 p-0">
                                         <img 
-                                            class="img-fluid w-100 h-100 object-fit-cover" 
+                                            class="img-fluid w-100 object-fit-contain" 
                                             src="upload/car/<?= htmlspecialchars($car['img_url'] ?? 'default.png'); ?>" 
                                             alt="Car Image"
-                                            style="min-height: 187px;"
+                                            style="
+                                                min-height: 187px;
+                                                max-height: 200px;
+                                                max-width: 400px;
+                                                object-fit: contain;
+                                                background: white;
+                                            "
                                         >
                                     </div>
 
