@@ -163,9 +163,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <section class="price-breakdown">
                 <h2>Price Breakdown</h2>
                 <p>Rental Charge: <span>PHP <?= number_format($data['pay_rental_charge'], 2) ?? '0.00'; ?></span></p>
-                <p>Pickup Charge: <span>PHP <?= number_format($data['pay_pickup_charge'], 2) ?? '0.00'; ?></span></p>
-                <p>Dropoff Charge: <span>PHP <?= number_format($data['pay_dropoff_charge'], 2) ?? '0.00'; ?></span></p>
-                <p>Reservation Fee: <span>PHP <?= number_format($data['pay_reservation_fee'], 2) ?? '0.00'; ?></span></p>
                 <p>Total Amount Due: <span>PHP <?= number_format($data['pay_total_due'], 2) ?? '0.00'; ?></span></p>
                 <p>Amount Paid: <span>PHP <?= number_format($data['pay_amount_paid'], 2) ?? '0.00'; ?></span></p>
                 <p>Balance Due: <span>PHP <?= number_format($data['pay_balance_due'], 2) ?? '0.00'; ?></span></p>
