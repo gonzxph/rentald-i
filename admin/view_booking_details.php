@@ -43,7 +43,7 @@ $sql = "
         c.car_seats,
         c.car_transmission_type,
         c.car_fuel_type,
-        di.dimg_path  
+        GROUP_CONCAT(di.dimg_path) as driver_images  
     FROM rental r
     LEFT JOIN payment p ON r.rental_id = p.rental_id
     LEFT JOIN car c ON r.car_id = c.car_id
@@ -51,6 +51,7 @@ $sql = "
     LEFT JOIN driver_id_image di ON r.rental_id = di.rental_id
     LEFT JOIN user u ON r.user_id = u.user_id
     WHERE r.rental_id = ?
+    GROUP BY r.rental_id
 ";
 
 
@@ -185,35 +186,41 @@ $data = $result->fetch_assoc();
                 <p>Contact Number: <span><?= $data['custom_driver_phone'] ?? 'N/A'; ?></span></p>
                 <p>Driver's License Number: <span><?= $data['custom_driver_license_number'] ?? 'N/A'; ?></span></p>
 
-                <?php if (!empty($data['dimg_path'])): ?>
-                    <!-- Small fixed size image with modal functionality -->
-                    <p>Driver's License Image: 
-                        <img src="../upload/driver_ids/<?= htmlspecialchars($data['dimg_path']); ?>" 
-                            alt="Driver Image" 
+                <?php if (!empty($data['driver_images'])):
+                    $images = explode(',', $data['driver_images']);
+                    echo "<p>Uploaded ID's</p>";
+                    foreach ($images as $index => $image): 
+                ?>
+                    
+                        <img src="../upload/driver_ids/<?= htmlspecialchars($image); ?>" 
+                            alt="Driver Image <?= $index + 1 ?>" 
                             width="100" 
                             height="100" 
                             style="cursor: pointer;" 
                             data-bs-toggle="modal" 
-                            data-bs-target="#driverImageModal">
-                    </p>
+                            data-bs-target="#driverImageModal<?= $index ?>">
+  
 
-                    <!-- Modal for larger image view -->
-                    <div class="modal fade" id="driverImageModal" tabindex="-1" aria-labelledby="driverImageModalLabel" aria-hidden="true">
+                    <!-- Modal for each image -->
+                    <div class="modal fade" id="driverImageModal<?= $index ?>" tabindex="-1" aria-labelledby="driverImageModalLabel<?= $index ?>" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="driverImageModalLabel">Driver's License Image</h5>
+                                    <h5 class="modal-title" id="driverImageModalLabel<?= $index ?>">ID Image <?= $index + 1 ?></h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body text-center">
-                                    <img src="../upload/driver_ids/<?= htmlspecialchars($data['dimg_path']); ?>" 
-                                        alt="Driver Image" 
+                                    <img src="../upload/driver_ids/<?= htmlspecialchars($image); ?>" 
+                                        alt="Driver Image <?= $index + 1 ?>" 
                                         class="img-fluid">
                                 </div>
                             </div>
                         </div>
                     </div>
-                <?php endif; ?>
+                <?php 
+                    endforeach;
+                endif; 
+                ?>
             </section>
 
 
