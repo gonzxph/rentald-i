@@ -91,9 +91,6 @@ if (isset($_POST['addVehicle'])) {
         mysqli_commit($conn);
         
         $_SESSION['success'] = "Vehicle added successfully!";
-        if (!empty($uploaded_files)) {
-            $_SESSION['success'] .= " Uploaded files: " . implode(", ", $uploaded_files);
-        }
         
     } catch (Exception $e) {
         // If there's an error, rollback the transaction
