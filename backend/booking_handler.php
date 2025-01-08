@@ -5,6 +5,21 @@ require_once __DIR__ . '/../config/db.php';
 try{
     if(!isset($_GET['carid'])){
         header('Location: index.php');
+        exit;
+    }
+
+    $carid = (int) $_GET['carid'];
+
+    // Check if car exists in database first
+    $check_car_sql = "SELECT COUNT(*) FROM car WHERE car_id = :carid";
+    $check_car_stmt = $db->prepare($check_car_sql);
+    $check_car_stmt->bindParam(':carid', $carid, PDO::PARAM_INT);
+    $check_car_stmt->execute();
+    
+    if ($check_car_stmt->fetchColumn() == 0) {
+        // Car not found in database
+        header('Location: search.php?error=car_not_found');
+        exit;
     }
 
     $pickup_datetime = isset($_GET['pickup']) ? htmlspecialchars($_GET['pickup']) : null;
@@ -29,8 +44,6 @@ try{
     $dropoff_time = $dropoff_datetime 
     ? (new DateTime($dropoff_datetime))->format('H:i') 
     : null;
-
-    $carid = (int) $_GET['carid'];
 
     // Check if car is already booked for these dates
     $check_sql = "SELECT COUNT(*) FROM rental 
