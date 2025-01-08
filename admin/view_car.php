@@ -369,9 +369,10 @@ if (isset($_POST['saveChanges'])) {
 
                     <!-- Form Buttons -->
                     <div class="text-center mt-4">
-                        <button type="button" class="btn btn-warning" id="editButton">Edit</button>
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='car_list.php';">Back</button>
+                        <button type="button" class="btn btn-success" id="editButton">Edit</button>
                         <button type="submit" class="btn btn-primary d-none" id="saveButton" name="saveChanges">Save Changes</button>
-                        <button type="button" class="btn btn-danger" onclick="window.location.href='car_list.php';">Back</button>
+                        
                     </div>
                 </form>
             </div>

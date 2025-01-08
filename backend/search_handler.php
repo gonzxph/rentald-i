@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['page'])) {
         $end_datetime = date("Y-m-d H:i:s", strtotime($end));
 
         // Prepare the WHERE clause for filters
-        $where_clause = "WHERE car.car_id NOT IN (
+        $where_clause = "WHERE car.car_availability = 1 AND car.car_id NOT IN (
             SELECT rental.car_id
             FROM rental
             WHERE NOT (

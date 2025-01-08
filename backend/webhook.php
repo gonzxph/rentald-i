@@ -3,7 +3,7 @@
 require_once '../config/db.php';
 session_start();
 // PayMongo webhook secret key
-$webhookSecret = 'whsk_AbrVXT81d8LSFHnh2CMKZ63J';
+$webhookSecret = 'whsk_1XkpSg1zd6YPGaq3ZT61FFYg';
 
 // Add these validation functions at the top
 function computeHmacSignature($payload, $webhookSecret, $timestamp) {

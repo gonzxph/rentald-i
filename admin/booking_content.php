@@ -93,7 +93,9 @@ include 'db_conn.php';  // Include your database connection file
                                         GROUP BY rental_id
                                     )
                                 ) p ON r.rental_id = p.rental_id
-                                WHERE r.rent_status = 'PENDING'";
+                                WHERE r.rent_status = 'PENDING'
+                                ORDER BY r.rental_id DESC
+                                ";
 
                                 $result = $conn->query($sql);
 
