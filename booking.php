@@ -378,20 +378,20 @@ require_once './backend/search_handler.php';
                                         </div>
                                     </div>
 
-                            <!-- Driver's Information (Initially Hidden) -->
-                            <div id="driverInfo" class="d-none mb-3">
+                                    <!-- Driver's Information (Initially Hidden) -->
+                                    <div id="driverInfo" class="d-none mb-3">
                                 
                                 
                                     <h5 class="mb-4">Driver's Information</h5>
                                 
                                     <div class="mb-3">
-                                        <input type="text" id="nameInput" class="form-control" placeholder="Name">
+                                        <input type="text" id="nameInput" class="form-control" placeholder="Name" required>
                                     </div>
                                     <div class="mb-3">
-                                        <input type="tel" id="phoneInput" class="form-control" placeholder="Mobile number">
+                                        <input type="tel" id="phoneInput" class="form-control" placeholder="Mobile number" required>
                                     </div>
                                     <div class="mb-4">
-                                        <input type="text" id="licenseInput" class="form-control" placeholder="Driver's License Number">
+                                        <input type="text" id="licenseInput" class="form-control" placeholder="Driver's License Number" required>
                                     </div>
                                     <div class="mb-3">
                                         <h6 class="mb-4">Upload Driver's License and 2 valid ID</h6>
@@ -733,10 +733,29 @@ $(document).ready(function() {
             const pickupTime = $('#pickupTimeHiddenInput').val();
             const dropoffTime = $('#dropoffTimeHiddenInput').val();
 
+            const validationErrors = [];
+
             if (!pickupInput || !dropoffInput || !pickupTime || !dropoffTime) {
+                validationErrors.push('Please fill in all required booking details');
+            }
+
+            // Check self-drive specific fields if selected
+            const selfDriveRadio = document.getElementById('selfDrive');
+            if (selfDriveRadio && selfDriveRadio.checked) {
+                const nameInput = document.getElementById('nameInput');
+                const phoneInput = document.getElementById('phoneInput');
+                const licenseInput = document.getElementById('licenseInput');
+                const fileInput = document.getElementById('file-input');
+
+                if (!nameInput.value || !phoneInput.value || !licenseInput.value || !fileInput.files.length) {
+                    validationErrors.push('Please fill in all driver information fields and upload required documents');
+                }
+            }
+
+            if (validationErrors.length > 0) {
                 Swal.fire({
                     title: 'Missing Information',
-                    text: 'Please fill in all required booking details',
+                    text: validationErrors.join('\n'),
                     icon: 'warning'
                 });
                 return;

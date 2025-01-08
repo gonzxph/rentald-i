@@ -123,7 +123,9 @@ document.addEventListener("DOMContentLoaded", function(){
             // Only proceed if submit button exists
             if (submitButton) {
                 submitButton.onclick = () => {
-                    // Create FormData from the file input
+
+
+                    // Rest of your existing code for handling the booking process
                     const fileInput = document.getElementById('file-input');
                     
                     // Only proceed with file operations if fileInput exists
