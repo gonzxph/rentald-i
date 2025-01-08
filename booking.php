@@ -29,7 +29,11 @@ require_once './backend/search_handler.php';
         .main-image {
             width: 100%;
             height: auto;
+            max-height: 400px;
+            max-width: 800px;
             object-fit: contain;
+            margin: 0 auto;
+            display: block;
         }
         .thumbnail-container {
             position: relative;
@@ -58,8 +62,11 @@ require_once './backend/search_handler.php';
         }
         .thumbnail {
             width: 100%;
-            height: auto;
+            height: 100px;
+            max-width: 150px;
             object-fit: contain;
+            margin: 0 auto;
+            display: block;
         }
         .nav-arrow {
             position: absolute;

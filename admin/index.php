@@ -112,6 +112,13 @@ function loadContent(page) {
             );
             if (clickedItem) clickedItem.classList.add('selected');
 
+            // Initialize file upload functionality if we're on add_vehicle_content.php
+            if (page === 'add_vehicle_content.php') {
+                initializeFileUpload();
+            } else if (page.includes('view_car.php')) {
+                initializeFileUpload();
+            }
+
             // Add dynamic search functionality for the search bar in approved_content.php if it exists
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
@@ -141,6 +148,92 @@ function loadContent(page) {
         console.error("An error occurred during the XMLHttpRequest.");
     };
     xhr.send();
+}
+
+// Add this function to initialize the file upload functionality
+function initializeFileUpload() {
+    const fileInput = document.getElementById('image_upload');
+    const previewContainer = document.querySelector('.preview-container');
+    const fileCount = document.querySelector('.file-count');
+    let fileList = new DataTransfer();
+
+    if (!fileInput || !previewContainer || !fileCount) return;
+
+    // Handle file input changes
+    fileInput.addEventListener('change', function(e) {
+        const files = Array.from(e.target.files);
+        let loadedFiles = 0; // Counter for loaded files
+        
+        files.forEach(file => {
+            fileList.items.add(file);
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'preview-item';
+                
+                previewItem.innerHTML = `
+                    <img src="${e.target.result}" alt="${file.name}">
+                    <p>${file.name}</p>
+                    <button type="button" class="remove-btn" data-name="${file.name}">×</button>
+                `;
+                
+                previewContainer.appendChild(previewItem);
+
+                // Add click handler for the new remove button
+                const removeBtn = previewItem.querySelector('.remove-btn');
+                removeBtn.addEventListener('click', function() {
+                    previewItem.remove();
+                    
+                    // Update fileList
+                    const newFileList = new DataTransfer();
+                    const currentFiles = fileList.files;
+                    for (let i = 0; i < currentFiles.length; i++) {
+                        if (currentFiles[i].name !== file.name) {
+                            newFileList.items.add(currentFiles[i]);
+                        }
+                    }
+                    fileList = newFileList;
+                    fileInput.files = fileList.files;
+                    updateFileCount(fileInput);
+                });
+
+                // Increment counter and update count only after file is loaded
+                loadedFiles++;
+                if (loadedFiles === files.length) {
+                    fileInput.files = fileList.files;
+                    updateFileCount(fileInput);
+                }
+            }
+            
+            reader.readAsDataURL(file);
+        });
+    });
+
+    // Add event listener for Edit button if we're in view_car.php
+    const editButton = document.getElementById('editButton');
+    if (editButton) {
+        editButton.addEventListener('click', () => {
+            const inputs = document.querySelectorAll('#viewVehicleForm input, #viewVehicleForm textarea, #viewVehicleForm select');
+            inputs.forEach(input => input.disabled = false);
+            editButton.classList.add('d-none');
+            document.getElementById('saveButton').classList.remove('d-none');
+            
+            // Enable the file input
+            const fileInput = document.getElementById('image_upload');
+            if (fileInput) {
+                fileInput.disabled = false;
+            }
+        });
+    }
+}
+
+function updateFileCount(fileInput) {
+    const fileCount = document.querySelector('.file-count');
+    if (fileCount) {
+        const existingImageCount = document.querySelectorAll('.preview-item').length;
+        fileCount.textContent = `${existingImageCount} Files Selected`;
+    }
 }
 
 // For redirecting to Add vehicle content or approved content of back button
