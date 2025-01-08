@@ -274,7 +274,16 @@ if (isset($_POST['saveChanges'])) {
                         <!-- Car Type -->
                         <div class="col-md-5">
                             <label for="type" class="form-label">Type</label>
-                            <input type="text" class="form-control" id="type" name="type" value="<?php echo $car['car_type']; ?>" disabled>
+                            <select class="form-control" id="type" name="type" disabled>
+                                <option value="Sedan" <?php echo ($car['car_type'] == 'Sedan') ? 'selected' : ''; ?>>Sedan</option>
+                                <option value="SUV" <?php echo ($car['car_type'] == 'SUV') ? 'selected' : ''; ?>>SUV</option>
+                                <option value="MPV" <?php echo ($car['car_type'] == 'MPV') ? 'selected' : ''; ?>>MPV</option>
+                                <option value="Pick-up Truck" <?php echo ($car['car_type'] == 'Pick-up Truck') ? 'selected' : ''; ?>>Pick-up Truck</option>
+                                <option value="Hatchback" <?php echo ($car['car_type'] == 'Hatchback') ? 'selected' : ''; ?>>Hatchback</option>
+                                <option value="Crossover" <?php echo ($car['car_type'] == 'Crossover') ? 'selected' : ''; ?>>Crossover</option>
+                                <option value="Sports Car" <?php echo ($car['car_type'] == 'Sports Car') ? 'selected' : ''; ?>>Sports Car</option>
+                                <option value="Electric Vehicle" <?php echo ($car['car_type'] == 'Electric Vehicle') ? 'selected' : ''; ?>>Electric Vehicle</option>
+                            </select>
                         </div>
 
                         <!-- Seats -->
@@ -286,13 +295,19 @@ if (isset($_POST['saveChanges'])) {
                         <!-- Transmission -->
                         <div class="col-md-5">
                             <label for="transmission" class="form-label">Transmission</label>
-                            <input type="text" class="form-control" id="transmission" name="transmission" value="<?php echo $car['car_transmission_type']; ?>" disabled>
+                            <select class="form-select" id="transmission" name="transmission" disabled>
+                                <option value="Automatic" <?php echo ($car['car_transmission_type'] == 'Automatic') ? 'selected' : ''; ?>>Automatic</option>
+                                <option value="Manual" <?php echo ($car['car_transmission_type'] == 'Manual') ? 'selected' : ''; ?>>Manual</option>
+                            </select>
                         </div>
 
                         <!-- Fuel Type -->
                         <div class="col-md-5">
                             <label for="fuel_type" class="form-label">Fuel Type</label>
-                            <input type="text" class="form-control" id="fuel_type" name="fuel_type" value="<?php echo $car['car_fuel_type']; ?>" disabled>
+                            <select class="form-select" id="fuel_type" name="fuel_type" disabled>
+                                <option value="Diesel" <?php echo ($car['car_fuel_type'] == 'Diesel') ? 'selected' : ''; ?>>Diesel</option>
+                                <option value="Regular Unleaded" <?php echo ($car['car_fuel_type'] == 'Regular Unleaded') ? 'selected' : ''; ?>>Regular Unleaded</option>
+                            </select>
                         </div>
 
                         <!-- Rental Rate -->
