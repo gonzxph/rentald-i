@@ -46,6 +46,10 @@ if($_SESSION['user_role'] !== 'ADMIN' && $_SESSION['user_role'] !== 'AGENT') {
                             <img src="admin_dashboard_pics/add_vehicle.png" alt="Car Icon" class="sidebar-icon">
                             Add Vehicle
                         </li>
+                        <li onclick="loadContent('user_list.php')" id="user-list" class="sidebar-item" aria-label="User List">
+                            <img src="admin_dashboard_pics/users.png" alt="Car Icon" class="sidebar-icon">
+                            User List
+                        </li>
                     <?php endif; ?>
                     
                     <li onclick="loadContent('booking_content.php')" id="booking-review" class="sidebar-item" aria-label="Booking Review">
@@ -133,6 +137,14 @@ function loadContent(page) {
     xhr.onload = function() {
         if (xhr.status === 200) {
             document.getElementById("main-content").innerHTML = xhr.responseText;
+            
+            // Initialize all necessary listeners if we're on user list page
+            if (page.includes('user_list.php')) {
+                attachPaginationListeners();
+                initializeUserForm();
+                initializeEditUserForm();
+                attachEditDeleteHandlers();
+            }
 
             // Highlight the selected sidebar item
             const sidebarItems = document.querySelectorAll('.sidebar-item');
@@ -179,6 +191,315 @@ function loadContent(page) {
         console.error("An error occurred during the XMLHttpRequest.");
     };
     xhr.send();
+}
+
+// Add this new function to handle the user form initialization
+function initializeUserForm() {
+    const addUserForm = document.getElementById('addUserForm');
+    if (addUserForm) {
+        // Remove any existing event listeners
+        addUserForm.replaceWith(addUserForm.cloneNode(true));
+        
+        // Get the new form reference after cloning
+        const newForm = document.getElementById('addUserForm');
+        
+        newForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            formData.append('action', 'adduser');
+            
+            fetch('user_list.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('formMessage');
+                
+                if (data.success) {
+                    messageDiv.className = 'alert alert-success';
+                    messageDiv.textContent = 'User added successfully!';
+                    
+                    // Reset form
+                    this.reset();
+                    
+                    // Properly close the modal and remove backdrop
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+                    modal.hide();
+                    
+                    // Remove modal backdrop and restore body scrolling
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) backdrop.remove();
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                    
+                    // Refresh the user list content
+                    loadContent('user_list.php');
+                } else {
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.textContent = data.message || 'Error adding user';
+                }
+                messageDiv.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageDiv = document.getElementById('formMessage');
+                messageDiv.className = 'alert alert-danger';
+                messageDiv.textContent = 'An error occurred';
+                messageDiv.style.display = 'block';
+            });
+        });
+    }
+}
+
+// Add this new function to handle edit user form submission
+function initializeEditUserForm() {
+    const editUserForm = document.getElementById('editUserForm');
+    if (editUserForm) {
+        editUserForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            formData.append('action', 'edituser');
+            
+            fetch('user_list.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('editFormMessage');
+                
+                if (data.success) {
+                    messageDiv.className = 'alert alert-success';
+                    messageDiv.textContent = 'User updated successfully!';
+                    
+                    // Get all modals and clean them up properly
+                    const modals = document.querySelectorAll('.modal');
+                    modals.forEach(modalEl => {
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) {
+                            modal.hide();
+                        }
+                    });
+
+                    // Clean up modal artifacts
+                    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.removeProperty('overflow');
+                    document.body.style.removeProperty('padding-right');
+                    
+                    // Refresh the user list
+                    loadContent('user_list.php');
+                } else {
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.textContent = data.message || 'Error updating user';
+                }
+                messageDiv.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageDiv = document.getElementById('editFormMessage');
+                messageDiv.className = 'alert alert-danger';
+                messageDiv.textContent = 'An error occurred';
+                messageDiv.style.display = 'block';
+            });
+        });
+
+        // Add modal close handler
+        const editModal = document.getElementById('editUserModal');
+        if (editModal) {
+            editModal.addEventListener('hidden.bs.modal', function () {
+                // Clean up modal artifacts
+                document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style.removeProperty('overflow');
+                document.body.style.removeProperty('padding-right');
+            });
+
+            // Handle close button click
+            const closeButton = editModal.querySelector('.btn-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    const modal = bootstrap.Modal.getInstance(editModal);
+                    if (modal) {
+                        modal.hide();
+                        // Clean up modal artifacts
+                        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                        document.body.classList.remove('modal-open');
+                        document.body.style.removeProperty('overflow');
+                        document.body.style.removeProperty('padding-right');
+                    }
+                });
+            }
+        }
+    }
+}
+
+function deleteUser(userId) {
+    // Create modal element properly
+    const modalElement = document.createElement('div');
+    modalElement.className = 'modal fade';
+    modalElement.id = 'deleteConfirmModal';
+    modalElement.setAttribute('tabindex', '-1');
+    modalElement.setAttribute('aria-labelledby', 'deleteConfirmModalLabel');
+    modalElement.setAttribute('aria-hidden', 'true');
+    
+    modalElement.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this user?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modalElement);
+    
+    // Create the Bootstrap modal instance
+    const confirmModal = new bootstrap.Modal(modalElement);
+    
+    // Handle the delete confirmation
+    document.getElementById('confirmDelete').addEventListener('click', function() {
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('user_id', userId);
+        
+        fetch('user_list.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            confirmModal.hide();
+            // Remove modal and backdrop
+            modalElement.remove();
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+
+            if (data.success) {
+                // Show success message using Bootstrap toast
+                const toastContainer = document.createElement('div');
+                toastContainer.className = 'position-fixed top-0 end-0 p-3';
+                toastContainer.style.zIndex = '1070';
+                toastContainer.innerHTML = `
+                    <div class="toast align-items-center text-white bg-success border-0" role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                User deleted successfully
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(toastContainer);
+                
+                const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+                toast.show();
+                
+                // Remove toast after it's hidden
+                toastContainer.querySelector('.toast').addEventListener('hidden.bs.toast', function() {
+                    toastContainer.remove();
+                });
+
+                // Refresh the user list
+                loadContent('user_list.php');
+            } else {
+                // Show error message
+                const errorToast = document.createElement('div');
+                errorToast.className = 'position-fixed top-0 end-0 p-3';
+                errorToast.style.zIndex = '1070';
+                errorToast.innerHTML = `
+                    <div class="toast align-items-center text-white bg-danger border-0" role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ${data.message || 'Error deleting user'}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(errorToast);
+                
+                const toast = new bootstrap.Toast(errorToast.querySelector('.toast'));
+                toast.show();
+                
+                errorToast.querySelector('.toast').addEventListener('hidden.bs.toast', function() {
+                    errorToast.remove();
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            confirmModal.hide();
+            modalElement.remove();
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+            document.body.classList.remove('modal-open');
+        });
+    });
+
+    confirmModal.show();
+}
+
+// Add this new function to handle pagination
+function attachPaginationListeners() {
+    document.querySelectorAll('.pagination .page-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const pageNum = this.getAttribute('data-page');
+            if (pageNum && !this.parentElement.classList.contains('disabled')) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', `user_list.php?page=${pageNum}`, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        document.getElementById('main-content').innerHTML = xhr.responseText;
+                        // Reattach all event listeners after loading new page
+                        attachPaginationListeners();
+                        initializeUserForm();
+                        initializeEditUserForm();
+                        
+                        // Reattach edit and delete button handlers
+                        attachEditDeleteHandlers();
+                    }
+                };
+                xhr.send();
+            }
+        });
+    });
+}
+
+// Add this new function to handle edit and delete button events
+function attachEditDeleteHandlers() {
+    // Attach edit button handlers
+    document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#editUserModal"]').forEach(button => {
+        button.onclick = function() {
+            const userId = this.getAttribute('onclick').match(/\d+/)[0];
+            editUser(userId);
+        };
+    });
+
+    // Attach delete button handlers
+    document.querySelectorAll('.btn-danger').forEach(button => {
+        button.onclick = function() {
+            const userId = this.getAttribute('onclick').match(/\d+/)[0];
+            deleteUser(userId);
+        };
+    });
 }
 
 // Add this function to initialize the file upload functionality
@@ -297,6 +618,32 @@ document.addEventListener("DOMContentLoaded", function() {
         defaultItem.classList.add('selected');
     }
 });
+
+// Add this function to handle getting user data for editing
+function editUser(userId) {
+    fetch(`user_list.php?action=getuser&user_id=${userId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Populate the edit form with user data
+                document.getElementById('edit_user_id').value = data.user.user_id;
+                document.getElementById('edit_firstName').value = data.user.user_fname;
+                document.getElementById('edit_lastName').value = data.user.user_lname;
+                document.getElementById('edit_email').value = data.user.user_email;
+                document.getElementById('edit_role').value = data.user.user_role;
+                document.getElementById('edit_status').value = data.user.user_status;
+                
+                // Show the modal
+                const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+                editModal.show();
+            } else {
+                console.error('Error fetching user data:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
 
 </script>
 
