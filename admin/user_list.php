@@ -20,84 +20,162 @@ $query = "SELECT * FROM user ORDER BY user_id DESC LIMIT $start, $limit";
 $result = mysqli_query($conn, $query);
 
 // Handle POST requests
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' || 
+    ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'getuser')) {
+    
     $response = array();
     
-    // Handle delete action
-    if (isset($_POST['action']) && $_POST['action'] === 'delete') {
-        try {
-            if (!isset($_POST['user_id'])) {
-                throw new Exception('User ID is required');
-            }
-            
-            $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
-            
-            // Delete user query
-            $query = "DELETE FROM user WHERE user_id = '$user_id'";
-            
-            if (mysqli_query($conn, $query)) {
-                $response = [
-                    'success' => true,
-                    'message' => 'User deleted successfully'
-                ];
-            } else {
-                throw new Exception('Database error: ' . mysqli_error($conn));
-            }
-            
-        } catch (Exception $e) {
+    // Handle GET request for user data
+    if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'getuser') {
+        if (!isset($_GET['user_id'])) {
             $response = [
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => 'User ID is required'
             ];
-        }
-    } 
-    // Handle add user action
-    else {
-        try {
-            // Your existing add user code
-            if (empty($_POST['firstName']) || empty($_POST['lastName']) || 
-                empty($_POST['email']) || empty($_POST['password']) || 
-                empty($_POST['role'])) {
-                throw new Exception('All fields are required');
-            }
-
-            $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
-            $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
-            $email = mysqli_real_escape_string($conn, $_POST['email']);
-            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-            $role = mysqli_real_escape_string($conn, $_POST['role']);
-
-            // Check if email exists
-            $check_query = "SELECT user_id FROM user WHERE user_email = '$email'";
-            $check_result = mysqli_query($conn, $check_query);
-            
-            if (mysqli_num_rows($check_result) > 0) {
-                throw new Exception('Email already exists');
-            }
-
-            // Insert new user
-            $query = "INSERT INTO user (user_fname, user_lname, user_email, user_password, user_role) 
-                      VALUES ('$firstName', '$lastName', '$email', '$password', '$role')";
-            
-            if (mysqli_query($conn, $query)) {
+        } else {
+            try {
+                $user_id = mysqli_real_escape_string($conn, $_GET['user_id']);
+                $query = "SELECT * FROM user WHERE user_id = '$user_id'";
+                $result = mysqli_query($conn, $query);
+                
+                if ($user = mysqli_fetch_assoc($result)) {
+                    $response = [
+                        'success' => true,
+                        'user' => $user
+                    ];
+                } else {
+                    throw new Exception('User not found');
+                }
+            } catch (Exception $e) {
                 $response = [
-                    'success' => true,
-                    'message' => 'User added successfully'
+                    'success' => false,
+                    'message' => $e->getMessage()
                 ];
-            } else {
-                throw new Exception('Database error: ' . mysqli_error($conn));
             }
-        } catch (Exception $e) {
-            $response = [
-                'success' => false,
-                'message' => $e->getMessage()
-            ];
         }
+        
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit;
     }
-    
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    exit;
+
+    // Handle POST requests
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!isset($_POST['action'])) {
+            $response = [
+                'success' => false,
+                'message' => 'Action is required'
+            ];
+        } else {
+            try {
+                switch ($_POST['action']) {
+                    case 'delete':
+                        if (!isset($_POST['user_id'])) {
+                            throw new Exception('User ID is required');
+                        }
+                        
+                        $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+                        $query = "DELETE FROM user WHERE user_id = '$user_id'";
+                        
+                        if (mysqli_query($conn, $query)) {
+                            $response = [
+                                'success' => true,
+                                'message' => 'User deleted successfully'
+                            ];
+                        } else {
+                            throw new Exception('Database error: ' . mysqli_error($conn));
+                        }
+                        break;
+
+                    case 'adduser':
+                        if (empty($_POST['firstName']) || empty($_POST['lastName']) || 
+                            empty($_POST['email']) || empty($_POST['password']) || 
+                            empty($_POST['role'])) {
+                            throw new Exception('All fields are required');
+                        }
+
+                        $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
+                        $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
+                        $email = mysqli_real_escape_string($conn, $_POST['email']);
+                        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                        $role = mysqli_real_escape_string($conn, $_POST['role']);
+
+                        // Check if email exists
+                        $check_query = "SELECT user_id FROM user WHERE user_email = '$email'";
+                        $check_result = mysqli_query($conn, $check_query);
+                        
+                        if (mysqli_num_rows($check_result) > 0) {
+                            throw new Exception('Email already exists');
+                        }
+
+                        $query = "INSERT INTO user (user_fname, user_lname, user_email, user_password, user_role) 
+                                 VALUES ('$firstName', '$lastName', '$email', '$password', '$role')";
+                        
+                        if (mysqli_query($conn, $query)) {
+                            $response = [
+                                'success' => true,
+                                'message' => 'User added successfully'
+                            ];
+                        } else {
+                            throw new Exception('Database error: ' . mysqli_error($conn));
+                        }
+                        break;
+
+                    case 'edituser':
+                        if (empty($_POST['user_id']) || empty($_POST['firstName']) || 
+                            empty($_POST['lastName']) || empty($_POST['email']) || 
+                            empty($_POST['role']) || empty($_POST['status'])) {
+                            throw new Exception('All fields are required');
+                        }
+
+                        $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+                        $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
+                        $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
+                        $email = mysqli_real_escape_string($conn, $_POST['email']);
+                        $role = mysqli_real_escape_string($conn, $_POST['role']);
+                        $status = mysqli_real_escape_string($conn, $_POST['status']);
+
+                        // Check if email exists for other users
+                        $check_query = "SELECT user_id FROM user WHERE user_email = '$email' AND user_id != '$user_id'";
+                        $check_result = mysqli_query($conn, $check_query);
+                        
+                        if (mysqli_num_rows($check_result) > 0) {
+                            throw new Exception('Email already exists');
+                        }
+
+                        $query = "UPDATE user SET 
+                                 user_fname = '$firstName',
+                                 user_lname = '$lastName',
+                                 user_email = '$email',
+                                 user_role = '$role',
+                                 user_status = '$status'
+                                 WHERE user_id = '$user_id'";
+                        
+                        if (mysqli_query($conn, $query)) {
+                            $response = [
+                                'success' => true,
+                                'message' => 'User updated successfully'
+                            ];
+                        } else {
+                            throw new Exception('Database error: ' . mysqli_error($conn));
+                        }
+                        break;
+
+                    default:
+                        throw new Exception('Invalid action');
+                }
+            } catch (Exception $e) {
+                $response = [
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ];
+            }
+        }
+        
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit;
+    }
 }
 
 ?>
@@ -139,12 +217,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 while($row = mysqli_fetch_assoc($result)): ?>
                     <tr>
                         <td scope="row"><?php echo $counter++; ?></td>
-                        <td><?php echo $row['user_lname']; ?></td>
                         <td><?php echo $row['user_fname']; ?></td>
+                        <td><?php echo $row['user_lname']; ?></td>
                         <td><?php echo $row['user_email']; ?></td>
                         <td><?php echo $row['user_role']; ?></td>
                         <td>
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal<?php echo $row['user_id']; ?>">Edit</button>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editUserModal" onclick="editUser(<?php echo $row['user_id']; ?>)">Edit</button>
                             <button class="btn btn-sm btn-danger" onclick="deleteUser(<?php echo $row['user_id']; ?>)">Delete</button>
                         </td>
                     </tr>
@@ -194,6 +272,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </li>
             </ul>
         </nav>
+    </div>
+
+    <!-- Add this edit modal HTML after your add user modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="edit_user_id" name="user_id">
+                        <div class="mb-3">
+                            <label for="edit_firstName" class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="edit_firstName" name="firstName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_lastName" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="edit_lastName" name="lastName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="edit_email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_role" class="form-label">Role</label>
+                            <select class="form-control" id="edit_role" name="role" required>
+                                <option value="USER">User</option>
+                                <option value="ADMIN">Admin</option>
+                                <option value="DRIVER">Driver</option>
+                                <option value="AGENT">Agent</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_status" class="form-label">Status</label>
+                            <select class="form-control" id="edit_status" name="status" required>
+                                <option value="ACTIVE">Active</option>
+                                <option value="DEACTIVATED">Deactivate</option>
+                            </select>
+                        </div>
+                        <div id="editFormMessage" class="alert" style="display: none;"></div>
+                        <button type="submit" class="btn btn-primary">Update User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Add User Modal -->

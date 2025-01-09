@@ -142,6 +142,8 @@ function loadContent(page) {
             if (page.includes('user_list.php')) {
                 attachPaginationListeners();
                 initializeUserForm();
+                initializeEditUserForm();
+                attachEditDeleteHandlers();
             }
 
             // Highlight the selected sidebar item
@@ -205,6 +207,7 @@ function initializeUserForm() {
             e.preventDefault();
             
             const formData = new FormData(this);
+            formData.append('action', 'adduser');
             
             fetch('user_list.php', {
                 method: 'POST',
@@ -248,6 +251,90 @@ function initializeUserForm() {
                 messageDiv.style.display = 'block';
             });
         });
+    }
+}
+
+// Add this new function to handle edit user form submission
+function initializeEditUserForm() {
+    const editUserForm = document.getElementById('editUserForm');
+    if (editUserForm) {
+        editUserForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            formData.append('action', 'edituser');
+            
+            fetch('user_list.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('editFormMessage');
+                
+                if (data.success) {
+                    messageDiv.className = 'alert alert-success';
+                    messageDiv.textContent = 'User updated successfully!';
+                    
+                    // Get all modals and clean them up properly
+                    const modals = document.querySelectorAll('.modal');
+                    modals.forEach(modalEl => {
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) {
+                            modal.hide();
+                        }
+                    });
+
+                    // Clean up modal artifacts
+                    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.removeProperty('overflow');
+                    document.body.style.removeProperty('padding-right');
+                    
+                    // Refresh the user list
+                    loadContent('user_list.php');
+                } else {
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.textContent = data.message || 'Error updating user';
+                }
+                messageDiv.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageDiv = document.getElementById('editFormMessage');
+                messageDiv.className = 'alert alert-danger';
+                messageDiv.textContent = 'An error occurred';
+                messageDiv.style.display = 'block';
+            });
+        });
+
+        // Add modal close handler
+        const editModal = document.getElementById('editUserModal');
+        if (editModal) {
+            editModal.addEventListener('hidden.bs.modal', function () {
+                // Clean up modal artifacts
+                document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style.removeProperty('overflow');
+                document.body.style.removeProperty('padding-right');
+            });
+
+            // Handle close button click
+            const closeButton = editModal.querySelector('.btn-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    const modal = bootstrap.Modal.getInstance(editModal);
+                    if (modal) {
+                        modal.hide();
+                        // Clean up modal artifacts
+                        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+                        document.body.classList.remove('modal-open');
+                        document.body.style.removeProperty('overflow');
+                        document.body.style.removeProperty('padding-right');
+                    }
+                });
+            }
+        }
     }
 }
 
@@ -383,12 +470,35 @@ function attachPaginationListeners() {
                         document.getElementById('main-content').innerHTML = xhr.responseText;
                         // Reattach all event listeners after loading new page
                         attachPaginationListeners();
-                        initializeUserForm(); // Reattach form listeners
+                        initializeUserForm();
+                        initializeEditUserForm();
+                        
+                        // Reattach edit and delete button handlers
+                        attachEditDeleteHandlers();
                     }
                 };
                 xhr.send();
             }
         });
+    });
+}
+
+// Add this new function to handle edit and delete button events
+function attachEditDeleteHandlers() {
+    // Attach edit button handlers
+    document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#editUserModal"]').forEach(button => {
+        button.onclick = function() {
+            const userId = this.getAttribute('onclick').match(/\d+/)[0];
+            editUser(userId);
+        };
+    });
+
+    // Attach delete button handlers
+    document.querySelectorAll('.btn-danger').forEach(button => {
+        button.onclick = function() {
+            const userId = this.getAttribute('onclick').match(/\d+/)[0];
+            deleteUser(userId);
+        };
     });
 }
 
@@ -508,6 +618,32 @@ document.addEventListener("DOMContentLoaded", function() {
         defaultItem.classList.add('selected');
     }
 });
+
+// Add this function to handle getting user data for editing
+function editUser(userId) {
+    fetch(`user_list.php?action=getuser&user_id=${userId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Populate the edit form with user data
+                document.getElementById('edit_user_id').value = data.user.user_id;
+                document.getElementById('edit_firstName').value = data.user.user_fname;
+                document.getElementById('edit_lastName').value = data.user.user_lname;
+                document.getElementById('edit_email').value = data.user.user_email;
+                document.getElementById('edit_role').value = data.user.user_role;
+                document.getElementById('edit_status').value = data.user.user_status;
+                
+                // Show the modal
+                const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+                editModal.show();
+            } else {
+                console.error('Error fetching user data:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
 
 </script>
 
