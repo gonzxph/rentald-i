@@ -1,6 +1,7 @@
 <?php
 session_start();
-if($_SESSION['user_role'] !== 'ADMIN' && $_SESSION['logged_in'] !== true){
+
+if($_SESSION['user_role'] !== 'ADMIN' && $_SESSION['logged_in'] == true){
     header('Location: ../index.php');
     exit();
 }
