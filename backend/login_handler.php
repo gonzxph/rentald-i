@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $updateStmt->bindParam(':user_id', $user['user_id'], PDO::PARAM_INT);
                 $updateStmt->execute();
 
-                if($user['user_role'] === 'ADMIN'){
+                if($user['user_role'] === 'ADMIN' || $user['user_role'] === 'AGENT'){
                     header('Location: ../admin/index.php');
                     exit();
                 }

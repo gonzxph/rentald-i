@@ -2,6 +2,7 @@
 session_start();
 include 'db_conn.php'; // Include the database connection
 
+
 $user_id = $_SESSION['user_id'];
 
 // Initialize error array
@@ -9,7 +10,7 @@ $errors = [];
 
 // Retrieve admin information from database
 try {
-    $stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ? AND user_role = 'ADMIN'");
+    $stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ? AND user_role = 'ADMIN' OR user_role = 'AGENT'");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -86,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $params[] = $hashed_password;
             }
 
-            $query .= " WHERE user_email = ? AND user_role = 'ADMIN'";
+            $query .= " WHERE user_email = ? AND user_role = 'ADMIN' OR user_role = 'AGENT'";
             $types .= "s";
             $params[] = $_SESSION['user_email'];
 
@@ -113,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Admin Settings</title>
+    <title>Account Settings</title>
 </head>
 <body>
 <?php include 'admin_header/admin_header.php'; include 'admin_header/admin_nav_header.php'; ?>
@@ -145,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-header bg-white py-3">
-                        <h4 class="card-title mb-0">Admin Settings</h4>
+                        <h4 class="card-title mb-0">Account Settings</h4>
                     </div>
                     <div class="card-body">
                         <form action="admin_settings.php" method="POST" enctype="multipart/form-data">
