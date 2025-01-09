@@ -53,16 +53,16 @@ $sql = "
         c.car_transmission_type,
         c.car_fuel_type,
         ci.img_url,
-        d.driver_name,
-        d.driver_phone,
-        d.driver_license_number
+        r.custom_driver_name AS driver_name,
+        r.custom_driver_phone AS driver_phone,
+        r.custom_driver_license_number AS driver_license_number
     FROM rental r
     LEFT JOIN payment p ON r.rental_id = p.rental_id
     LEFT JOIN car c ON r.car_id = c.car_id
     LEFT JOIN car_image ci ON c.car_id = ci.car_id AND ci.is_primary = 1
     LEFT JOIN driver d ON r.assigned_driver_id = d.driver_id
     LEFT JOIN user u ON r.user_id = u.user_id
-    WHERE r.rental_id = ?
+    WHERE r.rental_id = ? AND r.rent_status = 'APPROVED'
 ";
 
 $stmt = $conn->prepare($sql);
@@ -213,18 +213,97 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Rental Type -->
             <section class="rental-type">
                 <h2>Rental Type</h2>
-                <p>Type: <span><?= $data['is_custom_driver'] ? 'With Driver' : 'Self Drive'; ?></span></p>
+                <p>Type: <span><?= $data['is_custom_driver'] ? 'Self Drive' : 'With Driver'; ?></span></p>
             </section>
 
-    
-
+            
             <!-- Driver Information -->
             <section class="driver-information">
                 <h2>Driver Information</h2>
-                <p>Full Name: <span><?= $data['driver_name'] ?? 'N/A'; ?></span></p>
-                <p>Contact Number: <span><?= $data['driver_phone'] ?? 'N/A'; ?></span></p>
-                <p>Driver's License Number: <span><?= $data['driver_license_number'] ?? 'N/A'; ?></span></p>
+                <?php
+                // Check if the rental has a custom driver
+                
+                if ($data['is_custom_driver']) {
+                    // Display custom driver details
+                    echo "<p>Full Name: <span>" . ($data['driver_name'] ?? 'N/A') . "</span></p>";
+                    echo "<p>Contact Number: <span>" . ($data['driver_phone'] ?? 'N/A') . "</span></p>";
+                    echo "<p>Driver's License Number: <span>" . ($data['driver_license_number'] ?? 'N/A') . "</span></p>";
+                } else {
+                    // Query to fetch driver's full name, including middle name (if available)
+                    $driverQuery = "
+                        SELECT 
+                            CONCAT(u.user_fname, ' ', IFNULL(u.user_mname, ''), ' ', u.user_lname) AS full_name
+                        FROM user u
+                        JOIN rental r ON u.user_id = r.assigned_driver_id
+                        WHERE r.rental_id = ?
+                    ";
+
+                    $stmt = $conn->prepare($driverQuery);
+                    $stmt->bind_param("i", $rental_id);
+                    $stmt->execute();
+                    $driverResult = $stmt->get_result();
+                    $driverData = $driverResult->fetch_assoc();
+
+                    // Display the assigned driver's full name from the query result
+                    echo "<p>Full Name: <span>" . ($driverData['full_name'] ?? 'N/A') . "</span></p>";
+                }
+
+                // Only show the button if there is no custom driver
+                if (!$data['is_custom_driver']) {
+                    echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignDriverModal">
+                            Assign Driver
+                        </button>';
+                }
+                ?>
             </section>
+
+            <!-- Modal for Assigning Driver -->
+            <div class="modal fade" id="assignDriverModal" tabindex="-1" aria-labelledby="assignDriverModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="assign_driver.php" method="POST">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="assignDriverModalLabel">Assign Driver</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Driver Selection Dropdown -->
+                                <div class="mb-3">
+                                    <label for="driver" class="form-label">Select Driver</label>
+                                    <select class="form-select" id="driver" name="driver_id" required>
+                                        <option value="" disabled selected>Select a driver</option>
+                                        <?php
+                                        $driverQuery = "SELECT 
+                                                        user_id, 
+                                                        CONCAT(user_fname, ' ', COALESCE(user_mname, ''), ' ', user_lname) AS full_name 
+                                                    FROM 
+                                                        user 
+                                                    WHERE 
+                                                        user_role = 'DRIVER' 
+                                                        AND user_status = 'ACTIVE'";
+                                        $driverResult = $conn->query($driverQuery);
+                                        
+                                        if ($driverResult->num_rows > 0) {
+                                            while ($driver = $driverResult->fetch_assoc()) {
+                                                echo "<option value=\"{$driver['user_id']}\">{$driver['full_name']}</option>";
+                                            }
+                                        } else {
+                                            echo "<option value=\"\" disabled>No drivers available</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="hidden" name="rental_id" value="<?= htmlspecialchars($rental_id); ?>">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
 
             <!-- Price Breakdown -->
             <section class="price-breakdown">
