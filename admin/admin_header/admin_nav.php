@@ -32,7 +32,7 @@
     <!-- Profile Section -->
     <div class="profile ms-auto">
       <img src="admin_dashboard_pics/admin_profile.png" alt="Profile Icon" class="rounded-circle">
-      <a href="admin_settings.php"><span>Admin</span></a>
+      <a href="admin_settings.php"><span><?php echo $_SESSION['lname']; ?></span></a>
     </div>
   </div>
 </nav>
