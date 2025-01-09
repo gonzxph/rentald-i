@@ -1,4 +1,3 @@
-
 <style>
 
   @media (max-width: 320px) {
@@ -17,6 +16,11 @@
       font-size: 12px; 
     }
   }
+
+  .profile a {
+    text-decoration: none;
+    color: inherit;
+  }
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-light shadow-sm">
   <div class="container-fluid">
@@ -28,7 +32,7 @@
     <!-- Profile Section -->
     <div class="profile ms-auto">
       <img src="admin_dashboard_pics/admin_profile.png" alt="Profile Icon" class="rounded-circle">
-      <span>Admin</span>
+      <a href="admin_settings.php"><span>Admin</span></a>
     </div>
   </div>
 </nav>
