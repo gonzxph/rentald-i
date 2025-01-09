@@ -1,11 +1,19 @@
 <?php
 session_start();
 
-// Check if user is not logged in OR is not an admin
-if(!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'ADMIN'){
+// Check if user is not logged in
+if(!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($_SESSION['user_role'])) {
     header('Location: ../signin.php');
     exit();
 }
+
+// Check if user is neither ADMIN nor AGENT
+if($_SESSION['user_role'] !== 'ADMIN' && $_SESSION['user_role'] !== 'AGENT') {
+    header('Location: ../signin.php');
+    exit();
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -29,14 +37,17 @@ if(!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($
                 <!-- Close Button for the sidebar in mobile view -->
                 <button class="close-sidebar" id="closeSidebarButton" onclick="toggleSidebar()">&#10005;</button>
                 <ul class="list-unstyled">
-                    <li onclick="loadContent('dashboard_content.php')" id="dashboard" class="sidebar-item" aria-label="Dashboard">
-                        <img src="admin_dashboard_pics/dashboard.png" alt="Speedometer Icon" class="sidebar-icon">
-                        Dashboard
-                    </li>
-                    <li onclick="loadContent('add_vehicle_content.php')" id="add-vehicle" class="sidebar-item" aria-label="Add Vehicle">
-                        <img src="admin_dashboard_pics/add_vehicle.png" alt="Car Icon" class="sidebar-icon">
-                        Add Vehicle
-                    </li>
+                    <?php if($_SESSION['user_role'] === 'ADMIN'): ?>
+                        <li onclick="loadContent('dashboard_content.php')" id="dashboard" class="sidebar-item" aria-label="Dashboard">
+                            <img src="admin_dashboard_pics/dashboard.png" alt="Speedometer Icon" class="sidebar-icon">
+                            Dashboard
+                        </li>
+                        <li onclick="loadContent('add_vehicle_content.php')" id="add-vehicle" class="sidebar-item" aria-label="Add Vehicle">
+                            <img src="admin_dashboard_pics/add_vehicle.png" alt="Car Icon" class="sidebar-icon">
+                            Add Vehicle
+                        </li>
+                    <?php endif; ?>
+                    
                     <li onclick="loadContent('booking_content.php')" id="booking-review" class="sidebar-item" aria-label="Booking Review">
                         <img src="admin_dashboard_pics/booking_review.png" alt="Checklist Icon" class="sidebar-icon">
                         Booking Review
@@ -49,12 +60,16 @@ if(!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($
                         <img src="admin_dashboard_pics/reject.png" alt="Cross Icon" class="sidebar-icon">
                         Rejected List
                     </li>
-                    <li id="sales" class="sidebar-item" aria-label="Sales/Sales Trend">
-                        <a href="sales_trend_content.php" class="sidebar-link">
-                            <img src="admin_dashboard_pics/sales.png" alt="Bar Chart Icon" class="sidebar-icon">
-                            Sales/Sales Trend
-                        </a>
-                    </li>
+                    
+                    <?php if($_SESSION['user_role'] === 'ADMIN'): ?>
+                        <li id="sales" class="sidebar-item" aria-label="Sales/Sales Trend">
+                            <a href="sales_trend_content.php" class="sidebar-link">
+                                <img src="admin_dashboard_pics/sales.png" alt="Bar Chart Icon" class="sidebar-icon">
+                                Sales/Sales Trend
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    
                     <li class="sidebar-item" aria-label="Logout">
                         <a href="logout.php" class="sidebar-link logout-link">
                             <img src="admin_dashboard_pics/log-out.svg" alt="Logout Icon" class="sidebar-icon">
@@ -256,21 +271,28 @@ function updateFileCount(fileInput) {
 document.addEventListener("DOMContentLoaded", function() {
     const urlParams = new URLSearchParams(window.location.search);
     const content = urlParams.get('content'); // Get the 'content' parameter
+    const userRole = '<?php echo $_SESSION["user_role"]; ?>';
 
     if (content) {
         // Load specified content if provided
         loadContent(content);
     } else {
-        // Default to the dashboard content
-        loadContent('dashboard_content.php');
+        // Default to booking content for AGENT and dashboard for ADMIN
+        if (userRole === 'AGENT') {
+            loadContent('booking_content.php');
+        } else {
+            loadContent('dashboard_content.php');
+        }
     }
 
-    // Ensures the Dashboard link is highlighted on initial load
+    // Ensures the appropriate link is highlighted on initial load
     const sidebarItems = document.querySelectorAll('.sidebar-item');
     sidebarItems.forEach(item => {
         item.classList.remove('selected');
     });
-    const defaultItem = document.querySelector('.sidebar-item[onclick*="dashboard_content.php"]');
+    const defaultItem = userRole === 'AGENT' 
+        ? document.querySelector('.sidebar-item[onclick*="booking_content.php"]')
+        : document.querySelector('.sidebar-item[onclick*="dashboard_content.php"]');
     if (defaultItem) {
         defaultItem.classList.add('selected');
     }
