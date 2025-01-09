@@ -1,7 +1,7 @@
 <?php
 $host = 'localhost';
 $db_name = 'carrental_db';
-$username = 'user';
+$username = 'root';
 $password = '';
 
 try {
