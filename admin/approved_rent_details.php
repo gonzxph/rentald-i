@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Booking Status Section -->
             <section class="booking-status" style="margin-top: 20px;">
                 <h2>Booking Status</h2>
-                <p class="status-text"><?= $data['rental_status'] ?? 'N/A'; ?></p>
+                <p class="status-text"><?= $data['rent_status'] ?? 'N/A'; ?></p>
             </section>
             
             <!-- Pickup and Dropoff Details -->
