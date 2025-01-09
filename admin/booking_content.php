@@ -68,7 +68,7 @@ include 'db_conn.php';  // Include your database connection file
                                     <th scope="col">Selected Car</th>
                                     <th scope="col">Pick-up Date & time</th>
                                     <th scope="col">Drop-off Date & time</th>
-                                    <th scope="col">View</th>
+                                    <th scope="col">View More</th>
                                 </tr>
                             </thead>
                             <tbody>

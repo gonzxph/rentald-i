@@ -67,6 +67,7 @@ include 'db_conn.php';  // Include your database connection file
                                     <th scope="col">Drop-off Date</th>
                                     <th scope="col">Pick-up Location</th>
                                     <th scope="col">Drop-off Location</th>
+                                    <th scope="col">View Details</th>
 
                                 </tr>
                             </thead>
@@ -100,6 +101,11 @@ include 'db_conn.php';  // Include your database connection file
                                         echo "<td>" . htmlspecialchars($row['rent_dropoff_datetime']) . "</td>";
                                         echo "<td>" . htmlspecialchars($row['rent_pickup_location']) . "</td>";
                                         echo "<td>" . htmlspecialchars($row['rent_dropoff_location']) . "</td>";
+                                        echo "<td>
+                                        <a href='rejected_rent_details.php?rental_id={$row['rental_id']}' class='btn btn-primary'>
+                                                    <i class='far fa-eye'></i>
+                                                </a>
+                                            </td>";
                                         echo "</tr>";
                                     }
                                 } else {
