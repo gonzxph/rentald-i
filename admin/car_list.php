@@ -2,6 +2,14 @@
 session_start();
 include 'admin_header/admin_header.php';
 include 'admin_header/admin_nav.php';  
+
+
+// Check if user is not logged in OR is not an admin
+if(!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'ADMIN'){
+    header('Location: ../signin.php');
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>

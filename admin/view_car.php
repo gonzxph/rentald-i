@@ -2,6 +2,12 @@
 session_start();
 include "db_conn.php";
 
+// Check if user is not logged in OR is not an admin
+if(!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'ADMIN'){
+    header('Location: ../signin.php');
+    exit();
+}
+
 // Fetch car details
 if (isset($_GET['car_id'])) {
     $car_id = $_GET['car_id'];

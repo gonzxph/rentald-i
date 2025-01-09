@@ -1,10 +1,7 @@
 <?php
 session_start();
 include 'db_conn.php'; // Include the database connection
-if($_SESSION['user_role'] !== 'ADMIN' && $_SESSION['logged_in'] !== true){
-    header('Location: ../index.php');
-    exit();
-}
+
 $user_id = $_SESSION['user_id'];
 
 // Initialize error array
