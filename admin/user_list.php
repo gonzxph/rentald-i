@@ -19,55 +19,82 @@ $total_pages = ceil($total_records / $limit);
 $query = "SELECT * FROM user ORDER BY user_id DESC LIMIT $start, $limit";
 $result = mysqli_query($conn, $query);
 
-// Handle Add User Form Submission
+// Handle POST requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = array();
     
-    try {
-        // Validate input
-        if (empty($_POST['firstName']) || empty($_POST['lastName']) || 
-            empty($_POST['email']) || empty($_POST['password']) || 
-            empty($_POST['role'])) {
-            throw new Exception('All fields are required');
-        }
-
-        // Sanitize input
-        $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
-        $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
-        $email = mysqli_real_escape_string($conn, $_POST['email']);
-        $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
-        $role = mysqli_real_escape_string($conn, $_POST['role']);
-        error_log("Role: " . $role);
-
-        // Check if email already exists
-        $check_query = "SELECT user_id FROM user WHERE user_email = '$email'";
-        $check_result = mysqli_query($conn, $check_query);
-        
-        if (mysqli_num_rows($check_result) > 0) {
-            throw new Exception('Email already exists');
-        }
-
-        // Insert new user
-        $query = "INSERT INTO user (user_fname, user_lname, user_email, user_password, user_role) 
-                  VALUES ('$firstName', '$lastName', '$email', '$password', '$role')";
-        
-        if (mysqli_query($conn, $query)) {
+    // Handle delete action
+    if (isset($_POST['action']) && $_POST['action'] === 'delete') {
+        try {
+            if (!isset($_POST['user_id'])) {
+                throw new Exception('User ID is required');
+            }
+            
+            $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+            
+            // Delete user query
+            $query = "DELETE FROM user WHERE user_id = '$user_id'";
+            
+            if (mysqli_query($conn, $query)) {
+                $response = [
+                    'success' => true,
+                    'message' => 'User deleted successfully'
+                ];
+            } else {
+                throw new Exception('Database error: ' . mysqli_error($conn));
+            }
+            
+        } catch (Exception $e) {
             $response = [
-                'success' => true,
-                'message' => 'User added successfully'
+                'success' => false,
+                'message' => $e->getMessage()
             ];
-        } else {
-            throw new Exception('Database error: ' . mysqli_error($conn));
         }
+    } 
+    // Handle add user action
+    else {
+        try {
+            // Your existing add user code
+            if (empty($_POST['firstName']) || empty($_POST['lastName']) || 
+                empty($_POST['email']) || empty($_POST['password']) || 
+                empty($_POST['role'])) {
+                throw new Exception('All fields are required');
+            }
 
-    } catch (Exception $e) {
-        $response = [
-            'success' => false,
-            'message' => $e->getMessage()
-        ];
+            $firstName = mysqli_real_escape_string($conn, $_POST['firstName']);
+            $lastName = mysqli_real_escape_string($conn, $_POST['lastName']);
+            $email = mysqli_real_escape_string($conn, $_POST['email']);
+            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+            $role = mysqli_real_escape_string($conn, $_POST['role']);
+
+            // Check if email exists
+            $check_query = "SELECT user_id FROM user WHERE user_email = '$email'";
+            $check_result = mysqli_query($conn, $check_query);
+            
+            if (mysqli_num_rows($check_result) > 0) {
+                throw new Exception('Email already exists');
+            }
+
+            // Insert new user
+            $query = "INSERT INTO user (user_fname, user_lname, user_email, user_password, user_role) 
+                      VALUES ('$firstName', '$lastName', '$email', '$password', '$role')";
+            
+            if (mysqli_query($conn, $query)) {
+                $response = [
+                    'success' => true,
+                    'message' => 'User added successfully'
+                ];
+            } else {
+                throw new Exception('Database error: ' . mysqli_error($conn));
+            }
+        } catch (Exception $e) {
+            $response = [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
     }
-
-    // Send JSON response
+    
     header('Content-Type: application/json');
     echo json_encode($response);
     exit;

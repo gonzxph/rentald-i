@@ -251,6 +251,124 @@ function initializeUserForm() {
     }
 }
 
+function deleteUser(userId) {
+    // Create modal element properly
+    const modalElement = document.createElement('div');
+    modalElement.className = 'modal fade';
+    modalElement.id = 'deleteConfirmModal';
+    modalElement.setAttribute('tabindex', '-1');
+    modalElement.setAttribute('aria-labelledby', 'deleteConfirmModalLabel');
+    modalElement.setAttribute('aria-hidden', 'true');
+    
+    modalElement.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this user?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modalElement);
+    
+    // Create the Bootstrap modal instance
+    const confirmModal = new bootstrap.Modal(modalElement);
+    
+    // Handle the delete confirmation
+    document.getElementById('confirmDelete').addEventListener('click', function() {
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('user_id', userId);
+        
+        fetch('user_list.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            confirmModal.hide();
+            // Remove modal and backdrop
+            modalElement.remove();
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+
+            if (data.success) {
+                // Show success message using Bootstrap toast
+                const toastContainer = document.createElement('div');
+                toastContainer.className = 'position-fixed top-0 end-0 p-3';
+                toastContainer.style.zIndex = '1070';
+                toastContainer.innerHTML = `
+                    <div class="toast align-items-center text-white bg-success border-0" role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                User deleted successfully
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(toastContainer);
+                
+                const toast = new bootstrap.Toast(toastContainer.querySelector('.toast'));
+                toast.show();
+                
+                // Remove toast after it's hidden
+                toastContainer.querySelector('.toast').addEventListener('hidden.bs.toast', function() {
+                    toastContainer.remove();
+                });
+
+                // Refresh the user list
+                loadContent('user_list.php');
+            } else {
+                // Show error message
+                const errorToast = document.createElement('div');
+                errorToast.className = 'position-fixed top-0 end-0 p-3';
+                errorToast.style.zIndex = '1070';
+                errorToast.innerHTML = `
+                    <div class="toast align-items-center text-white bg-danger border-0" role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ${data.message || 'Error deleting user'}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(errorToast);
+                
+                const toast = new bootstrap.Toast(errorToast.querySelector('.toast'));
+                toast.show();
+                
+                errorToast.querySelector('.toast').addEventListener('hidden.bs.toast', function() {
+                    errorToast.remove();
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            confirmModal.hide();
+            modalElement.remove();
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+            document.body.classList.remove('modal-open');
+        });
+    });
+
+    confirmModal.show();
+}
+
 // Add this new function to handle pagination
 function attachPaginationListeners() {
     document.querySelectorAll('.pagination .page-link').forEach(link => {
