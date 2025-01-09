@@ -46,6 +46,10 @@ if($_SESSION['user_role'] !== 'ADMIN' && $_SESSION['user_role'] !== 'AGENT') {
                             <img src="admin_dashboard_pics/add_vehicle.png" alt="Car Icon" class="sidebar-icon">
                             Add Vehicle
                         </li>
+                        <li onclick="loadContent('user_list.php')" id="user-list" class="sidebar-item" aria-label="User List">
+                            <img src="admin_dashboard_pics/users.png" alt="Car Icon" class="sidebar-icon">
+                            User List
+                        </li>
                     <?php endif; ?>
                     
                     <li onclick="loadContent('booking_content.php')" id="booking-review" class="sidebar-item" aria-label="Booking Review">
@@ -133,6 +137,12 @@ function loadContent(page) {
     xhr.onload = function() {
         if (xhr.status === 200) {
             document.getElementById("main-content").innerHTML = xhr.responseText;
+            
+            // Initialize all necessary listeners if we're on user list page
+            if (page.includes('user_list.php')) {
+                attachPaginationListeners();
+                initializeUserForm();
+            }
 
             // Highlight the selected sidebar item
             const sidebarItems = document.querySelectorAll('.sidebar-item');
@@ -179,6 +189,89 @@ function loadContent(page) {
         console.error("An error occurred during the XMLHttpRequest.");
     };
     xhr.send();
+}
+
+// Add this new function to handle the user form initialization
+function initializeUserForm() {
+    const addUserForm = document.getElementById('addUserForm');
+    if (addUserForm) {
+        // Remove any existing event listeners
+        addUserForm.replaceWith(addUserForm.cloneNode(true));
+        
+        // Get the new form reference after cloning
+        const newForm = document.getElementById('addUserForm');
+        
+        newForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch('user_list.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('formMessage');
+                
+                if (data.success) {
+                    messageDiv.className = 'alert alert-success';
+                    messageDiv.textContent = 'User added successfully!';
+                    
+                    // Reset form
+                    this.reset();
+                    
+                    // Properly close the modal and remove backdrop
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+                    modal.hide();
+                    
+                    // Remove modal backdrop and restore body scrolling
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) backdrop.remove();
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                    
+                    // Refresh the user list content
+                    loadContent('user_list.php');
+                } else {
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.textContent = data.message || 'Error adding user';
+                }
+                messageDiv.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageDiv = document.getElementById('formMessage');
+                messageDiv.className = 'alert alert-danger';
+                messageDiv.textContent = 'An error occurred';
+                messageDiv.style.display = 'block';
+            });
+        });
+    }
+}
+
+// Add this new function to handle pagination
+function attachPaginationListeners() {
+    document.querySelectorAll('.pagination .page-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const pageNum = this.getAttribute('data-page');
+            if (pageNum && !this.parentElement.classList.contains('disabled')) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', `user_list.php?page=${pageNum}`, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        document.getElementById('main-content').innerHTML = xhr.responseText;
+                        // Reattach all event listeners after loading new page
+                        attachPaginationListeners();
+                        initializeUserForm(); // Reattach form listeners
+                    }
+                };
+                xhr.send();
+            }
+        });
+    });
 }
 
 // Add this function to initialize the file upload functionality
