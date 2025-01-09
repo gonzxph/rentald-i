@@ -258,3 +258,23 @@ footer {
 }
 
 
+.sidebar-link {
+    text-decoration: none; 
+    color: inherit; 
+}
+
+.sidebar-link:hover {
+    color: inherit; 
+    text-decoration: none; 
+}
+
+/* Add new style for logout link */
+.logout-link {
+    color: #dc3545 !important; /* Bootstrap's danger red color */
+}
+
+.logout-link:hover {
+    color: #bb2d3b !important; /* Darker red on hover */
+}
+
+

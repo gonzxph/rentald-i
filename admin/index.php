@@ -1,3 +1,11 @@
+<?php
+session_start();
+if($_SESSION['user_role'] !== 'ADMIN' && $_SESSION['logged_in'] !== true){
+    header('Location: ../index.php');
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,6 +51,12 @@
                         <a href="sales_trend_content.php" class="sidebar-link">
                             <img src="admin_dashboard_pics/sales.png" alt="Bar Chart Icon" class="sidebar-icon">
                             Sales/Sales Trend
+                        </a>
+                    </li>
+                    <li class="sidebar-item" aria-label="Logout">
+                        <a href="logout.php" class="sidebar-link logout-link">
+                            <img src="admin_dashboard_pics/log-out.svg" alt="Logout Icon" class="sidebar-icon">
+                            Logout
                         </a>
                     </li>
                     <style>.sidebar-link {

@@ -50,6 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $updateStmt->bindParam(':user_id', $user['user_id'], PDO::PARAM_INT);
                 $updateStmt->execute();
 
+                if($user['user_role'] === 'ADMIN'){
+                    header('Location: ../admin/index.php');
+                    exit();
+                }
+                
                 // Check if there's a redirect URL
                 if (isset($_POST['redirect'])) {
                     header('Location: ' . $_POST['redirect']);

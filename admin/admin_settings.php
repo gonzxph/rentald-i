@@ -1,9 +1,33 @@
 <?php
 session_start();
 include 'db_conn.php'; // Include the database connection
+if($_SESSION['user_role'] !== 'ADMIN' && $_SESSION['logged_in'] !== true){
+    header('Location: ../index.php');
+    exit();
+}
+$user_id = $_SESSION['user_id'];
 
 // Initialize error array
 $errors = [];
+
+// Retrieve admin information from database
+try {
+    $stmt = $conn->prepare("SELECT * FROM user WHERE user_id = ? AND user_role = 'ADMIN'");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $admin = $result->fetch_assoc();
+    
+    if (!$admin) {
+        $_SESSION['error_message'] = "Admin not found.";
+        header('Location: index.php');
+        exit();
+    }
+} catch (Exception $e) {
+    $_SESSION['error_message'] = "Error retrieving admin information.";
+    header('Location: index.php');
+    exit();
+}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -48,31 +72,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         try {
             $query = "UPDATE user SET user_fname = ?, user_mname = ?, user_lname = ?, user_phone = ?";
+            $types = "ssss"; // string types for the parameters
             $params = [$user_fname, $user_mname, $user_lname, $user_phone];
 
             if (!empty($profile_picture_path)) {
                 $query .= ", profile_image = ?";
+                $types .= "s";
                 $params[] = $profile_picture_path;
                 $_SESSION['profile_image'] = $profile_picture_path;
             }
 
             if (!empty($new_password)) {
                 $query .= ", user_password = ?";
+                $types .= "s";
                 $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
                 $params[] = $hashed_password;
             }
 
             $query .= " WHERE user_email = ? AND user_role = 'ADMIN'";
+            $types .= "s";
             $params[] = $_SESSION['user_email'];
 
             $stmt = $conn->prepare($query);
-            $stmt->execute($params);
+            $stmt->bind_param($types, ...$params);
+            $stmt->execute();
 
             // Update session variables
-            $_SESSION['user_fname'] = $user_fname;
-            $_SESSION['user_mname'] = $user_mname;
-            $_SESSION['user_lname'] = $user_lname;
-            $_SESSION['user_phone'] = $user_phone;
+            $_SESSION['fname'] = $user_fname;
+            $_SESSION['mname'] = $user_mname;
+            $_SESSION['lname'] = $user_lname;
+            $_SESSION['phone'] = $user_phone;
 
             $_SESSION['success_message'] = "Profile updated successfully!";
             header("Location: admin_settings.php");
@@ -125,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <form action="admin_settings.php" method="POST" enctype="multipart/form-data">
                             <!-- Profile Picture -->
                             <div class="mb-4 text-center">
-                                <img src="<?php echo isset($_SESSION['profile_image']) ? $_SESSION['profile_image'] : 'images/profile/admin_default.png'; ?>" 
+                                <img src="<?php echo isset($_SESSION['profile_image']) ? $_SESSION['profile_image'] : 'images/profile/user.png'; ?>" 
                                      alt="Profile Picture" 
                                      class="rounded-circle mb-3" 
                                      width="150" 
@@ -145,19 +174,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">First Name</label>
-                                        <input type="text" class="form-control" name="user_fname" value="<?php echo htmlspecialchars($_SESSION['user_fname'] ?? ''); ?>" required>
+                                        <input type="text" class="form-control" name="user_fname" value="<?php echo htmlspecialchars($_SESSION['fname'] ?? ''); ?>" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Middle Name</label>
-                                        <input type="text" class="form-control" name="user_mname" value="<?php echo htmlspecialchars($_SESSION['user_mname'] ?? ''); ?>">
+                                        <input type="text" class="form-control" name="user_mname" value="<?php echo htmlspecialchars($_SESSION['mname'] ?? ''); ?>">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="form-label">Last Name</label>
-                                        <input type="text" class="form-control" name="user_lname" value="<?php echo htmlspecialchars($_SESSION['user_lname'] ?? ''); ?>" required>
+                                        <input type="text" class="form-control" name="user_lname" value="<?php echo htmlspecialchars($_SESSION['lname'] ?? ''); ?>" required>
                                     </div>
                                 </div>
                             </div>
@@ -166,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-label">Phone Number</label>
-                                        <input type="tel" class="form-control" name="user_phone" value="<?php echo htmlspecialchars($_SESSION['user_phone'] ?? ''); ?>" required>
+                                        <input type="tel" class="form-control" name="user_phone" value="<?php echo htmlspecialchars($_SESSION['phone'] ?? ''); ?>" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
