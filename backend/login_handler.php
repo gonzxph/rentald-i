@@ -54,6 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header('Location: ../admin/index.php');
                     exit();
                 }
+                if($user['user_role'] === 'DRIVER' ){
+                    header('Location: ../admin/Driver.php');
+                    exit();
+                }
                 
                 // Check if there's a redirect URL
                 if (isset($_POST['redirect'])) {
