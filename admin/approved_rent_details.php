@@ -31,11 +31,16 @@ $sql = "
         r.rent_dropoff_datetime,
         r.rent_dropoff_location,
         r.is_custom_driver,
+        r.rent_approved_by,
+        r.rent_approved_datetime,
         u.user_fname,
         u.user_mname,
         u.user_lname,
         u.user_email,
         u.user_phone,
+        approver.user_fname as approver_fname,
+        approver.user_mname as approver_mname,
+        approver.user_lname as approver_lname,
         p.pay_type,
         p.pay_rental_charge,
         p.pay_pickup_charge,
@@ -62,6 +67,7 @@ $sql = "
     LEFT JOIN car_image ci ON c.car_id = ci.car_id AND ci.is_primary = 1
     LEFT JOIN driver d ON r.assigned_driver_id = d.driver_id
     LEFT JOIN user u ON r.user_id = u.user_id
+    LEFT JOIN user approver ON r.rent_approved_by = approver.user_id
     WHERE r.rental_id = ? AND r.rent_status = 'APPROVED'
 ";
 
@@ -188,6 +194,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <section class="booking-status" style="margin-top: 20px;">
                 <h2>Booking Status</h2>
                 <p class="status-text"><?= $data['rent_status'] ?? 'N/A'; ?></p>
+            </section>
+
+            <!-- Approval Details -->
+            <section class="approval-details" style="margin-top: 20px;">
+                <h2>Approval Details</h2>
+                <p>Approved By: <span>
+                    <?php
+                    $approver_name = '';
+                    if (!empty($data['approver_fname'])) {
+                        $approver_name .= $data['approver_fname'];
+                        if (!empty($data['approver_mname'])) {
+                            $approver_name .= ' ' . $data['approver_mname'];
+                        }
+                        if (!empty($data['approver_lname'])) {
+                            $approver_name .= ' ' . $data['approver_lname'];
+                        }
+                        echo $approver_name;
+                    } else {
+                        echo 'N/A';
+                    }
+                    ?>
+                </span></p>
+                <p>Approval Date: <span><?= $data['rent_approved_datetime'] ?? 'N/A'; ?></span></p>
             </section>
             
             <!-- Pickup and Dropoff Details -->

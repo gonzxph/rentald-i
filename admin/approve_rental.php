@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Include database connection
 include 'db_conn.php';
 
@@ -15,13 +16,13 @@ try {
     // Start a transaction
     $conn->begin_transaction();
 
-    // Update the rental status to "APPROVED" and set the approval datetime
-    $sql1 = "UPDATE rental SET rent_status = 'APPROVED', rent_approved_datetime = NOW() WHERE rental_id = ?";
+    // Update the rental status to "APPROVED", set the approval datetime, and the approver ID
+    $sql1 = "UPDATE rental SET rent_status = 'APPROVED', rent_approved_datetime = NOW(), rent_approved_by = ? WHERE rental_id = ?";
     $stmt1 = $conn->prepare($sql1);
     if (!$stmt1) {
         throw new Exception("Error preparing rental update query: " . $conn->error);
     }
-    $stmt1->bind_param("i", $rental_id);
+    $stmt1->bind_param("ii", $_SESSION['user_id'], $rental_id);
     $stmt1->execute();
 
     // Update the pay_type to "Full Payment"

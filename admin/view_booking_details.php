@@ -268,13 +268,16 @@ $data = $result->fetch_assoc();
             fetch('approve_rental.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ rental_id: rentalId })
+                body: JSON.stringify({ 
+                    rental_id: rentalId,
+                    approver_id: <?php echo $_SESSION['user_id']; ?>
+                })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     alert(data.message);
-                    window.location.href = 'index.php?content=booking_content.php'; // Reload the page to reflect changes
+                    window.location.href = 'index.php?content=booking_content.php';
                 } else {
                     alert(data.error);
                 }
