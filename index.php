@@ -7,7 +7,7 @@ session_start();
 <html lang="en">
 <head>
     <?php include 'includes/head.php' ?>
-    <title>D & I Cebu Car Rentaldsdsdsdsds</title>
+    <title>D & I Cebu Car Rentald</title>
 </head>
 <body>
     <?php include 'includes/nav.php' ?>
